@@ -1,0 +1,3 @@
+date:2013/07/08 (月) time:09:21
+PythonSf に関するデバッグ情報を pysfTicgit ディレクトリで管理していく
+

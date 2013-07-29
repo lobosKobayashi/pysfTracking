@@ -1,0 +1,35 @@
+
+***** sf bug: Emacs だと下のエラーになる。 sjis に設定してもあかん
+//@@
+ts()
+lsPrime=list(ts.primerange(2,10000))
+N=1000
+for i in range(N):
+    inEven=4+2i
+    for j in lsPrime:
+        for k in lsPrime:
+            if inEven < j+k:
+                break
+            elif inEven == j+k:
+                print inEven, ":", j,"+",k,"\n"
+//@@@
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "C:\Python27\lib\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\pysf\sfPPrcssr.py", line 3022, in start
+  File "D:\my\vc7\mtCm\pysf\sfPPrcssr.py", line 2749, in converFileAndExecute
+  File "<string>", line 1, in <module>
+NameError: name 'ts' is not defined
+↑ ts() がない下の例は OK
+//@@
+x=3+4
+print x
+//@@@
+7
+↑ _tmC.py も動く
+_tmC.py
+7

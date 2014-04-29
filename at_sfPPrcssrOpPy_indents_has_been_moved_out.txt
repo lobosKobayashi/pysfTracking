@@ -1,0 +1,44 @@
+Title       :at_sfPPrcssrOpPy_indents_has_been_moved_out
+            :Indent ‚ðŠÜ‚Þ PythonSf block codes ‚Ì‚Æ‚« Open ”»‚ÅƒCƒ“ƒfƒ“ƒg‚ªŽæ‚ç‚ê‚Ä‚µ‚Ü‚¤
+
+Serial Num  : 00002,    State: opened,      date: 2013/08/03 (“y) time:07:00
+First issued: date: 2013/08/03 (“y) time:07:00
+
+Tags        : An pre-processor sfPPrcssrOp indent was mooved_out
+
+Comments(1) : an example
+    //@@
+     1m,n=2,3
+    zvcC=kzrs(m,int)
+    zvcR=kzrs(n,int)
+
+    def check(vc, mt=np.zeros([m,n],int)):
+        mt.ravel()[:]=vc
+        if (not (zvcR in mt) and not (zvcC in mt.transpose()) ):
+            print mt
+        return (not (zvcR in mt) and not (zvcC in mt.transpose()) )
+
+    print sum( check(vc) for vc in mitr(*[[0,1]]*(m n)) )
+    //@@@
+
+    type _tmC.py
+
+    from __future__ import division
+    # -*- encoding: cp932 -*-
+    from pysfOp.sfFnctnsOp import *
+    setDctGlobals(globals())
+    from pysfOp.customizeOp import *
+    if os.path.exists('./sfCrrntIniOp.py'):
+        from sfCrrntIniOp import *
+    m,n=2,3
+    zvcC=kzrs(m,int)
+    zvcR=kzrs(n,int)
+
+    def check(vc, mt=np.zeros([m,n],int)):
+    mt.ravel()[:]=vc
+    if (not (zvcR in mt) and not (zvcC in mt.transpose()) ):
+    print mt
+    return (not (zvcR in mt) and not (zvcC in mt.transpose()) )
+
+    print sum( check(vc) for vc in mitr(*[[0,1]]*(m n)) )
+

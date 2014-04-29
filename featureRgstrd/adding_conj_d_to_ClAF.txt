@@ -1,0 +1,119 @@
+Title       : Adding conj() method and .d member to ClAF
+            : ClAF クラスに conj() method と .d member を追加する
+
+Serial Num  : 00007,    State: resolving:  date:2013/10/03
+First issued: date:2013/10/03
+
+Tags        : ClAF conj
+Action Scripts: 
+    testPyClcLine.vrf
++1 calculateLineString __set "exp.d(`i pi/3) ~== (cos + `i sin).d(pi/3)"
++0 blStt               __compare True
++1 calculateLineString __set "u=exp(`i `X); u.d(pi/3) ~== (0.5-`i sqrt(3)/2)"
++0 blStt               __compare True
+
++1 calculateLineString __set "sin(3+4j).conj() == sin.conj()(3+4j)"
++0 blStt               __compare True
+
+Comments(1) : Source
+    pysf\basicFnctns.py 1021 line 
+    def conj(self):
+        return ClAfOp(lambda *x:-self(*x).conj() )
+    ↓
+    def conj(self):
+        return ClAfOp(lambda *x:self(*x).conj() )
+
+    def __getattr__(self, name):
+        if name == "d":
+            return self.conj()
+        else:
+            assert False,("At ClAF instance, you tried to get a unexpected "
+                        + "attribute:" + name)
+
+
+Comments(2) : Examples
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T); u = cos(θ/2) + sin(θ/2) u0; u.conj()(pi/3)
+===============================
+[-1.3660254 -0.8660254 -0.8660254]
+---- ClTensor ----
+
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T); u = cos(θ/2) + sin(θ/2) u0; u.d(pi/3)
+===============================
+[-1.3660254 -0.8660254 -0.8660254]
+---- ClTensor ----
+
+sin.d(pi)
+===============================
+-1.22464679915e-16
+
+Comments(3) : Consideration
+One-liner で ClAF instance 関数そのものを最終値にすると putPv(..) で下の例外を発生させるようになる
+↑ 関数:ClAF object 自体を知りたいことは殆どないはずであり、これで良いとする
+    ↑ ユーザーに予定外の値を見ようとしていることを報せることにもなる
+sin
+===============================
+<pysf.basicFnctns.ClAF object at 0x03251C50>
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 11, in <module>
+  File "pysf\sfFnctns.py", line 2484, in putPv
+  File "C:\Python27\lib\pickle.py", line 224, in dump
+    self.save(obj)
+  File "C:\Python27\lib\pickle.py", line 306, in save
+    rv = reduce(self.proto)
+  File "C:\Python27\lib\copy_reg.py", line 74, in _reduce_ex
+    getstate = self.__getstate__
+  File "pysf\basicFnctns.py", line 1030, in __getattr__
+    + "attribute:" + name)
+AssertionError: At ClAF instance, you tried to get a unexpected attribute:__getstate__
+↑ AssertionError ではなく raise AttributeError を返すようにすれば、pickles も正常に動く
+sin
+===============================
+<pysf.basicFnctns.ClAF object at 0x03079C10>
+can't pickle ufunc objects
+
+Comments(4) : まだ pysfOp の修正がなされていない date:2013/10/05 (土) time:01:43
+
+Comments(5) : .d 属性で conj() を呼び出すクラス -- ClAF, ClTensor, Octonion 
+
+ClTnsFld には d 属性,conj() メソッドを設けていない
+
+~[1,2,3,O3(4,5), O3]
+===============================
+[O3(Z3(1)) O3(Z3(2)) O3(Z3(0)) O3(1, 2)]
+---- ClFldTns:< class 'sfCrrntIni.O3'> ----
+~[1,2,3,O3(4,5), O3].d
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 8, in <module>
+  File "pysf\sfFnctns.py", line 1700, in __getattr__
+AttributeError: There is no attribute in ClFldTns:d
+
+~[1,2,3,O3(4,5), O3].conj()
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 8, in <module>
+  File "pysf\sfFnctns.py", line 1700, in __getattr__
+AttributeError: There is no attribute in ClFldTns:conj
+

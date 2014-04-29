@@ -1,0 +1,19 @@
+Title       : Improve PDE solver functions of solveLapalacian(..), solvePDE(..), itrSlvPDE(..) for one-liner use.
+            : 偏微分方程式の差分Solver solveLapalacian(..), solvePDE(..), itrSlvPDE(..) をワン･ライナーでも使えるように改良する
+
+Serial Num  : 00004,    State: opened,      date:2013/09/07
+First issued: date:2013/09/07
+
+
+Tags        : solveLapalacian, solvePDE, itrSlvPDE
+Comments(1) : 境界条件行列の設定に True/False や文字列を入れるようにする旧来の方法では、辞書行列しか使えない。境界値行列に、計算位置であることを指示することを True 値で行っていたのでは、 numpy float を境界値行列に使えない。辞書行列に限定されてしまう。結果として one-liner で使いにくい代入文の使用が強制される。
+
+Manual      :
+ 境界条件辞書行列：ここでは より具体的に solveLapalacian(..), solvePDE(..), itrSlvPDE(..) の境界条件を設定する mtBoundary 行列引数について説明します。この行列サイズは、メッシュ点上の数値解として求めようとしている行列と同じサイズの行列となります。(逆に言えば mtBoundary の行列 column/row サイズより、偏微分方程式の数値解を保存する行列 column/row などのサイズを PythonSf 側で定めます。) mtBoundary 行列は各メッシュ点の性質を表現する行列引数だともいえます。mtBoundary 辞書行列の各要素には、固定値となる境界値か np.inf, -np.inf, np.nan の値を設定します。
+np.inf, -np.inf, np.nan  は次の意味を持ちます
+
+    計算位置となるメッシュ点を np.inf とします。
+    デフォルト数値のままで計算されないメッシュ点は -np.inf とします。solveLaplacian(..), solvePDE(..), itrSlvPDE(..) は False のインデックスについては何もせずに、次のインデックス処理に移ります。
+    ユーザー側で独自の処理を施したいメッシュ点には np.nan を設定します。solveLaplacian(..), solvePDE(..), itrSlvPDE(..) は、np.nan が設定されたメッシュ点についても繰り返し処理を行わせます。np.nan を使うときは、ユーザー自身が繰り返し処理の中で インデックスに対応する mtBoundary 行列の値が np.nan であることを判定し、ユーザー独自の処理を行います。
+    mtBoundary 辞書行列が np.inf, -np.inf, np.nan 以外の値をとったときは初期値とみなします。solveLaplacian(..), solvePDE(..), itrSlvPDE(..) は、この初期値が与えられているメッシュ点については、最初に数値解の辞書行列を初期値にするだけです。初期値の設定されたメッシュ点については繰り返し処理を行わせません。 
+↑ np.inf, -np.inf, np.nan に これらの意味を付与するのは、あまりにも、one-liner 都合過ぎる気もする。

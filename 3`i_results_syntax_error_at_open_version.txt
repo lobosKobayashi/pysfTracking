@@ -1,0 +1,12 @@
+Title       : 3`i_results_syntax_error_at_open_version
+            : Open ”Å‚¾‚Æ 3`i ‚ª syntax error ‚É‚È‚é 
+
+Serial Num  : 00001,    State: opened,      date:2013/07/08
+First issued: date:2013/07/08
+
+Tags        : image_number customizing_file
+
+Comments(1) : an example
+    "3`i" ‚É‘Î‚µ‚Ä ,j ‘€ì‚Å‰º‚ÌƒGƒ‰[‚É‚È‚é
+    3`i
+    invalid syntax (<string>, line 8)

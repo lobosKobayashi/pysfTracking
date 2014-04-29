@@ -1,0 +1,86 @@
+Title       : adding __lt__ method to ClOctonion
+            : 
+
+Serial Num  : 00010,    State: resolving:  date:2013/10/10
+First issued: date:2013/10/10
+
+Tags        : ClOctonion __lt__
+
+Action Scripts: 
++1 calculateLineString __set ""
++0 blStt               __compare True
+
+Source      :
+pysf\octn.py
+added ClOctonion.__lt__(..)
+class ClOctonion(object):
+     .
+    def __lt__(self, ag):
+        if isinstance(ag, ClOctonion):
+            return self.m_tpl < ag.m_tpl
+        elif isinstance(ag, int) or isinstance(ag, float):
+            return self.m_tpl[0] < ag
+        elif isinstance(ag, complex):
+            if ag.imag == 0:
+                return self.m_tpl[0] < ag.real
+            else:
+                assert False, ("You compared complex val:"+ str(ag)
+                              +" with ClOctonion instance.")
+        else:
+            return False
+
+*** Comments(1) : an example
+//@@
+from __future__ import division
+# -*- encoding: cp932 -*-
+from pysf.sfFnctns import *
+setDctGlobals(globals())
+from pysf.customize import *
+if os.path.exists('./sfCrrntIni.py'):
+    from sfCrrntIni import *
+vc=[Z2(0),Z2(1)]
+lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if           O3(vc4).conj() != 0]).sl
+print lsO3
+//@@@
+[O3(0, 0, 0, 1), O3(0, 0, 1, 0), O3(0, 0, 1, 1), O3(0, 1), O3(0, 1, 0, 1), O3(0, 1, 1, 0), O3(0, 1, 1, 1), O3(Z3(1)), O3(1, 0, 0, 1), O3(1, 0, 1, 0), O3(1, 0, 1, 1), O3(1, 1), O3(1, 1, 0, 1), O3(1, 1, 1, 0), O3(1, 1, 1, 1)]
+↑↓ 同じ結果になるように変わった
+//@@
+from __future__ import division
+# -*- encoding: cp932 -*-
+from pysf.sfFnctns import *
+setDctGlobals(globals())
+from pysf.customize import *
+if os.path.exists('./sfCrrntIni.py'):
+    from sfCrrntIni import *
+vc=[Z2(0),Z2(1)]
+tmp=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if           O3(vc4).conj() != 0]).sl
+print tmp
+//@@@
+[O3(0, 0, 0, 1), O3(0, 0, 1, 0), O3(0, 0, 1, 1), O3(0, 1), O3(0, 1, 0, 1), O3(0, 1, 1, 0), O3(0, 1, 1, 1), O3(Z3(1)), O3(1, 0, 0, 1), O3(1, 0, 1, 0), O3(1, 0, 1, 1), O3(1, 1), O3(1, 1, 0, 1), O3(1, 1, 1, 0), O3(1, 1, 1, 1)]
+
+*** Comments(2) : きっかけになった例ケーリー（Cayley）の定理の具体例
+証明の概略としては、Gを位数nの有限群として、
+a∈Gを一つ取り、x→ax（x∈G）で写像fa:G→G
+を定めると、これは全単射であり、Gの置換を
+引き起こします。Gの置換全体の集合をSGとすると、
+明らかにSGとSnは同型です。
+そして、a→faによって写像φ：G→SGを定めると、
+これは単射準同型になるので、GはSGに埋め込まれる、
+すなわち、GはSnの部分群と同型となる、といえます。
+
+vc=~[0,1,2, Z3]; lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4) O3(vc4).conj() != 0]).sl; [ Sb([lsO3.index(s) for s in bf.ls]) for sb in lsO3 if bf(ls=[ sb x for x in lsO3])].index(Sb(range(48)))
+===============================
+18
+↑ 正常になった
+vc=~[0,1,2, Z3]; lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4) O3(vc4).conj() != 0]).sl; lsO3[18]
+===============================
+O3(Z3(1))
+
+If you comment out ClOctonion.__lt__(..)
+
+vc=~[0,1,2, Z3]; lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4) O3(vc4).conj() != 0]).sl; [ Sb([lsO3.index(s) for s in bf.ls]) for sb in lsO3 if bf(ls=[ sb x for x in lsO3])].index(Sb(range(48)))
+===============================
+21
+↑ why the result is not 18
+
+*** Comments(3) : yet not implemented for pysfOp\octnOp.py

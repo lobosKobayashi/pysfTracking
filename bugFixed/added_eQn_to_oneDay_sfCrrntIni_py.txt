@@ -1,0 +1,42 @@
+Title       : added eQn` variable to oneDay\sfCrrntIni.py
+            : oneDay\sfCrrntIni.py に eQn`変数:追加した
+
+Serial Num  : 00011,    State: resolving: date: date:2014/01/01
+First issued: date:2014/01/01
+
+State       : Open  
+Tags        : oneDay sfCrrntIni eQn
+Action Scripts: なし
+
+Comments(1) : Source
+    tt(); eQn`/Cn`
+    ===============================
+    0.302824523103951
+
+    k_eQn_bq____ = 0.302824523103951
+    ↑ このコードを oneDay\sfCrrntIni.py に追加した
+
+
+Comments(2) :
+    copy D:\my\sf\gc\oneDay\sfCrrntIni.py D:\my\vc7\mtCm\sfCrrntIniRelativity.py /y
+            1 個のファイルをコピーしました。
+
+    D:\my\vc7\mtCm\sfCrrntIniOpRelativity.py
+
+        mnk_bq_ = gnk_bq_ =snk_bq_ =eVnk_bq_ =Cnk_bq_ =Nnk_bq_ =Jnk_bq_ =Vnk_bq_ =dVnk_bq_ =e0nk_bq_ =u0nk_bq_ =hnk_bq_____ = 1
+
+        k_sAlpha_nk_bq_ = 0.0917026917931351
+
+        mkk_bq_ = gkk_bq_ =skk_bq_ =eVkk_bq_ =Ckk_bq_ =Nkk_bq_ =Jkk_bq_ =Vkk_bq_ =dVkk_bq_ =eQkk_bq_ =hkk_bq_ = k_sAlpha_kk_bq_ = 1
+
+        ↓
+
+        mnk_bq_ = gnk_bq_ =snk_bq_ =eVnk_bq_ =Cnk_bq_ =Nnk_bq_ =Jnk_bq_ =Vnk_bq_ =dVnk_bq_ =e0nk_bq_ =u0nk_bq_ =hnk_bq_____ = 1
+        eQnk_bq_ = 0.302824523103951
+
+        k_sAlpha_nk_bq_ = 0.0917026917931351
+
+        mkk_bq_ = gkk_bq_ =skk_bq_ =eVkk_bq_ =Ckk_bq_ =Nkk_bq_ =Jkk_bq_ =Vkk_bq_ =dVkk_bq_ =eQkk_bq_ =hkk_bq_ = k_sAlpha_kk_bq_ = 1
+
+Comments(3) : まだ utSf\ sfCrrntIniOpRelativity.py, sfCrrntIni.py の修正がなされていない date:2014/01/02 (木) time:04:25
+

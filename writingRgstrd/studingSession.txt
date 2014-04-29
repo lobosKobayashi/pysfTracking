@@ -1,0 +1,284 @@
+！「発表しようと思ってたのに・・・」と思っていた方いらっしゃいましたら、まだなんとか調整できると思うので、ご連絡ください。
+
+プチ･シミュレーションの積み重ねによる考察の蓄積
+
+計算シミュレーション勉強会#1
+発表者を募集中ですので、発表してもいいよという方は参加申し込み時に「発表者」にした上で @aokomoriuta まで。
+質問ご相談もどうぞお気軽に！良い会にしたいのでご協力お願いします！
+http://connpass.com/event/3181/
+掴み
+    petit simulations の勧め
+    coding/debug なしでの計算
+    kOde 
+pythonの良いところ
+    関数プログラミングを旨く取り込んでいる
+    list complehension;; [x^2 for x in range(10)]
+    {x^2%5 for x in range(10)}
+    {x^2%5 |   x ∈ range(10)}
+理系の学部数学程度の数学ならば、大部分を one-liner で扱える
+Notebook,, ipython 批判
+scipy
+    matlab 機能をなぞったライブラリ集
+    sy(); info(sy)
+    sy(); info(sg)
+    計算速度;;randn(300,300)^-1
+
+
+最小工数での可視化
+後半は量子力学での行列力学の one-liners を見てもらう
+
+
+* N 体問題
+# 八の字軌跡を描く
+D=2;inV=[-0.97m`,0.243, 0.97,-0.243, 0,0,  -0.466m`/s`,-0.432, -0.466,-0.432, 0.932,0.864]; N=len(inV)//(2D) ; getFV=λ v,i,k:(λ r=krry(v[D k:D (k+1)])-krry(v[D i:D (i+1)]):r/norm(r)^3 if norm(r)!=0 else ~[0,0])(); sumFc=λ v,j:sum([getFV(v,j,k) for k in range(N) if j!=k]); fnc= λ *v: np.r_[v[D N:],(~[sumFc(v,j) for j in range(N)]).r]; mt=kOde(fnc,inV, 2 s`,400); cl=ClCplxColor(); for k in range(N):plotTrajectory(mt[:,D k:D (k+1)],color=cl.GetFltColor(exp(`i 2pi k/N)))
+
+## 八の字軌跡の初期条件を少し変えて 30秒までの軌跡を描く
+D=2;inV=[-0.97m`,0.273, 0.97,-0.273, 0,0,  -0.466m`/s`,-0.432, -0.466,-0.432, 0.932,0.864]; N=len(inV)//(2D) ; getFV=λ v,i,k:(λ r=krry(v[D k:D (k+1)])-krry(v[D i:D (i+1)]):r/norm(r)^3 if norm(r)!=0 else ~[0,0])(); sumFc=λ v,j:sum([getFV(v,j,k) for k in range(N) if j!=k]); fnc= λ *v: np.r_[v[D N:],(~[sumFc(v,j) for j in range(N)]).r]; mt=kOde(fnc,inV, 30s`,400); cl=ClCplxColor(); for k in range(N):plotTrajectory(mt[:,D k:D (k+1)],color=cl.GetFltColor(exp(`i 2pi k/N)))
+↑ 八の字軌跡は安定点らしい
+
+## 八の字軌跡の初期条件をもう少し大きく変えて 30秒までの軌跡を描く
+D=2;inV=[-0.97m`,0.343, 0.97,-0.343, 0,0,  -0.466m`/s`,-0.432, -0.466,-0.432, 0.932,0.864]; N=len(inV)//(2D) ; getFV=λ v,i,k:(λ r=krry(v[D k:D (k+1)])-krry(v[D i:D (i+1)]):r/norm(r)^3 if norm(r)!=0 else ~[0,0])(); sumFc=λ v,j:sum([getFV(v,j,k) for k in range(N) if j!=k]); fnc= λ *v: np.r_[v[D N:],(~[sumFc(v,j) for j in range(N)]).r]; mt=kOde(fnc,inV, 30 s`,400); cl=ClCplxColor(); for k in range(N):plotTrajectory(mt[:,D k:D (k+1)],color=cl.GetFltColor(exp(`i 2pi k/N)))
+
+** vertical/downrigt one-liners
+if then else のない first column offside codes
+type _tmC.py
+
+from __future__ import division
+# -*- encoding: cp932 -*-
+from pysf.sfFnctns import *
+setDctGlobals(globals())
+from pysf.customize import *
+if os.path.exists('./sfCrrntIni.py'):
+    from sfCrrntIni import *
+D=2
+inV=[-0.97* k_m_bq____,0.343, 0.97,-0.343, 0,0,  -0.466* k_m_bq____/k_s_bq____,-0.432, -0.466,-0.432, 0.932,0.864]
+N=len(inV)//(2* D)
+getFV=lambda v,i,k:(lambda r=krry(v[D * k:D * (k+1)])-krry(v[D * i:D * (i+1)]):r/norm(r)**3 if norm(r)!=0 else krry__(*[0,0]))()
+sumFc=lambda v,j:sum([getFV(v,j,k) for k in range(N) if j!=k])
+fnc= lambda *v: np.r_[v[D * N:],(krry__(*[sumFc(v,j) for j in range(N)])).r]
+mt=kOde(fnc,inV, 30 * k_s_bq____,400)
+cl=ClCplxColor()
+for k in range(N):plotTrajectory(mt[:,D * k:D * (k+1)],color=cl.GetFltColor(exp(k__bq_i___ * 2* pi * k/N)))
+
+* 反対称行列と rot
+
+A=~[0,0,0, `i/(4pi sqrt(`X^2+`Y^2+`Z^2))]; `rot(A)(1,2,3,4)
+===============================
+[[ 0.+0.j          0.+0.j          0.+0.j          0.+0.00151914j]
+ [ 0.+0.j          0.+0.j          0.+0.j          0.+0.00303828j]
+ [ 0.+0.j          0.+0.j          0.+0.j          0.+0.00455742j]
+ [ 0.-0.00151914j  0.-0.00303828j  0.-0.00455742j  0.+0.j        ]]
+---- ClTensor ----
+r,Q=~[1,2,3],1; Q^2 r/(4pi norm(r)^3)
+===============================
+[ 0.00151914  0.00303828  0.00455742]
+---- ClTensor ----
+time:09:21
+seed(0); pt=plotTrajectory; mt=randn(2,2); mtR=mt-mt.t; ls=~[(1,0),(0,1),(-1,0),(0,-1),(1,0)]; pt(ls); pt([mtR x for x in ls], color=red)
+↑ 90度回転
+seed(0); pt=plotTrajectory; mt=randn(2,2); mtR=mt-mt.t; ls=~[(1,0),(0,1),(-1,0),(0,-1),(1,0)]; pt(ls);   ([mtR x for x in ls]           )
+
+seed(0); pt=plotTrajectory; mt=randn(3,3); mtR=mt-mt.t; ls=~[(1,0,0),(0,1,0),(-1,0,0),(0,-1,0),(1,0,0)]; pt(ls); pt([mtR x for x in ls], color=red)
+seed(0); pt=plotTrajectory; mt=randn(3,3); mtR=mt-mt.t; ls=~[(1,0,0),(0,0,1),(-1,0,0),(0,0,-1),(1,0,0)]; pt(ls); pt([mtR x for x in ls], color=red)
+seed(0); pt=plotTrajectory; mt=randn(3,3); mtR=mt-mt.t
+Warning: don't use assignment at last sentence. We ignore the assignment.
+===============================
+[[ 0.         -1.84073599  0.02864957]
+ [ 1.84073599  0.         -0.82592067]
+ [-0.02864957  0.82592067  0.        ]]
+---- ClTensor ----
+seed(1); pt=plotTrajectory; mt=randn(3,3); mtR=mt-mt.t; ls=~[(1,0,0),(0,0,1),(-1,0,0),(0,0,-1),(1,0,0)]; pt(ls); pt([mtR x for x in ls], color=red)
+↑ studing session で使える
+time:10:01
+
+** 二次元ベクトル分布と rot
+A =~[`X+3`Y, `X `Y ]; f=λ x,y:`rot(A)(x,y)[0,1]; plot3dGr(f, [-3,3], [3,-3])
+A =~[`X+3`Y^2, `X `Y ]; f=λ x,y:`rot(A)(x,y)[0,1]; plot3dGr(f, [-3,3], [3,-3])
+A =~[`X^3+3`Y^2, `X `Y ]; f=λ x,y:`rot(A)(x,y)[0,1]; plot3dGr(f, [-3,3], [3,-3])
+A =~[`X^3+3`Y^2, `X^2 `Y ]; f=λ x,y:`rot(A)(x,y)[0,1]; plot3dGr(f, [-3,3], [3,-3])
+↑ これで、やっと曲面になる
+//@@
+seed(1);
+import pylab as pb;
+mt=klsp(-3,3)^klsp(3,-3)
+U,V=(`X+3`Y)(mt), (`X `Y)(mt) 
+pb.figure()
+pb.quiver( U.p, V.p)
+pb.axis([-1, 50, -1, 50])
+pb.show()
+//@@@
+
+//@@
+seed(1);
+import pylab as pb;
+mt=klsp(-3,3)^klsp(3,-3)
+U,V=(`X^3+3`Y^2)(mt), (`X^2 `Y)(mt) 
+pb.figure()
+pb.quiver( U.p, V.p)
+pb.axis([-1, 50, -1, 50])
+pb.show()
+//@@@
+Traceback (most recent call last):
+  File "_tmC.py", line 11, in <module>
+    U,V=(k__bq_X___**3+3* k__bq_Y___**2)(mt), (k__bq_X___**2 * k__bq_Y___)(mt) 
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 926, in __call__
+    return self.m_fn(*ag)
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 942, in <lambda>
+    + _call(ag, *x) )
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 831, in _call
+    return fnAg(*x)
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 926, in __call__
+    return self.m_fn(*ag)
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 977, in <lambda>
+    return ClAfOp(lambda *x:ag*self(*x))
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 1098, in __call__
+    return self.__fnAr(ag[0])
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 1042, in __fnAr
+    dct[idx] = self.m_fn(agAg[idx])
+  File "D:\my\vc7\mtCm\pysf\basicFnctns.py", line 1118, in __fn
+    + ":"+str(x) )
+AssertionError: At ClAFX.__pow__(..), you set shorter sequence arguments:(-9.0,)
+mt=~[[1,2],[3,4]]; (`X+3`Y)(mt), (`X `Y)(mt) 
+===============================
+(ClTensor([[  4.,   8.],
+           [ 12.,  16.]])
+, ClTensor([[  7.,  10.],
+           [ 15.,  22.]])
+)
+mt=~[[1,2],[3,4]]; (`X^3+3`Y)(mt), (`X^2 `Y)(mt) 
+===============================
+(ClTensor([[  4.,  14.],
+           [ 36.,  76.]])
+, ClTensor([[ 13.,  18.],
+           [ 57.,  82.]])
+)
+mt=~[[1,2,3],[3,4,5],[7,8,9]]; (`X^3+3`Y)(mt), (`X^2 `Y)(mt) 
+===============================
+(ClTensor([[   4.,   14.,   36.],
+           [  36.,   76.,  140.],
+           [ 364.,  536.,  756.]])
+,ClTensor([[   76.,    90.,   104.],
+           [  232.,   282.,   332.],
+           [  808.,  1002.,  1196.]])
+)
+* ポアソン分布
+
+1時間（あるいは1日あるいは1月あるいは1年あるいは…）に平均して λ 回「でたらめに」起こる事象が，1時間（あるいは…）にちょうど k 回起きる確率は，
+\[ p_k = \frac{\lambda^k e^{-\lambda}}{k!} \]
+
+です。このような分布をポアソン分布（Poisson distribution）といいます。
+↑ http://oku.edu.mie-u.ac.jp/~okumura/stat/poisson.php
+    ↑ blog ネタ、発表 petit simulations 例
+sy(); λc=0.1; k=2; λc^k exp(-λc)/sy.factorial(k)
+===============================
+0.00452418709018
+sy(); λc=0.1; k=1; λc^k exp(-λc)/sy.factorial(k)
+===============================
+0.0904837418036
+sy(); k=2; sy.factorial(k)
+===============================
+2.0
+sy(); λc=2.0; k=2; λc^k exp(-λc)/sy.factorial(k)
+===============================
+0.270670566473
+sy(); λc=2.0; k=1; λc^k exp(-λc)/sy.factorial(k)
+===============================
+0.270670566473
+sy(); λc=2.0; k=3; λc^k exp(-λc)/sy.factorial(k)
+===============================
+0.180447044315
+
+    seed(0); sum(np.random.poisson(5, 10000))/10000
+    ===============================
+    4.9757
+    ↑ 5 に近い
+    seed(0); sum( x for x in np.random.poisson(5, 10000) if x==5)/10000
+    ===============================
+    0.858
+
+    seed(0); sum( x for x in np.random.poisson(2, 10000)        )/10000
+    ===============================
+    1.9729
+    seed(1); sum( x for x in np.random.poisson(2, 10000)        )/10000
+    ===============================
+    1.9997
+    seed(3); sum( x for x in np.random.poisson(2, 10000)        )/10000
+    ===============================
+    1.9895
+
+    seed(0); sum( x for x in np.random.poisson(2, 10000) if x==5)/10000
+    ===============================
+    0.161
+    seed(0); [sum( x for x in np.random.poisson(2, 10000) if x==2)/10000 for _ in range(10)]
+    ===============================
+    [0.54759999999999998, 0.54559999999999997, 0.53839999999999999, 0.52780000000000005, 0.55679999999999996, 0.54339999999999999, 0.52800000000000002, 0.5292, 0.54800000000000004, 0.55000000000000004]
+
+    seed(0); [sum( x for x in np.random.poisson(2, 10000) if x==5)/10000 for _ in range(10)]
+    ===============================
+    [0.161, 0.1835, 0.17949999999999999, 0.19800000000000001, 0.1925, 0.20649999999999999, 0.182, 0.18099999999999999, 0.17349999999999999, 0.16250000000000001]
+
+    seed(0);     np.random.poisson(1, 10000)
+    ===============================
+    [2 1 1 ..., 1 0 1]
+    seed(0);     np.random.poisson(0.5, 10000)
+    ===============================
+    [0 1 0 ..., 0 0 1]
+
+    seed(0); [sum( x for x in np.random.poisson(0.5, 10000) if x==5)/10000 for _ in range(10)]
+    ===============================
+    [0.00050000000000000001, 0.0015, 0.0015, 0.00050000000000000001, 0.00050000000000000001, 0.0, 0.0015, 0.0, 0.001, 0.00050000000000000001]
+    seed(0); [sum( x for x in np.random.poisson(0.1, 10000) if x==5) 1.0/10000 for _ in range(10)]
+    ===============================
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    seed(0); [sum( x for x in np.random.poisson(0.1, 10000) if x==5)/10000 for _ in range(10)]
+    ===============================
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    seed(0); [sum( x for x in np.random.poisson(0.1, 10000) if x==5)/10000 for _ in range(10)]
+
+    seed(0);  [x for x in np.random.poisson(0.1, 10000) if x>0]
+    seed(0);  sum([x for x in np.random.poisson(0.1, 10000) if x>0])
+    ===============================
+    1009
+    seed(0); [sum( x for x in np.random.poisson(0.1, 10000) if x==1)/10000 for _ in range(10)]
+    ===============================
+    [0.091999999999999998, 0.092899999999999996, 0.088200000000000001, 0.090399999999999994, 0.087999999999999995, 0.085000000000000006, 0.092999999999999999, 0.091999999999999998, 0.092700000000000005, 0.093100000000000002]
+
+seed(0); [sum( 1 for x in np.random.poisson(2, 10000) if x==2)/10000 for _ in range(10)]
+===============================
+[0.2738, 0.2728, 0.2692, 0.2639, 0.2784, 0.2717, 0.264, 0.2646, 0.274, 0.275]
+sum([0.2738, 0.2728, 0.2692, 0.2639, 0.2784, 0.2717, 0.264, 0.2646, 0.274, 0.275])/10
+===============================
+0.27074
+
+seed(0); [sum( 1 for x in np.random.poisson(2, 10000) if x==1)/10000 for _ in range(10)]
+===============================
+[0.2762, 0.2741, 0.2647, 0.2744, 0.2612, 0.2686, 0.2751, 0.2759, 0.2694, 0.2694]
+sum([0.2762, 0.2741, 0.2647, 0.2744, 0.2612, 0.2686, 0.2751, 0.2759, 0.2694, 0.2694])/10
+===============================
+0.2709
+
+seed(0); [sum( 1 for x in np.random.poisson(2, 10000) if x==3)/10000 for _ in range(10)]
+===============================
+[0.17, 0.1799, 0.1861, 0.1818, 0.1795, 0.177, 0.1859, 0.1819, 0.1787, 0.1791]
+sum([0.17, 0.1799, 0.1861, 0.1818, 0.1795, 0.177, 0.1859, 0.1819, 0.1787, 0.1791])/10
+===============================
+0.17999
+
+sy(); λc=100.0; k=0; λc^k exp(-λc)/sy.factorial(k)
+===============================
+3.72007597602e-44
+sy(); λc=100.0; plotGr(λc^k exp(-λc)/sy.factorial(k) for k in range(100))
+sy(); λc= 50.0; plotGr(λc^k exp(-λc)/sy.factorial(k) for k in range(100))
+sy(); sy.comb(50,25)
+===============================
+1.26410606438e+14
+sy(); λc= 50.0; plotGr(sy.comb(100,k) for k in range(100))
+sy(); λc= 50.0; plotGr(sy.comb(50,k) for k in range(50))
+sy(); λc= 50.0; sum(λc^k exp(-λc)/sy.factorial(k) for k in range(100))
+===============================
+0.99999999968
+** histogram 表示
+sy(); λc= 50.0; plotTmCh(~[sy.comb(50,k) for k in range(50)])
+↑ plotTmCh(..) 関数はタイム･チャート用に作った。それを流用して histogram もどきを表示させた
+seed(0); plotTmCh(randint(2,size=[2,20]))
+seed(0); plotTmCh(randn(2,20))

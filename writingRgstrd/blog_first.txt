@@ -1,0 +1,79 @@
+Title       : PythonSf Operations and Editors
+            : PythonSf 操作とエディタたち
+
+Serial Num  : 00005     State: opened:  date:2013/09/08
+First issued: date:2013/09/08
+
+Tags        : editor, Vim, Emacs, one-liner
+
+Comments(1) : theme:図を多用して、エディタ上での PythonSf 操作を一目で分かるようにする
+
+* one-liner execution
+** a PythonSf one-liner
+//@@
+           
+ +--------+              +---------------------------------------------+  
+ | cursor |;j operation  | __tmp file                                  |  
+ | 3+4    +------------->+ generated in current directory by an editor |  
+ +--------+ ,j           +---------+-----------------------------------+  
+ on edtor                          |
+ screen                            V  
+                         +---------+---------------------+  
+                         | python -u -m sfPP -fl __tmp   |  
+                         | started by an editor          |  
+                         +---------+---------------------+  
+                                   |   ;j → sfPP.py pysf\sfPPrcssr
+                                   V   ,j → sfPPOp.py pysfOp\sfPPrcssrOp.py
+                         +---------+--------------------+  
+                         | pre-process __tmp file   3+4 |
+                         +------------------------------+
+                         execute pre processed a string in pre processor
+                                  ↓
+                           dump _tmC.py
+                            pre-processd file
+//@@@
+//java -jar \utl\ditaa0_9.jar __tmp __tmp.png
+↑ OK                                                      
+                                                           
+                                                           
+*** _tmC.py file                                           
+***** global 変数                                          
+sfCrrntIni.py, pysf.customize.py                           
+sfCrrntIniOp.py, pysfOp\customizeOp.py                     
+                                                           
+*** pickling error                                         
+
+* os commands
+
+* start 実行
+
+* bloc execution                                           
+//@@                                                       
+  +-------+                                                
+  | //@@  |              +---------------------------------------------+  
+  |   .   |;k operation  | __tmp file                                  |  
+  |       +------------->+ generated in current directory by an editor |  
+  |   .   | ,k           +---------+-----------------------------------+  
+  |   .   |                        |                       
+  | //@@@ |                        V                       
+  +-------+              +---------+---------------------+  
+                         | python -u -m sfPP -fs __tmp   |  
+                         | started by an editor          |  
+                         +---------+---------------------+  
+                                   |   ;k → sfPP.py pysf\sfPPrcssr
+                                   V   ,k → sfPPOp.py pysfOp\sfPPrcssrOp.py
+                         +---------+----------------------------+  
+                         | pre-process __tmp file //@@ . . //@@@|
+                         +--------------------------------------+ 
+                         execute pre processed strings in pre processor
+                                  ↓
+                           dump _tmC.py: pre-processd file
+//@@@
+//java -jar \utl\ditaa0_9.jar __tmp __tmp.png
+↑ OK
+
+
+* commertial version vs. open version
+Python compatible + greek letter + ` name extension まで
+↑ ~ operator extention が使えない。
+↑ ~[....] 行列ベクトル表記が使えない。これは一番大きな記述上の違いとなる

@@ -1,0 +1,14 @@
+Title       : comed_to_realize_an_example_that_x_y_axies scale_ratios_are_not_equal
+            : plotTrajectory ‚Ì x,y ²¡–@”ä‚ª“¯‚¶‚Å‚È‚¢‚±‚Æ‚ª”­¶‚µ‚½
+
+Serial Num  : 00003,    State: opened:  date:2013/08/04
+First issued: date:2013/08/04
+
+Tags        : plot_trajectory scale_ratio
+
+Comments(1) : an example
+    rotated regid square;;ƒÂl=sin(pi/4); ƒÂy=1-ƒÂl; rrs=[(0,0),(1-ƒÂy,0+ƒÂl),(0,2^0.5),(-ƒÂl,ƒÂl),(0,0),(1-ƒÂy,0+ƒÂl),(-ƒÂl,ƒÂl)]; plotTrajectory(rrs)
+    ª«‰º‚Í³í
+        ª x ²‚ª }—¼•û‚ğg‚Á‚Ä‚¢‚é‚½‚ßH
+    upper skewed square;;ƒÂl=sin(pi/4); ƒÂx=1-ƒÂl; uss=[(0,0),(1-ƒÂx,0+ƒÂl),(1-ƒÂx,1+ƒÂl),(0,1),(0,0)]; plotTrajectory(uss)
+

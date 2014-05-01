@@ -1,0 +1,14 @@
+Title       : In utSf and chcp 65001 cmd.exe, there are several unstable PythonSf expressions 
+            : utSf で chcp 65001 を実行された cmd.exe だと不安定な PythonSf 式が幾つもある
+
+Serial Num  : 00013,    State: invalid,      date:2014/04/28
+First issued: date:2014/04/29
+
+Tags        : utf-8 chcp_65001 cmd.exe unstable
+
+Comments(1) : vfPP.bat 全体チェックで数個エラーになったり飛んだりする PythonSf 式が見つかる。
+    test.vrf に小さな飛ぶ再現テストを作っても、飛ばないこともある。不安定だ。
+    python -m pdf sfPP.py test.vrf とpython -m sfPP test.vrf でエラーの出方が異なる
+    cmd.exe が utf-8 文字列を処理するときに OS 側の何かのバグが潜んでいると推測している
+    なお私の Win7 環境ではHKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFontキーの設定をしても chcp 65001 を実行した cmd.exe 環境では utf-8 漢字を表示できていませ。
+

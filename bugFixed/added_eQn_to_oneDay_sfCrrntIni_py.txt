@@ -1,10 +1,9 @@
 Title       : added eQn` variable to oneDay\sfCrrntIni.py
             : oneDay\sfCrrntIni.py Ç… eQn`ïœêî:í«â¡ÇµÇΩ
 
-Serial Num  : 00011,    State: resolving: date: date:2014/01/01
+Serial Num  : 00011,    State: closed:0.97A: date: date:2014/05/01
 First issued: date:2014/01/01
 
-State       : Open  
 Tags        : oneDay sfCrrntIni eQn
 Action Scripts: Ç»Çµ
 
@@ -39,4 +38,5 @@ Comments(2) :
         mkk_bq_ = gkk_bq_ =skk_bq_ =eVkk_bq_ =Ckk_bq_ =Nkk_bq_ =Jkk_bq_ =Vkk_bq_ =dVkk_bq_ =eQkk_bq_ =hkk_bq_ = k_sAlpha_kk_bq_ = 1
 
 Comments(3) : Ç‹Çæ utSf\ sfCrrntIniOpRelativity.py, sfCrrntIni.py ÇÃèCê≥Ç™Ç»Ç≥ÇÍÇƒÇ¢Ç»Ç¢ date:2014/01/02 (ñÿ) time:04:25
+Å™ 0.97A version Ç≈ utSf Ç‡íºÇµÇΩ 
 

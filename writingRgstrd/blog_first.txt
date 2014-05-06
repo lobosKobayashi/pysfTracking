@@ -34,7 +34,14 @@ Comments(1) : theme:図を多用して、エディタ上での PythonSf 操作を一目で分かるよう
 //@@@
 //java -jar \utl\ditaa0_9.jar __tmp __tmp.png
 ↑ OK                                                      
-                                                           
+
+pre-processor の処理内容を図示する
+
+拡張された名前空間の処理 greek, symbol 漢字
+user operator: ~[..], ~==, ...
+from pysf.customize import *
+from sfCrrntIni import *
+↑ current direcotry から
                                                            
 *** _tmC.py file                                           
 ***** global 変数                                          

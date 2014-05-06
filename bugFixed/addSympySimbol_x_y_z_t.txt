@@ -1,0 +1,46 @@
+Title       : add SymPy symbol `x `y `z `t `n `p `q `r
+            : SymPy symbol `x `y `z `t `n `p `q `r ‚ð’Ç‰Á‚·‚é
+
+Serial Num  : 00015,    State: fixed,      date:2014/05/04
+First issued: date:2014/05/04 (“ú) time:11:34
+
+Tags        : SymPy simbol
+
+Comments(1) : an example
+    Open ”Å‚¾‚Æ `x ‚ª syntax error ‚É‚È‚é 
+    ts(); `x == `x
+    name 'k_bq_x' is not defined
+
+    `y,`z,`t,`n,`p,`q,`r ‚à Open ”»‚ÅŽg‚¦‚é‚æ‚¤‚É‚µ‚½
+
+ActionScript:
+##### sympy symbol, `x,`y,`z,`t,`n,`p,`q,`r ‚ªŽg‚¦‚È‚©‚Á‚½ SNb:00015
++1 calculateLineString __set "ts_(); `x==`x"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `y==`y"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `z==`z"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `t==`t"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `n==`n"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `p==`p"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `q==`q"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts_(); `r==`r"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts(); `1r == 1"
++0 blStt               __compare True
+
++1 calculateLineString __set "ts(); `Rat(3, 2) == 1.5"
++0 blStt               __compare True

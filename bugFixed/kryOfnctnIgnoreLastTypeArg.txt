@@ -1,0 +1,33 @@
+Title       : kryO(..) function ignored last type argment
+            : kryO(..) 関数で、引数の最後が type のとき、それを無視していた
+
+Serial Num  : 00017,    State: closed:0.97AA: date: date:2014/05/01
+First issued: date:2014/01/01
+
+Tags        : なし
+Action Scripts:
+##### kryO(..) 関数で、引数の最後が type のとき、それを無視していた SNb:00017
++1 calculateLineString __set "type(kryO([0,1,2,Z3])[0]) == Z3"
++0 blStt               __compare True
+
+Comments(1) : example
+type(kryO([0,1,2,Z3])[0])
+===============================
+<type 'int'>
+↓
+type(kryO([0,1,2,Z3])[0])
+===============================
+<class 'sfCrrntIniOp.Z3'>
+
+
+Comments(1) : Source
+pysfOp\sfFnctnsOp.py line 303
+
+    if blFldTnsAt == True:
+        return np.array(elmAt, dtype = typeAt)
+    ↓
+    if blFldTnsAt == True:
+        return np.array(elmAt, dtype = typeAt)
+        elmAt = [ typeAt(x) for x in elmAt]
+        return np.array(elmAt, dtype = typeAt)
+

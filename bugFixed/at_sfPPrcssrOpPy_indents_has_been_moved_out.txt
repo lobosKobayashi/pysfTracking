@@ -1,14 +1,14 @@
 Title       :at_sfPPrcssrOpPy_indents_has_been_moved_out
             :Indent を含む PythonSf block codes のとき Open 判でインデントが取られてしまう
 
-Serial Num  : 00002,    State: opened,      date: 2013/08/03 (土) time:07:00
+Serial Num  : 00002,    State: closed:0.97AA,      date:2014/05/06 (火) time:06:49
 First issued: date: 2013/08/03 (土) time:07:00
 
 Tags        : An pre-processor sfPPrcssrOp indent was mooved_out
 
 Comments(1) : an example
     //@@
-     1m,n=2,3
+    m,n=2,3
     zvcC=kzrs(m,int)
     zvcR=kzrs(n,int)
 
@@ -42,3 +42,6 @@ Comments(1) : an example
 
     print sum( check(vc) for vc in mitr(*[[0,1]]*(m n)) )
 
+Comments(1) :
+    pysfOp\vrfyPySfOp.py に convertFileAndExecute(..) 関数の登録を追加し、インデントのファイル・チェックを可能にした。
+    ↑ なぜか Action Script の最後の \n を書くとエラーになるようになっているが、バグとはしない

@@ -1,0 +1,13 @@
+Title       : Transport getPv(..) and putPv(..) for PythonSfOp
+            : PythonSfOp に getPv(..), putPv(..) を移植する。:=, =: は移植しない。date:2014/05/05 (月) time:08:27
+
+Serial Num  : 00018,    State: opened: date:2014/05/05 (月) time:08:27
+First issued: date:2014/05/05 (月) time:08:27
+
+Tags        : なし
+Action Scripts:
+
+Comments(1) : 
+    =:, := 記述機能は移植しない
+    最終値の _dt.pvl 記録は行う
+

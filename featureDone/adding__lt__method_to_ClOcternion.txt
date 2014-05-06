@@ -1,7 +1,7 @@
 Title       : adding __lt__ method to ClOctonion
             : 
 
-Serial Num  : 00010,    State: resolving:  date:2013/10/10
+Serial Num  : 00010,    State: closed:0.97AA:  date:2014/05/05 (月) time:02:49
 First issued: date:2013/10/10
 
 Tags        : ClOctonion __lt__
@@ -84,3 +84,40 @@ vc=~[0,1,2, Z3]; lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4) O3(vc4).c
 ↑ why the result is not 18
 
 *** Comments(3) : yet not implemented for pysfOp\octnOp.py
+octnOp.py.Octonion にも __lt__ method を追加した date:2014/05/05 (月) time:02:48
+
+vc=~[0,1,2, Z3]; lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4)*O3(vc4).conj() != 0]).sl; [ Sb([lsO3.index(s) for s in bf.ls]) for sb in lsO3 if bf(ls=[ sb*x for x in lsO3])].index(Sb(range(48)))
+===============================
+18
+↓,j ↑;j
+vc=kryO([0,1,2, Z3]); lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4)*O3(vc4).conj() != 0]).sl; [ Sb([lsO3.index(s) for s in bf.ls]) for sb in lsO3 if bf(ls=[ sb*x for x in lsO3])].index(Sb(range(48)))
+Warning! Don't use a assignment sentence in end.
+===============================
+17
+↑ Octonion.__lt__ をまだ Op 判に入れていない
+
+vc=kryO([0,1,2, Z3]); lsO3=kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4)*O3(vc4).conj() != 0]).sl; [ Sb([lsO3.index(s) for s in bf.ls]) for sb in lsO3 if bf(ls=[ sb*x for x in lsO3])].index(Sb(range(48)))
+Warning! Don't use a assignment sentence in end.
+===============================
+18
+↑ Octonion.__lt__ をまだ Op 判に入れたら、正常に動作するようになった
+ 
+
+*** Comments(4) : 上の問題を直そうとして下のバグを見つけてしまった
+↑ != 演算子を最終式で使えない
+date:2014/05/05 (月) time:00:38
+2!=3
+Warning! Don't use a assignment sentence in end.
+invalid syntax (<string>, line 8)
+
+type _tmC.pyfrom __future__ import division
+# -*- encoding: cp932 -*-
+from pysfOp.sfFnctnsOp import *
+setDctGlobals(globals())
+from pysfOp.customizeOp import *
+if os.path.exists('./sfCrrntIniOp.py'):
+    from sfCrrntIniOp import *
+rightSideValueGlb__ = =3
+print "==============================="
+print rightSideValueGlb__
+

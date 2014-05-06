@@ -1,0 +1,234 @@
+Title       : PythonSf featue bug mixed up memo
+            : PythonSf featue bug ごった煮メモ
+
+Serial Num  : 00010,    State: resolving: date:2013/10/10
+First issued: date:2013/10/10
+
+Tags        : ClOctonion __lt__
+
+Comments(1) : an example
+
+* spec
+SNf: feature,spec or invalid reason(s)  SNw: writing,  SNb: bug
+
+Action Scripts: 
+
+***** SNb:00003: opened: plotTrajectory の x,y 軸寸法比が同じでないことが発生した;date:2013/08/04
+D:\my\vc7\pysfTracking\comed_to_realize_an_example_that_x_y_axies_scale_ratios_are_not_equal.txt
+
+***** SNf:00004; opened; 偏微分方程式の差分Solver solveLapalacian(..), solvePDE(..), itrSlvPDE(..) をワン･ライナーでも使えるように改良する; 2013/09/07
+D:\my\vc7\pysfTracking\featureRgstrd\improvement_of_PDE_functions.txt
+***** SNw:00005; resolving; 図を多用して、エディタ上での PythonSf 操作を一目で分かるようにする; date:2013/09/08
+D:\my\vc7\pysfTracking\writingRgstrd\blog_first.txt
+
+
+***** SNf:00009 PEP に倣って、PythonSfEnhancementProposal.txt を設ける date:2013/10/09 (水) time:10:07
+まだファイルを起こしていない
+
+for example
+****** ClTensor instance * ClAF instance を可能にすべき。
+↑ ClFldTns instance * ClAF instance をどうする？
+    ↑ ~[`X, `X `Y] sin は可能にしたい
+    ↑ Zn(3) sin や BF(1) sin は必要ないだろう
+       ↑ Zn(3) と float の掛け算は必要ない 
+↑ 現状、既に下は可能になっている
+(sin ~[1,2,3])(pi/3)
+===============================
+[ 0.8660254   1.73205081  2.59807621]
+---- ClTensor ----
+(sin ~[1,2,3,Z3])(pi/3)
+↑ エラーになる
+
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T);R,u = (1,2,3,4),cos(θ/2) + u0 sin(θ/2)
+D:\my\vc7\pysfTicgit\3`i_results_syntax_error_at_open_version.txt:3:Serial Num  : 00001
+D:\my\vc7\pysfTicgit\at_sfPPrcssrOpPy_indents_has_been_moved_out.txt:3:Serial Num  :00002
+D:\my\vc7\pysfTicgit\bugFixed\added_eQn_to_oneDay_sfCrrntIni_py.txt:3:Serial Num  : 00011
+D:\my\vc7\pysfTicgit\comed_to_realize_an_example_that_x_y_axies scale_ratios_are_not_equal.txt:3:Serial Num  : 00003
+D:\my\vc7\pysfTicgit\featureRgstrd\adding_conj_d_to_ClAF.txt:3:Serial Num  : 00007
+D:\my\vc7\pysfTicgit\featureRgstrd\adding__d_member_to_ClOctonion.txt:3:Serial Num  : 00008
+D:\my\vc7\pysfTicgit\featureRgstrd\adding__lt__method_to_ClOcternion.txt:3:Serial Num  : 00010
+D:\my\vc7\pysfTicgit\featureRgstrd\improvement_of_PDE_functions.txt:3:Serial Num  : 00004
+D:\my\vc7\pysfTicgit\pre_memo.txt:3:Serial Num  : 00006
+D:\my\vc7\pysfTicgit\pre_memo.txt:26:↑ ClAF に .d memeber __getattri__(.) と conj() method を追加する:Serial Num::00007
+D:\my\vc7\pysfTicgit\writingRgstrd\blog_first.txt:3:Serial Num  : 00005
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T);      (1,2,3,4),cos(θ/2) + u0 sin(θ/2)
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T);                cos(θ/2) + u0 sin(θ/2)
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T);                           u0 sin(θ/2)
+ω,u0=1,~[1,0,0]; θ=ω `T;                                                         u0 sin(θ/2)
+ω,u0=1,~[1,0,0]; θ=ω `T;                                                         u0 sin(`T/2)
+ω,u0=1,~[1,0,0];                                                                 u0 sin(`T/2)
+       ~[1,0,0]                                                                     sin(`T/2)
+~[1,0,0] sin(`T/2)
+~[1,0,0] sin
+Warning: don't use assignment at last sentence. We ignore the assignment.
+float() argument must be a string or a number
+
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtcm\_tmC.py", line 8, in <module>
+    rightSideValueGlb__= krry__(*[1,0,0]) * sin
+  File "pysf\sfFnctns.py", line 479, in __mul__
+  File "pysf\sfFnctns.py", line 372, in __new__
+TypeError: float() argument must be a string or a number
+↑ cf.
+~[1,0,0] sin(pi/3)
+===============================
+[ 0.8660254  0.         0.       ]
+---- ClTensor ----
+↑ cf.
+~[1,0,0] Z3(2)
+float() argument must be a string or a number
+
+R,u = (1,2,3,4),           Oc(1,0,0) sin(`X/2); u(*R) u.d(*R)
+R,u = (1,2,3,4),           Oc(1,0,0) sin(`T/2); u(*R) u.d(*R)
+'ClOctonion' object is not callable
+R,u = (1,2,3,4),           sin(`X/2) Oc(1,0,0); u(*R) u.d(*R)
+===============================
+Oc(0.229848847066)
+
+~[1,0,0] (3+4j)
+===============================
+[ 3.+4.j  0.+0.j  0.+0.j]
+---- ClTensor ----
+
+Z3(2) sin
+int(3)
+Z3(2) sin(pi/3)
+unsupported operand type(s) for *: 'Z3' and 'numpy.float64'
+(Z3(2) sin)(pi/3)
+unsupported operand type(s) for *: 'Z3' and 'numpy.float64'
+
+(Z3(2) sin)(0   )
+unsupported operand type(s) for *: 'Z3' and 'numpy.float64'
+
+Z3(2) 0
+===============================
+Z3(0)
+
+Z3(2) 0.0
+unsupported operand type(s) for *: 'Z3' and 'float'
+0.0 Z3(2)
+unsupported operand type(s) for *: 'float' and 'Z3'
+
+
+***** SNf:00018: opened: PythonSfOp に getPv(..), putPv(..) を移植する。:=, =: は移植しない。date:2014/05/05 (月) time:08:27
+D:\my\vc7\pysfTracking\featureRgstrd\transport_getPv_putPv.txt
+
+***** SNf:00019: opened: PythonSf feature: Open 判でも 漢字記号∂∇□△ を使えるようにする date:2014/05/05 (月) time:08:38
+D:\my\vc7\pysfTracking\featureRgstrd\transport∂∇□△preProcessor.txt date:2014/05/05 (月) time:08:38
+微分処理も Open 判向けへの移植をしないと意味がない
+
+***** SNf:00020: resolving: Open 判でもべき乗演算子に ^ を使えるようにする。 bit exclusive or 演算子は \^ にする date:2014/05/06 (火) time:08:48
+D:\my\vc7\pysfTracking\featureRgstrd\convertCaretToStarStar.txt
+
+* finished
+***** SNb:00001: invalid:0.97AA: "3`i" に対して ,j 操作で下のエラーになる;date:2013/07/08
+tabe D:\my\vc7\pysfTracking\bugInvalid\3`i_results_syntax_error_at_open_version.txt
+
+***** SNb:00002: closed: Indent を含む PythonSf block codes のとき Open 判でインデントが取られてしまう;date:2014/05/06 (火) time:06:49
+D:\my\vc7\pysfTracking\at_sfPPrcssrOpPy_indents_has_been_moved_out.txt :3:Serial Num  :00002
+↓
+D:\my\vc7\pysfTracking\bugFixed\at_sfPPrcssrOpPy_indents_has_been_moved_out.txt :3:Serial Num  :00002
+
+***** SNb:00007: closed:0.97A: vector*ClAF, ClAFinstance.d conj() を実装する date:2013/10/02 (水) time:10:13
+D:\my\vc7\pysfTracking\featureRgstrd\adding_conj_d_to_ClAF.txt
+↓
+D:\my\vc7\pysfTracking\featureDone\adding_conj_d_to_ClAF.txt
+
+ω,u0=1,~[1,0,0]; θ=ω `T; ψ=exp(~[`X,`Y,`Z] u0 + ω `T); u = cos(θ/2) + sin(θ/2) u0; u.conj()
+
+# vector*ClAF
+ω,u0=1,~[1,0,0]; u0 sin
+float() argument must be a string or a number
+↓↑cf.
+ω,u0=1,~[1,0,0]; sin u0 
+===============================
+<pysf.basicFnctns.ClAfOp object at 0x033E9C50>
+
+↓↑ 上は bug 下は feature として tracking ticket を発行する
+
+# .d member を ClAF に追加する
+↑ ClAF に .d memeber __getattri__(.) と conj() method を追加する:Serial Num::00007
+D:\my\vc7\pysfTicgit\featureRgstrd\adding_conj_d_to_ClAF.txt
+sin.d
+Traceback (most recent call last):
+      File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+        "__main__", fname, loader, pkg_name)
+      File "C:\Python27\lib\runpy.py", line 72, in _run_code
+        exec code in run_globals
+      File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+        pysf.sfPPrcssr.start()
+      File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+      File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+      File "<string>", line 8, in <module>
+AttributeError: 'ClAF' object has no attribute 'd'
+
+***** SNb:00008: closed:0.97AA: ClOctonion にも .d __getattr__ を実装する。 conj() を呼び出す date:2014/05/05
+D:\my\vc7\pysfTracking\featureRgstrd\adding__d_member_to_ClOctonion.txt
+↓
+D:\my\vc7\pysfTracking\featureDone\adding__d_member_to_ClOctonion.txt
+↑ O2, --- ,O7 にも .d 属性が追加される
+O6(1,2,3,4,5).d
+===============================
+O6(1, 4, 3, 2, 1, 0, 0, 0)
+↓
+D:\my\vc7\pysfTracking\featureDone\adding__d_member_to_ClOctonion.txt
+
+***** SNb:00010: closed:0.97AA: ClZp. ClOcternion に順序を入れる date:2014/05/05 (月) time:03:18
+D:\my\vc7\pysfTracking\featureRgstrd\adding__lt__method_to_ClOcternion.txt
+↓
+D:\my\vc7\pysfTracking\featureDone\adding__lt__method_to_ClOcternion.txt
+__lt__ を実装する
+
+int(Z3(2))
+===============================
+2
+↑ 下を順序良く表示させたいから
+vc=~[0,1,2, Z3]; kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if O3(vc4) O3(vc4).conj() == 0]).sl
+===============================
+[O3(1, 1, 0, 2), O3(Z3(0)), O3(0, 1, 2, 1), O3(0, 2, 2, 1), O3(2, 0, 2, 2), O3(1, 0, 1, 2), O3(0, 2, 1, 1), O3(0, 2, 2, 2), O3(0, 1, 1, 2), O3(1, 0, 2, 1), O3(0, 1, 2, 2), O3(1, 0, 2, 2), O3(0, 2, 1, 2), O3(1, 0, 1, 1), O3(0, 1, 1, 1), O3(2, 0, 2, 1), O3(2, 2, 1, 0), O3(2, 1, 0, 2), O3(1, 2, 1, 0), O3(1, 1, 1, 0), O3(1, 2, 0, 1), O3(2, 1, 1, 0), O3(1, 1, 0, 1), O3(2, 0, 1, 1), O3(2, 2, 0, 1), O3(1, 1, 2, 0), O3(1, 2, 0, 2), O3(1, 2, 2, 0), O3(2, 0, 1, 2), O3(2, 1, 0, 1), O3(2, 1, 2, 0), O3(2, 2, 0, 2), O3(2, 2, 2, 0)]
+↑ この sorted list に意味を見出せない
+
+Z5(1) < Z3(2)
+===============================
+True
+Z5(2) < Z3(2)
+===============================
+False
+Z5(2) < Z3(1)
+===============================
+False
+
+ClZp には下が実装されている
+    def __cmp__(self, ag):
+        return cmp(self.m_val, int(ag))
+
+↑Python3k では __cmp__ の代わりに __lt__, __eq__ が必要になる
+
+***** SNb:00011: closed:0.97A: tt() を呼び出さないときの eQn` が定義されていない date:2014/01/01 (水) time:17:26
+D:\my\vc7\pysfTracking\bugFixed\added_eQn_to_oneDay_sfCrrntIni_py.txt
+tt(); eQn`/Cn`
+===============================
+0.302824523103951
+k_eQn_bq____ = 0.302824523103951
+↑ このコードを oneDay\sfCrrntIni.py に追加した
+↑;;D:\my\vc7\pysfTracking\bugFixed\added_eQn_to_oneDay_sfCrrntIni_py.txt
+
+***** SNb:00012: invalid:0.97A: sympy rational 要素の行列生成で、型の判定を誤って sympy.Integer になっている date:2014/05/01
+2013/1 月に見つけていた問題だったが、それの原因を特定したのが 2014 年にずれここんだ
+↑;;D:\my\vc7\pysfTracking\featureInvalid\dont_use_sympy_elment_ClFldTns_matrix.txt
+
+***** SNf:00013: invalid:0.97A:utf8_chcp_65001_unstable_in_Windows7.txt  date:2014/04/28
+D:\my\vc7\pysfTracking\bugInvalid\utf8_chcp_65001_unstable_in_Windows7.txt
+
+***** SNb:00014: closed:0.97AA: pysfOp\kNumericOp.py で np. が sc になっていて normalize(..) が例外をだしていた date:2014/05/04 (日) time:10:16
+D:\my\vc7\pysfTracking\bugFixed\kNumericOp_sc2np.txt
+
+***** SNb:00015: closed:0.97AA: SymPy symbol `x `y `z `t `n `p `q `r を追加する date:2014/05/04 (日) time:11:34
+D:\my\vc7\pysfTracking\bugFixed\addSympySimbol_x_y_z_t.txt
+
+***** SNb:00016: closed:0.97AA: 最後の式に == 演算子があると、その後だけを取り出して計算させていた。date:2014/05/05 (月) time:03:01
+D:\my\vc7\pysfTracking\bugFixed\calculateLastExpressionAfterEqual.txt
+
+***** SNb:00017: closed:0.97AA: kryO(..) 関数で、最終引数が type のとき、それを無視していた date:2014/05/05 (月) time:03:28
+D:\my\vc7\pysfTracking\bugFixed\kryOfnctnIgnoreLastTypeArg.txt

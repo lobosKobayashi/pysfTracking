@@ -1,7 +1,7 @@
 Title       : Adding conj() method and .d member to ClAF
             : ClAF ƒNƒ‰ƒX‚É conj() method ‚Æ .d member ‚ð’Ç‰Á‚·‚é
 
-Serial Num  : 00007,    State: resolving:  date:2013/10/03
+Serial Num  : 00007,    State: closed:0.97A,    •s–¾
 First issued: date:2013/10/03
 
 Tags        : ClAF conj

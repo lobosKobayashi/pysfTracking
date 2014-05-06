@@ -1,7 +1,7 @@
 Title       : adding__d_member_to_ClOcternion 
             : 
 
-Serial Num  : 00008,    State: resolving:  date:2013/10/05
+Serial Num  : 00008,    State: closed:0.97AA:  date:2014/05/05 (Œ) time:10:12
 First issued: date:2013/10/03
 
 Tags        : ClOcternion d_member
@@ -11,6 +11,11 @@ Action Scripts:
 +0 blStt               __compare True
 
 +1 calculateLineString __set "q=O3(1,2,3,4); q q.d == 0"
++0 blStt               __compare True
+
+testOp.vrf
+##### Open ”»‚Ì ClOctonion ‚Å .d ‘®«‚ğÀ‘•‚µ‚Ä‚¢‚È‚©‚Á‚½ SNb:00008
++1 calculateLineString __set "Oc(3,4,5).d == Oc(3, -4, -5, 0)"
 +0 blStt               __compare True
 
 Source      :
@@ -57,3 +62,9 @@ oc=Oc(1+2j,3+4j,5+6j); oc Oc(1-2j,-(3+4j),-(5+6j))
 Oc((-13+84j), (16-12j), (24-20j), 0j)
 
 Comments(2) : ‚Ü‚¾ pysfOp ‚ÌC³‚ª‚È‚³‚ê‚Ä‚¢‚È‚¢ date:2013/10/05 (“y) time:01:44
+pysfOp\octnOp.py:ClOctonion ‚É‰º‚ğ’Ç‰Á‚µ‚½ date:2014/05/05 (Œ) time:10:05
+    def __getattr__(self, name):
+        if name == "d":
+            return self.conj()
+        else:
+            raise AttributeError

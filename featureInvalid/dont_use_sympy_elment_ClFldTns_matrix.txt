@@ -1,13 +1,12 @@
 Title       : don't use sympy element ClFldTns matrix.
             : 
-Serial Num  : 00012
+Serial Num  : 00012,    State: Invalid:0.97A:   date:2014/05/01
 
 Opened      : date: date:2014/01/03
-State       : Invalid
 Tags        : sympy ClFldTns
 Action Scripts: なし
 
-Comments(1) : sympy 要素を ClFldTns で扱うのは無理がある。ClFldTns が、全部の要素の足し合わせで型を決定できることを前提として、コーディングされているため。
+Comments(1) : sympy 要素を ClFldTns で扱うのは仕様として無理がある。ClFldTns が、全部の要素の足し合わせで型を決定できることを前提として、コーディングされているため。
 
 Comments(2) : 実例
 ts(); Krnkr=λ a,n:-Krnkr(a,-n) if n<0 else 1 if abs(a)==1 and n==0 else 0 if n==0 else a product([(`1r a/p)^e for p,e in ts.factorint(n).items()]); ~[[Krnkr(k,j) for j in range(1,5)] for k in range(1,5)]

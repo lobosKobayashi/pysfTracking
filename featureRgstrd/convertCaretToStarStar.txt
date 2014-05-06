@@ -1,0 +1,18 @@
+Title       : Make PythonSfOp to use ^ for power operator, using \^ for bit exclusive or operator
+            : Open 判でもべき乗演算子に ^ を使えるようにする。 bit exclusive or 演算子は \^ にする
+
+Serial Num  : 00020,    State: resolving:0.97AA,      date:2014/05/06 (火) time:08:48
+First issued: date:2014/05/05 (月) time:08:38
+
+Tags        : 
+
+Comments(1) : 
+×下の変換を行わせるだけ
+^ → **
+\^ → ^
+↑ 文字列 "..^..." の中の caret があるときは例外にせねばならない
+   '...', """...""", block code では """改行 "...改行もある 
+↑ 行頭の caret、space+caret をどうする？
+    ↑ ** に置き換えている
+        ↑ commertial 判でも同じ
+

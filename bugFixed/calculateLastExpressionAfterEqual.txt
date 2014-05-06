@@ -1,0 +1,49 @@
+Title       : Calculaterd last expressions after = 
+            : 最終式が = を含むと = の右側だけを計算しようとしていた 
+
+Serial Num  : 00016,    State: closed:0.97AA: date:2014/05/05 (月) time:03:07
+First issued: date:2014/05/05 (月) time:03:07
+
+Tags        : 
+
+Action Scripts: 
+##### 最終式に != があると、その右側だけの式を計算していた SNb:00016
++1 calculateLineString __set "2!=3"
++0 blStt               __compare True
+
+Comments(1) : Error example
+
+vc=[Z2(0),Z2(1)]; kfs([O3(vc4) for vc4 in mitr(*[vc]*4) if           O3(vc4).conj() != 0]).sl
+Warning! Don't use a assignment sentence in end.
+invalid syntax (<string>, line 9)
+
+Comments(2) : Error example 2
+2!=3
+Warning! Don't use a assignment sentence in end.
+invalid syntax (<string>, line 8)
+
+Comments(3) : 対策
+= の右側を抜き出すのを止めて Warning を出すだけに変更した
+
+pysfOp\sfPPrcssrOp.py execLine(..) 関数
+
+        if "==" in strLastAt:
+            pass
+        elif "=" in strLastAt:
+            print "Warning! Don't use a assignment sentence in end."
+            strLastAt = strLastAt[strLastAt.rfind('='):]
+
+    ↓
+
+        if "==" in strLastAt:
+            pass
+        elif "!=" in strLastAt:
+            pass
+        elif "=" in strLastAt:
+            print "Warning! Don't use a assignment sentence in end."
+            #strLastAt = strLastAt[strLastAt.rfind('='):]
+
+
+
+
+

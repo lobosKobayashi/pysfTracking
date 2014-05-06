@@ -1,0 +1,48 @@
+Title       : normalize(..) throwed a exception in kNumericOp.py by reason of using sc for np
+            : kNumericOp.py で np. が sc になっていて normalize(..) が例外をだしていた
+
+Serial Num  : 00014,    State: fixed,      date:2014/05/04
+First issued: date:2014/05/04
+
+Tags        : sc_to_np
+
+Comments(1) : an example
+seed(0); vc=normalize(randn(3)); Oc(np.r_[0,vc])
+global name 'sc' is not defined
+↑ ,j 操作
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 9, in <module>
+    vc=normalize(randn(3))
+  File "D:\my\vc7\mtCm\pysfOp\kNumericOp.py", line 611, in normalize
+    arAt /= norm(arAt)
+  File "D:\my\vc7\mtCm\pysfOp\basicFnctnsOp.py", line 1065, in __call__
+    return self.m_fn(*ag)
+  File "D:\my\vc7\mtCm\pysfOp\kNumericOp.py", line 675, in __norm
+    if isinstance( sqAg, sc.ndarray) and sqAg.shape==():
+NameError: global name 'sc' is not defined
+↑
+normalize([1,0]) がより単純
+
+Comments(2) : ついでに fft コメントを修正した
+def fft(sqAg, n=None, axis = -1):
+    """' reverse Fasst Fourier Transform
+         return ClTensor array
+    '"""
+    import numpy.fft as fp
+    return sf.krry(fp.fft(sqAg, n, axis))
+
+def fft(sqAg, n=None, axis = -1):
+    """'Fasst Fourier Transform
+         return ClTensor array
+    '"""
+    import numpy.fft as fp
+    return sf.krry(fp.fft(sqAg, n, axis))
+
+Comments(3) : ついでに krr → kryO に修正した
+
+ActionScript:
+##### kNumericOp.py で np. ではなく sc. を使ってエラーになっていた SNb:00014
++1 calculateLineString __set "normalize([1,0])[0] == 1"
++0 blStt               __compare True
+

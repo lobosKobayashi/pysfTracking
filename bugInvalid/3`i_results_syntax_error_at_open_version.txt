@@ -1,0 +1,15 @@
+Title       : 3`i_results_syntax_error_at_open_version
+            : Open 版だと 3`i が syntax error になる 
+
+Serial Num  : 00001,    State: invalid,      date:2014/05/04 (日) time:23:51
+First issued: date:2013/07/08
+
+Tags        : image_number customizing_file
+
+Comments(1) : an example
+    "3`i" に対して ,j 操作で下のエラーになる
+    3`i
+    invalid syntax (<string>, line 8)
+
+Comments(2) : date:2014/05/04 (日) time:23:51
+    PythonSfOpen では 3`i ではなく 3*`i と書かねばならない。積演算子の省略ができないから。

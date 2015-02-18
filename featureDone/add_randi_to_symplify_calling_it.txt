@@ -1,0 +1,123 @@
+Title       : add randi function
+            : randi 関数を追加した
+
+Serial Num  : 00032,    State: closed: date:2014/11/02
+First issued: date:2014/06/30
+
+Tags        : random randi
+
+* Comments_1  : usage examples
+
+# <10  random integer
+seed(0); randi(10)
+===============================
+5
+
+# 5<= x <10 random integer
+seed(0); randi(5,10)
+===============================
+9
+
+# x<10 random integer: length 5 vector
+seed(0); randi(10, [5])
+===============================
+[5 0 3 3 7]
+---- ClTensor ----
+
+# 5<=x<10 random integer: length 5 vector
+seed(0); randi(5,10, [5])
+===============================
+[9 5 8 8 8]
+---- ClTensor ----
+
+## 5<=x<10 random integer: length 6 vector
+↑ でも上の書き方のほうが size が [5] で明示的になる
+seed(0); randi(5,10, 6)
+===============================
+[9 5 8 8 8 6]
+
+# x<10 random integer: length 3x5 matrix
+seed(0); randi(10, [3,5])
+===============================
+[[5 0 3 3 7]
+ [9 3 5 2 4]
+ [7 6 8 8 1]]
+---- ClTensor ----
+
+# 5<=x<10 random integer: length 3x5 matrix
+seed(0); randi(5,10, [3,5])
+===============================
+[[9 5 8 8 8]
+ [6 8 7 9 5]
+ [5 9 7 6 5]]
+---- ClTensor ----
+===============================
+
+# 5<=x<10 random integer: length 3x5 matrix <== randint like
+seed(0); randi(5,10, size=[3,5])
+===============================
+[[9 5 8 8 8]
+ [6 8 7 9 5]
+ [5 9 7 6 5]]
+---- ClTensor ----
+
+seed(0); randi(5,10, 6,9)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 9, in <module>
+  File "pysf\kNumeric.py", line 1750, in randi
+    assert False, "You set unexpected parameters: "+str(sq)
+AssertionError: You set unexpected parameters: (5, 10, 6, 9)
+
+
+* Comments_2  : counter mesure
+
+def randi(*sq, **dct):
+    if len(dct) != 0:
+        return randint(*sq,**dct)
+
+    assert dct=={}
+    if len(sq) == 1:
+        return randint(sq[0])
+    elif len(sq) == 2:
+        if hasattr(sq[1], '__getitem__'):
+            return randint(sq[0],size=sq[1])
+        else:
+            return randint(*sq)
+    elif len(sq) == 3:
+        if hasattr(sq[2], '__getitem__'):
+            return randint(sq[0],sq[1], size=sq[2])
+        else:
+            return randint(*sq)
+    else:
+        assert False, "At randi(..), you set unexpected parameters: "+str(sq)
+
+open 判は __doc__ を除いてコードは同じ
+
+* Comments_3  : action scripts
+
+seed(0); x=randi(10); x<10 and isinstance(x, int)
+seed(0); x=randi(5,10); 5<=x<10 and isinstance(x, int)
+seed(0); v=randi(10, [5]); all(v<10) and v.shape==(5,) and isinstance(v, ClTensor)
+seed(0); v=randi(5,10, [5]); all(5<=v) and all(v<10) and v.shape==(5,) and isinstance(v, ClTensor)
+seed(0); mt=randi(10, [3,5]); np.alltrue(mt<10) and mt.shape==(3,5) and isinstance(mt, ClTensor)
+seed(0); mt=randi(5,10, [3,5]); np.alltrue(5<=mt) and np.alltrue(mt<10) and mt.shape==(3,5)
+seed(0); mt=randi(5,10, size=[3,5]); np.alltrue(5<=mt) and np.alltrue(mt<10) and mt.shape==(3,5)
+
+* Comments_4  : open 判への修正
+
+seed(0); x=randi(10); x<10 and isinstance(x, int)
+seed(0); x=randi(5,10); 5<=x<10 and isinstance(x, int)
+seed(0); v=randi(10, [5]); all(v<10) and v.shape==(5,) and isinstance(v, np.ndarray)
+seed(0); v=randi(5,10, [5]); all(5<=v) and all(v<10) and v.shape==(5,) and isinstance(v, np.ndarray)
+seed(0); mt=randi(10, [3,5]); np.alltrue(mt<10) and mt.shape==(3,5) and isinstance(mt, np.ndarray)
+seed(0); mt=randi(5,10, [3,5]); np.alltrue(5<=mt) and np.alltrue(mt<10) and mt.shape==(3,5)
+seed(0); mt=randi(5,10, size=[3,5]); np.alltrue(5<=mt) and np.alltrue(mt<10) and mt.shape==(3,5)
+

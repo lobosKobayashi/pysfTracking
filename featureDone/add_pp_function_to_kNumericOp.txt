@@ -1,0 +1,19 @@
+Title       : add pp(.) function to kNumericOp.py
+            : pp(.) ŠÖ”‚ğ kNumericOp.py ‚É’Ç‰Á‚µ‚½
+
+Serial Num  : 00050,    State: closed: date:2014/09/10
+First issued: date:2014/09/10
+
+Tags        : kNumeric pp
+
+Comments_1  : an error example
+pp(`ƒĞx)
+Comments_2  : counter mesure
+def pp(mtAg) ŠÖ”‚ğ’Ç‰Á‚µ‚½
+
+Comments_3  : action scripts
+pp(`ƒĞx)
+ª Às‚³‚¹‚é‚¾‚¯A”ò‚Î‚È‚¢‚¾‚¯
+Comments_4  : open ”»‚Ö‚ÌC³
+open ”»‚É’Ç‰Á‚µ‚½
+

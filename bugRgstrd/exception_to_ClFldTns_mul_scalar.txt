@@ -1,0 +1,85 @@
+Title       : An exception for ClFldTns * scalar
+            : ClFldTns * scalar を行うと例外で落ちる
+
+Serial Num  : 00037,    State: opended:
+First issued: date:2014/07/07 (月) time:12:52
+
+Tags        : ClFldTns Exception
+
+* Comments_1  : an error example
+x=oc.Pl([1.,0]); ~[x,x^2] x
+↑ x は scalar だけで __len__ method を持つのでベクトル処理側に行ってしまう
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "C:\Python27\lib\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 9, in <module>
+  File "pysf\sfFnctns.py", line 1215, in __mul__
+
+** Comments_1_2: ClFldTns instance +,-,/ , __rmul__, __radd__ もあるはず
+
+x=oc.Pl([1.,0]); ~[x,x^2] + x
+===============================
+[2.0x 1.0x^2+1.0x]
+---- ClFldTns:< class 'pysf.octn.Pl'> ----
+x=oc.Pl([1.,0]); ~[x,x^2] - x
+===============================
+[0 1.0x^2+(-1.0)x]
+---- ClFldTns:< class 'pysf.octn.Pl'> ----
+
+x=oc.Pl([1.,0]); ~[x,x^2] % (x+1)
+unsupported operand type(s) for %: 'ClFldTns' and 'Pl'
+x=oc.Pl([1.,0]); ~[x,x^2] /x
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtcm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 9, in <module>
+  File "pysf\sfFnctns.py", line 1347, in __truediv__
+  File "pysf\octn.py", line 1879, in __rtruediv__
+    + str(other) + "/" + str(self) )
+AssertionError: We dont support '/' operation for 1/1.0x
+
+x=oc.Pl([1.,0]); ~[x,x^2] / (x+1)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtcm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 9, in <module>
+  File "pysf\sfFnctns.py", line 1347, in __truediv__
+  File "pysf\octn.py", line 1879, in __rtruediv__
+    + str(other) + "/" + str(self) )
+AssertionError: We dont support '/' operation for 1/1.0x+1.0
+
+x=oc.Pl([1.,0]); x ~[x,x^2]
+===============================
+[1.0x^2 1.0x^3]
+---- ClFldTns:< class 'pysf.octn.Pl'> ----
+
+* Comments_2  : counter mesure
+Pl=oc.Pl; x,y=~[ Pl(0), Pl(1)],Pl(2); x y
+1214                if not isinstance(ag, (sc.ndarray, ClFldTns) ):
+1215                    assert isinstance(ag, (tuple,list, dict))
+1216                    ag = ClFldTns(ag, self.m_type)
+
+1217
+1218                elif len(shapeAt) == 1:
+↓
+
+* Comments_3  : action scripts
+

@@ -1,0 +1,33 @@
+Title       : enable plot3dGr to accept dict list tuple matrix 
+            : plot3dGr(..) で dict,list,tuple 行列を受け付けなかったのを対策↓
+
+Serial Num  : 00064,    State: colsed: date:2014/11/04
+First issued: date:2014/11/04
+
+Tags        : plot3dGr
+
+Comments_1  : an error example
+ls=range(10); mt= [[j^2+k^2 for k in ls] for j in ls]; plot3dGr(mt)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 10, in <module>
+  File "pysf\vsGraph.py", line 2154, in plot3dGr
+    assert hasattr(f,'__call__')
+AssertionError
+
+Comments_2  : counter mesure
+    if isinstance(f,dict):
+    ↓
+    if isinstance(f,(dict,list,tuple)):
+Comments_3  : action scripts
+なし
+Comments_4  : open 判への修正
+kryO の修正まで必要になるので手間がかかりすぎる。 open 判は対策しない
+

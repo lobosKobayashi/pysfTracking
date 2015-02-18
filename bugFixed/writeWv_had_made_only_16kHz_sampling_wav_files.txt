@@ -1,0 +1,100 @@
+Title       :writeWv(..) had made only 16kHz sampling wav files
+            : PythonSf featue bug ‚²‚Á‚½ŽÏƒƒ‚
+
+Serial Num  : 00053,    State: closed: 2014/09/23 
+First issued:  date:2014/09/23 
+
+Tags        : ClOctonion __lt__
+
+Comments_1  : an error example
+Comments_2  : counter mesure
+def writeWv(vctAg, strFileAg='_tmp.wav', tplAg=__wavePrmsStt):
+
+    if not( len(strFileAg)>=4 and strFileAg[-4:].upper()=='.WAV'):
+        strFileAg = strFileAg + ".wav"
+
+    fileAt=wv.Wave_write(strFileAg)
+    if tplAg == None:
+        fileAt.setparams(
+                (1, 2, 16000, 32000, 'NONE', 'not compressed'))
+    elif isinstance(tplAg, int):
+        fileAt.setparams(
+                (1, 2, tplAg, 2*tplAg, 'NONE', 'not compressed'))
+    else:
+        fileAt.setparams(tplAg)
+
+    if isinstance(vctAg, sc.ndarray) and vctAg.dtype==sc.int16:
+        pass
+    else:
+        vctAg = sc.array(vctAg, dtype=sc.int16)
+
+    fileAt.writeframes(vctAg.tostring())
+
+
+«
+def writeWv(vctAg, strFileAg='_tmp.wav'):
+    prmAt=__wavePrmsStt
+    if not( len(strFileAg)>=4 and strFileAg[-4:].upper()=='.WAV'):
+        strFileAg = strFileAg + ".wav"
+
+    fileAt=wv.Wave_write(strFileAg)
+    if prmAt == None:
+        fileAt.setparams(
+                (1, 2, 16000, 32000, 'NONE', 'not compressed'))
+    elif isinstance(prmAt, int):
+        fileAt.setparams(
+                (1, 2, prmAt, 2*pmmAt, 'NONE', 'not compressed'))
+    else:
+        fileAt.setparams(prmAt)
+
+    if isinstance(vctAg, sc.ndarray) and vctAg.dtype==sc.int16:
+        pass
+    else:
+        vctAg = sc.array(vctAg, dtype=sc.int16)
+
+    fileAt.writeframes(vctAg.tostring())
+
+Comments_3  : action scripts
+There is none.
+
+Comments_4  : open ”»‚Ö‚ÌC³
+add below code to sfCrrntIniOp.py
+
+import wave as wv
+import numpy as sc
+#(nchannels, sampwidth, framerate, nframes, comptype, compname)
+__wavePrmsStt = None
+def readWv(strFileAg):
+    global __wavePrmsStt
+
+    if not( len(strFileAg)>=4 and strFileAg[-4:].upper()=='.WAV'):
+        strFileAg = strFileAg + ".wav"
+
+    fileAt = wv.open(strFileAg)
+    __wavePrmsStt = fileAt.getparams()
+    strAt = fileAt.readframes(__wavePrmsStt[3])
+    dataAt = (sc.fromstring(strAt, sc.int16)     )
+    return dataAt
+
+def writeWv(vctAg, strFileAg='_tmp.wav'):
+    prmAt=__wavePrmsStt
+    if not( len(strFileAg)>=4 and strFileAg[-4:].upper()=='.WAV'):
+        strFileAg = strFileAg + ".wav"
+
+    fileAt=wv.Wave_write(strFileAg)
+    if prmAt == None:
+        fileAt.setparams(
+                (1, 2, 16000, 32000, 'NONE', 'not compressed'))
+    elif isinstance(prmAt, int):
+        fileAt.setparams(
+                (1, 2, prmAt, 2*pmmAt, 'NONE', 'not compressed'))
+    else:
+        fileAt.setparams(prmAt)
+
+    if isinstance(vctAg, sc.ndarray) and vctAg.dtype==sc.int16:
+        pass
+    else:
+        vctAg = sc.array(vctAg, dtype=sc.int16)
+
+    fileAt.writeframes(vctAg.tostring())
+

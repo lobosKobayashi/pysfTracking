@@ -2,17 +2,30 @@ Title       : PythonSf featue bug mixed up memo
             : PythonSf featue bug ごった煮メモ
 
 Serial Num  : 00010,    State: resolving: date:2013/10/10
-First issued: date:2013/10/10
+First issued: date:2014/10/10
 
 Tags        : ClOctonion __lt__
 
-Comments(1) : an example
+Comments_1  : an error example
+Comments_2  : counter mesure
+Comments_3  : action scripts
+Comments_4  : open 判への修正
 
 * spec
-SNf: feature,spec or invalid reason(s)  SNw: writing,  SNb: bug
+SNf       : feature,spec or invalid reason(s)  SNw: writing,  SNb: bug
+
+State     : opened or closed, invalid, resolving, reopend
 
 Action Scripts: 
 
+Last Sirial Number:00075 → Next Sirial Number:00076
+
+***** SNf:00069 resolving: never ending kitchen sink memo 2014/11/14
+D:\my\vc7\pysfTracking\neverEndingKitchenSinkMemo.txt
+***** SNw:00072 resolving: never ending comment modification 2014/12/03
+D:\my\vc7\pysfTracking\neverEndingCommentModification.txt
+
+* unfinished
 ***** SNb:00003: opened: plotTrajectory の x,y 軸寸法比が同じでないことが発生した;date:2013/08/04
 D:\my\vc7\pysfTracking\comed_to_realize_an_example_that_x_y_axies_scale_ratios_are_not_equal.txt
 
@@ -24,8 +37,10 @@ D:\my\vc7\pysfTracking\writingRgstrd\blog_first.txt
 
 ***** SNf:00009 PEP に倣って、PythonSfEnhancementProposal.txt を設ける date:2013/10/09 (水) time:10:07
 まだファイルを起こしていない
-
+↑ neverEndingStory になってしまう
 for example
+↑ neverEndingKitchenSinkMemo.txt から、実装確実になったものを こちらに移していくことになる
+
 ****** ClTensor instance * ClAF instance を可能にすべき。
 ↑ ClFldTns instance * ClAF instance をどうする？
     ↑ ~[`X, `X `Y] sin は可能にしたい
@@ -111,15 +126,94 @@ unsupported operand type(s) for *: 'Z3' and 'float'
 unsupported operand type(s) for *: 'float' and 'Z3'
 
 
-***** SNf:00018: opened: PythonSfOp に getPv(..), putPv(..) を移植する。:=, =: は移植しない。date:2014/05/05 (月) time:08:27
+***** SNf:00018: opened: PythonSfOp に getPv(..), putPv(..) を移植する。:=, =: は移植しない。最終式の値をカレント・ディレクトリに _dt.pv date:2014/05/05 (月) time:08:27
 D:\my\vc7\pysfTracking\featureRgstrd\transport_getPv_putPv.txt
 
 ***** SNf:00019: opened: PythonSf feature: Open 判でも 漢字記号∂∇□△ を使えるようにする date:2014/05/05 (月) time:08:38
-D:\my\vc7\pysfTracking\featureRgstrd\transport∂∇□△preProcessor.txt date:2014/05/05 (月) time:08:38
+D:\my\vc7\pysfTracking\featureRgstrd\transport_rndt_preProcessor.txt date:2014/05/05 (月) time:08:38
 微分処理も Open 判向けへの移植をしないと意味がない
+
+for ,j;;∂x(sin)
+invalid syntax (<string>, line 8)
 
 ***** SNf:00020: resolving: Open 判でもべき乗演算子に ^ を使えるようにする。 bit exclusive or 演算子は \^ にする date:2014/05/06 (火) time:08:48
 D:\my\vc7\pysfTracking\featureRgstrd\convertCaretToStarStar.txt
+
+***** SNf:00030: opened: extend ClFldTns.m_type to function aiming for polynomial elements. date:2014/06/30 (月) time:08:19
+RS係数多項式を要素とするベクトルを扱おうとしたときキャスティングに問題が出る。多項式へのキャスティングと同時に RS への係数のキャスティングの二つが必要になるからだ。それを一つのキャスティングを行う関数で代用できるようにする
+
+no file yet
+
+***** SNf:00031: opened: implement pickles function for PythonSf values date:2014/06/30 (月) time:08:25
+no file yet
+
+その pickles load/store 関数を PythonSf commercial 判でも使えるようにすることで commercial を Open の upper compatible 変数とする
+    ↑
+    form pickle import dump,load
+    ↑pysf\customize.py, pysfOp\customizeOp.py の二つへ追加する
+↑ 拡張子を pickles のときは pvm とし pvl と区別する
+    ↑ 拡張子の自動付加
+        ↑最後の四文字が ".pvm" でないとき
+        ↑最後の四文字が ".pvl" のときは、エラーにする
+
+
+***** SNf:00033: add a global variable that holds version number to sfFnctns.py
+no file yet
+↑cf.
+sys.version
+===============================
+2.7.2 (default, Jun 12 2011, 15:08:59) [MSC v.1500 32 bit (Intel)]
+
+sf.__version__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+***** SNb:00037 opend: 0.97B?: an exception to ClFldTns * scalar
+D:\my\vc7\pysfTracking\bugRgstrd\exception_to_ClFldTns_mul_scalar.txt
+
+
+***** SNb:00038 opend: 0.98?: user operator error for write function with a paren bracket pair and others
+D:\my\vc7\pysfTracking\bugRgstrd\user_operator_error_for_write_function_with_a_paren_bracket_pair.txt
+
+***** SNf:00056 resolving: 0.98?: change a default setting for polynomial Pl integer prameter to float 2014/09/24 
+D:\my\vc7\pysfTracking\featureDone\change_a_default_setting_for_polynomial_Pl_integer_prameter_to_float.txt
+***** SNw:00065 opened: : PythonSf Algegra Systems
+D:\my\vc7\pysfTracking\writingRgstrd\PythonSf_algebra_systems.txt
+
+
+
+***** SNf:00057 resolving: 0.98?: change ClAF mul div actions for a sequence parameter 2014/09/24 
+D:\my\vc7\pysfTracking\featureDone\change_ClAF_mul_div_actions_for_a_sequence_parameter.txt
+
+***** SNf:00060 opend: 0.98?: test ClTensor ClFldTns 2014/10/06
+D:\my\vc7\pysfTracking\featureDone\test_ClTensor_ClFldTns.txt
+
+***** SNw:00061; opened; write PythonSf algebra system date:2014/10/28 (火) time:10:43
+D:\my\vc7\pysfTracking\writingRgstrd\PythonSfAlgebraSystem.txt
+
+***** SNf:00062 resolving: 0.97B?: add cnvlv function date:2014/10/04
+D:\my\vc7\pysfTracking\featureDone\add_cnvlv_function.txt
+
+***** SNf:00067 resolving: 0.97B?: add __hash__ to Sb:2014/11/13
+D:\my\vc7\pysfTracking\featureRgstrd\add_hash_to_Sb.txt
+
+
+
+***** SNf:00070 resolving: 0.97B?: add __getitem__ and p attribute to kfs:2014/11/19
+D:\my\vc7\pysfTracking\\add_getitem_and_p_attribute_to_kfs.txt
+
 
 * finished
 ***** SNb:00001: invalid:0.97AA: "3`i" に対して ,j 操作で下のエラーになる;date:2013/07/08
@@ -232,3 +326,113 @@ D:\my\vc7\pysfTracking\bugFixed\calculateLastExpressionAfterEqual.txt
 
 ***** SNb:00017: closed:0.97AA: kryO(..) 関数で、最終引数が type のとき、それを無視していた date:2014/05/05 (月) time:03:28
 D:\my\vc7\pysfTracking\bugFixed\kryOfnctnIgnoreLastTypeArg.txt
+
+***** SNb:00021: resolving:0.97B?: mitr(..) で id(..) が同じ iterator を複数使ったとき、繰り返しをせずに終わっていた。date:2014/05/22 (木) time:11:05
+D:\my\vc7\pysfTracking\bugFixed\mitrEndedWithoutLoopIfItUseSameIterator.txt
+↓
+D:\my\vc7\pysfTracking\bugRgstrd\mitrEndedWithoutLoopIfItUseSameIterator.txt
+↓date:2014/06/29 (日) time:03:53
+D:\my\vc7\pysfTracking\bugFixed\mitrEndedWithoutLoopIfItUseSameIterator.txt
+***** SNb:00022: closed:0.97B?:error bug at O3 scalr multiplying O3 vector date:2014/06/29 (日) time:10:20
+bugFixed/O3_mulply_O3_vector_error.txt
+***** SNb:00023: closed:0.97B?:assert error bug at ClFldTns.__repr__(..) for a extremely long tensor element date:2014/06/05 (木) time:06:03
+D:\my\vc7\pysfTracking\bugFixed\errorForLongTensorElmnt.txt
+***** SNf:00024: closed:0.97B?:add ClBuffer and import kre to pysf\customize.py and pysfOp\customizeOp.py date:2014/06/06 (金) time:15:54
+D:\my\vc7\pysfTracking\featureDone\addClBuffer_and_kre.txt
+
+***** SNb:00025: closed:0.97B?:Octonion instance Multiply Octonion ClFldTns instance bug date:2014/06/15 (日) time:03:54
+bugFixed/Oc_mulply_Oc_vector_error.txt
+***** SNb:00026: closed:0.97B? ClFldTns of (oc.Pl of oc.RS) と ClFldTns of ocRS の内積で例外が発生していた
+D:\my\vc7\pysfTracking\bugFixed\excetionAtInnerProductOf_ClFldTnsOf-PlOfRs-_ClFldTnsOfRS.txt
+***** SNf:00027: closed:0.97B? oc.RS に順序 __lt__ method を追加する。kfc 表示のためだ
+D:\my\vc7\pysfTracking\featureDone\append__lt__to_RS.txt
+↓
+D:\my\vc7\pysfTracking\featureDone\append__lt__to_RS.txt
+***** SNf:00028: closed:0.97B? Sb.__call__ に ClFldTns ベクトルが来たときを追加する
+D:\my\vc7\pysfTracking\featureDone\append__ClFldTns__to_Sb_call.txt
+***** SNf:00029: closed:0.97B? Z127 の Octonion を sfCrrntIni.py に追加する
+D:\my\vc7\pysfTracking\featureDone\append__Z257_octonion_Ob_to_sfCrrntIni.txt
+
+***** SNf:00032: closed: add randi(..) to symplify calling randint(..) date:2014/06/30 (月) time:08:41
+D:\my\vc7\pysfTracking\featureDone\add_randi_to_symplify_calling_it.txt
+***** SNf:00034 invalid: sy() で stats も import すれば便利だが重くなりすぎる 2014/06/20
+D:\my\vc7\pysfTracking\featureDone\sy_function_dont_include_stats.txt
+***** SNf:00035 invalid: mrng を obsolete にし mitr で代用する 2014/07/01
+no file こんな真似が mitr ではできない;;list(mrng([2,9], [3,8,2]))
+
+***** SNf:00036 closed: 0.97B?: add copy() method to ClFldTns
+D:\my\vc7\pysfTracking\featureDone\add_copy_method_to_ClFldTns.txt
+
+***** SNf:00039 closed: 0.97B?: add alias label _.f _.l for _.fst _.lst at CT class
+D:\my\vc7\pysfTracking\featureDone\add_alias_lable_f_and_l_for_fst_lst_at_CT_class.txt
+***** SNb:00040 closed: 0.97B?: can't read integer type ClTensor file variables
+D:\my\vc7\pysfTracking\bugFixed\can_not_read_integer_type_ClTensor_file_variables.txt
+***** SNb:00041 closed: 0.97B?: reverse the substitution by Sb.__call__
+D:\my\vc7\pysfTracking\bugFixed\reverse_the_substitution_by_Sb___call__.txt
+***** SNb:00042 closed: 0.97B?: ClFldTns m_dtrm returns sign inverted value occasionally
+D:\my\vc7\pysfTracking\bugFixed\ClFldTns_m_dtrm_returns_sign_inverted_value_occasionally.txt
+***** SNf:00044 closed: 0.97B?: transport pysf\rational.py to pysfOp\rationalOp.py
+D:\my\vc7\pysfTracking\featureDone\transport_pysf_rational_py_to_pysfOp_rationalOp_py.txt
+
+***** SNb:00045 closed: 0.97B?: ClRtnl.getDgRspns() calculated improperly date:2014/08/23 (土) time:12:02
+D:\my\vc7\pysfTracking\bugFixed\ClRtnl_getDgRspns_calculated_improperly.txt
+
+***** SNb:00046 closed: 0.97B?: norm(..) raised NameError: global name 'sc' is not defined date:2014/08/23 (土) time:12:02
+D:\my\vc7\pysfTracking\bugFixed\norm_raised_NameError_global_name_sc_is_not_defined.txt
+
+***** SNb:00047 closed: 0.97B?: At PythonSfOp randint didn't work:2014/08/
+D:\my\vc7\pysfTracking\bugFixed\At_PythonSfOp_randint_didn_t_work.txt
+
+***** SNb:00048 invalid: 0.97B?: oc.Pl.div dosen't work for not monic polynomial
+D:\my\vc7\pysfTracking\bugFixed\oc_Pl_div_dosen_t_work_for_not_monic_polynomial.txt
+
+***** SNf:00049 resolving: 0.97B?: enable to use complex in poly1d and ClRtnl
+D:\my\vc7\pysfTracking\featureDone\enable_to_use_complex_in_poly1d_and_ClRtnl.txt
+***** SNf:00050 closed: 0.97B?: add pp(.) function to kNumericOp
+D:\my\vc7\pysfTracking\featureDone\add_pp_function_to_kNumericOp.txt
+***** SNb:00051 opened : 0.9???: hung up for ) ~== .. date:2014/09/22 (月) time:09:28 
+D:\my\vc7\pysfTracking\bugRgstrd\hung_up_for_not_paired_paren_and_nealy_equal_operator.txt
+***** SNb:00052 closed: 0.97B?: poly1d.__str__ return cannot accumulate for instances that generated from ClTensor vector
+D:\my\vc7\pysfTracking\bugFixed\ClTensor_poly1d-__str__-returns_cannot_accumulate_error.txt
+
+***** SNb:00053 closed: 0.97B?: writeWv(..) had made only 16kHz sampling wav files date:2014/09/23 
+D:\my\vc7\pysfTracking\bugFixed\writeWv_had_made_only_16kHz_sampling_wav_files.txt
+
+***** SNf:00054 closed: 0.97B?: add plotDbl(..)  date:2014/09/23 
+D:\my\vc7\pysfTracking\featureDone\add_plotDbl_function.txt
+↑ plotDbl(..) で表示したインスタンスを消せない
+    ↑ プログラムからは消せないみたい
+
+
+***** SNb:00055 closed: 0.97B?: change a comment in assert date:2014/09/24 
+We don't set up a file that discribes bug details
+"Power to non-negative integers only."
+↓
+"In ClRtnl, a parameter at power operation must be integer:"+str(val)
+
+
+
+***** SNb:00058 closed: 0.98?: math.sin(sq) had returned math.sin 2014/09/30 
+D:\my\vc7\pysfTracking\bugFixed\math_sin_had_returned_math_sin.txt
+***** SNf:00059 closed: 0.97B?: add renderMtrx/renderMtCplx feature to plot3dGr date:2014/10/04
+D:\my\vc7\pysfTracking\featureDone\add_renderMtrx_renderMtCplx_feature_to_plot3dGr.txt
+***** SNb:00063 closed: 0.97B?: fix fftshift to return an ClTensor instance and add ifftshift date:2014/10/04
+D:\my\vc7\pysfTracking\bugFixed\fix_fftshift_to_return_an_ClTensor_instance_and_add_ifftshift.txt
+***** SNb:00064 closed: 0.97B?: enable plot3dGr to accept dict list tuple matrix date:2014/11/04
+D:\my\vc7\pysfTracking\bugFixed\enable_plot3dGr_to_accept_dict_list_tuple_matrix.txt
+
+***** SNb:00066 closed: 0.97B?: plotDbl function with a function parameter cause assert error date:2014/11/13
+D:\my\vc7\pysfTracking\bugFixed\plotDbl_function_with_a_function_parameter_cause_assert_error.txt
+
+***** SNb:00068 closed: 0.97B?: cmps in sfCrrntIni.py have a mulfunction for the None parameter date:2014/11/13
+D:\my\vc7\pysfTracking\bugFixed\cmps_in_sfCrrntIni.py_have_a_mulfunction_for_the_None_parameter.txt
+
+***** SNf:00071 closed: 0.97B?: add some features to kfs:2014/11/21
+D:\my\vc7\pysfTracking\featureDone\add_new_to_construct_kfs_without_square_bracket.txt
+***** SNf:00073 closed: 0.97B?:change name:group to extend and add a two term function to group parameters:2014/12/22
+D:\my\vc7\pysfTracking\featureRgstrd\add_a_two_term_function_to_group_parameters.txt
+***** SNb:00074 closed: 0.97B?:narrowed Sb.__equ__ True objects:2014/12/25
+D:\my\vc7\pysfTracking\bugFixed\narrowed_Sb___equ___True_objects.txt
+***** SNf:00075 closed: 0.97B?: add modified nutural unit Heviside-Lorentz and pQ elementary charge:2015/02/01
+D:\my\vc7\pysfTracking\featureDone\add_modified_nutural_unit_Heviside-Lorentz_and_pQ_elementary_charge.txt
+

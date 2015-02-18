@@ -1,0 +1,100 @@
+Title       : reverse the substitution by ptGrp.__call__(.)
+            : ptGrp.__call__(.) による置き換えが Sb(..)^-1 の働きだった
+
+Serial Num  : 00010,    State: closed: date:2014/08/08
+First issued: date:2014/08/05
+
+Tags        : ptGrp
+
+Comments_0  : 同時に  Sb.__call__(.) が str,tuple,list のとき、それらの型で入れ替えたインスタンスを返すようにした
+ date:2014/08/07 (木) time:06:16
+    tuple, list のとき、それらの型でインスタンスを以前のコードでも返している
+
+Comments_1  : an error example
+Comments_2  : counter mesure
+        for k in range(len(self)):
+            if self[k] < len(lstAt):
+                lstAt[k] = ag[self[k]]
+
+        if isinstance(ag, sf.ClFldTns):
+            return sf.krry(lstAt, ftype=ag.m_type)
+        elif isinstance(ag, sf.ClTensor):
+            return sf.krry(lstAt, dtype=ag.dtype)
+        elif type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
+        else:
+            return type(ag)(lstAt)
+
+↓
+
+        for k in range(len(self)):
+            if self[k] < len(lstAt):
+                #lstAt[k] = ag[self[k]] date:2014/08/05 (火) time:10:46
+                lstAt[self[k]] = ag[k]
+
+        if isinstance(ag, sf.ClFldTns):
+            return sf.krry(lstAt, ftype=ag.m_type)
+        elif isinstance(ag, sf.ClTensor):
+            return sf.krry(lstAt, dtype=ag.dtype)
+        elif type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
+        elif type(ag) == str:
+            return "".join(lstAt)
+        elif type(ag) == tuple:
+            return tuple(lstAt)
+        elif type(ag) == list:
+            return lstAt
+        else:
+            return type(ag)(lstAt)
+
+↓
+
+        for k in range(len(self)):
+            if self[k] < len(lstAt):
+                lstAt[self[k]] = ag[k]
+
+        if isinstance(ag, sf.ClFldTns):
+            return sf.krry(lstAt, ftype=ag.m_type)
+        elif isinstance(ag, sf.ClTensor):
+            return sf.krry(lstAt, dtype=ag.dtype)
+        elif type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
+        elif type(ag) == str:
+            return "".join(lstAt)
+        else:
+            return type(ag)(lstAt)
+
+Comments_3  : action scripts
+Sb(3,0,1,4,5,2)('abcdef') == 'bcfade'
+Sb(3,0,1,4,5,2)('abcdefXYZ') == 'bcfadeXYZ'
+Sb(3,0,1,4,5,2)((1,2,3,4,5,6))==(2,3,6,1,4,5)
+Sb(3,0,1,4,5,2)((1,2,3,4,5,6,7))==(2,3,6,1,4,5,7)
+Sb(3,0,1,4,5,2)(range(6))==[1,2,5,0,3,4]
+Sb(3,0,1,4,5,2)(range(8))==[1,2,5,0,3,4,6,7]
+
+Comments_4  : open 判への修正
+pysfOp\ptGrpOp.py
+        for k in range(len(self)):
+            if self[k] < len(lstAt):
+                lstAt[k] = ag[self[k]]
+
+        if type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
+        else:
+            return type(ag)(lstAt)
+
+↓
+
+        for k in range(len(self)):
+            if self[k] < len(lstAt):
+                lstAt[self[k]] = ag[k]
+
+        if type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
+        elif type(ag) == str:
+            return "".join(lstAt)
+        else:
+            return type(ag)(lstAt)
+
+
+testOp.vrf

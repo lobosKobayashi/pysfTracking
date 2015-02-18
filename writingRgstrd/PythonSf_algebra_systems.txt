@@ -1,0 +1,207 @@
+Title       : PythonSf featue bug mixed up memo
+            : PythonSf featue bug ‚²‚Á‚½Ïƒƒ‚
+
+Serial Num  : 00065,    State: resolving: date:2014/11/09
+First issued: date:2014/11/09 (“ú) time:04:29
+
+Tags        : ClOctonion __lt__
+
+* Comments_1  : bullet points
+**** bullet points
+ªpre_memo.writing ‚É’Ç‰Á‚·‚é‚Ì‚Í
+# —lX‚Ì‘ã”Œn
+## `X and XX
+ª ‘ã”Œn‚Å‚Í‚È‚¢
+### P“™®‚Ì‘½€®
+x=`X; x^2+2x+3
+
+x=`X; x^2+Z5(2)x+Z5(3)
+x=`X; (x^2+Z5(2)x+Z5(3))(Z5(4))
+===============================
+Z5(2)
+x=`X; (x^2+Z5(2)x+Z5(3))(   7 )
+===============================
+Z5(1)
+ª;;9+Z5(3)
+===============================
+Z5(2)
+
+x=XX; (x^2+Z5(2)x+Z5(3))(   7 )
+===============================
+Z5(1)
+
+## Zp
+## ‘½€® and % ‰‰Z
+## RS:GF(2^8)
+## –³ŒÀ”—ñŒn
+
+## À”E•¡‘f”ŒW”‘½€®
+seed(0); poly1d(randn(4)+randn(4)`i).roots
+===============================
+[ 0.22744049-0.9782352j   0.60270946+0.95192416j -0.66056152+0.400768j  ]
+
+### % ‰‰Z‚Í•K—v‚È‚¢
+seed(0); poly1d(randn(4)) % poly1d(randn(2))
+unsupported operand type(s) for %: 'poly1d' and 'poly1d'
+
+### À”ŒW”—L—‘Ì
+#### pole/zero cancel
+#### “ñ’[q‘Îs—ñ
+##### V/I 
+
+## Oc lŒ³”A”ªŒ³”
+### Oc •¡‘f”
+seed(0); a,b=randn(2)+`i randn(2); oa,ob=Oc(a.real, a.imag),Oc(b.real, b.imag);a b, oa ob
+===============================
+((-1.4873490302066237+4.3447019645570322j), Oc(-1.4873490302066237, 4.3447019645570322))
+
+### norm ˆê’è
+
+### ”ªŒ³”‚Å‚ÍŒ‹‡—¥‚Ì‘ã‚í‚è‚É
+Moufang loop;;http://en.wikipedia.org/wiki/Moufang_loop
+
+    z (x (z y)) = ((z x) z) y
+    x (z (y z)) = ((x z) y) z
+    (z x) (y z) = (z (x y)) z
+    (z x) (y z) = z ((x y) z)
+«ª
+    z (x (z y)) = ((z x) z) y
+    x (z (y z)) = ((x z) y) z
+    (z x) (y z) = (z (x y)) z = z ((x y) z)
+
+## ON lŒ³”A”ªŒ³”; N=2,3,4,5,6,7,127
+### norm •s•Ï
+
+### On Ï‚©‚çì‚éŒQ
+#### O2 lŒ³”‚ÌÏ‰‰Z‚ÅŒQ‚ğˆø‚Á’£‚èo‚·
+ls=[0,1]; [ v for v in mitr(*[ls]*4) if O2(v) O2(v).d != 0]
+===============================
+[(0, 0, 0, 1), (0, 0, 1, 0), (0, 1, 0, 0), (0, 1, 1, 1), (1, 0, 0, 0), (1, 0, 1, 1), (1, 1, 0, 1), (1, 1, 1, 0)]
+ª ”ª—v‘f‚©‚ç‚È‚é‰ÂŠ·ŒQ
+
+#### O2 ”ªŒ³”‚ÌÏ‰‰Z‚ÅŒQ‚ğˆø‚Á’£‚èo‚·
+ls=[0,1]; [ v for v in mitr(*[ls]*8) if O2(v) O2(v).d != 0]
+===============================
+‚¢‚Á‚Ï‚¢
+
+#### O2 ”ªŒ³”‚Å‚àŒ‹‡—¥‚ª¬‚è—§‚½‚È‚¢H© Œ‹‡—¥‚Ç‚±‚ë‚©‰ÂŠ·«‚ª¬‚è—§‚Â
+seed(0); [ (O2(a) O2(b)) O2(c) == O2(a) (O2(b) O2(c)) for a,b,c in randi(2,[10,3,8])]
+===============================
+[True, True, True, True, True, True, True, True, True, True]
+
+# “ñ€‰‰ZŒn
+N=5; mt=randi(N,[N,N]); mt
+===============================
+[[2 1 1 0 4]
+ [1 1 2 0 3]
+ [1 0 4 3 1]
+ [4 1 1 3 1]
+ [2 4 4 4 2]]
+---- ClTensor ----
+
+## mt=~[[0 1 0],[1 1 2],[0 2 0],int] ‚ÅÀŒ±‚µ‚Ä‚İ‚é date:2014/11/04 (‰Î) time:07:39
+### Œ‹‡—¥‚ª¬‚è—§‚ÂH
+ª ¬‚è—§‚½‚È‚¢
+seed(0); mt=randi(3,[3,3]); print mt; ~*=ƒÉ x,y:mt[x,y];ls=range(3); [(a,b,c) for a,b,c in mitr(*[ls]*3) if (a~*b)~*c!= a~*(b~*c)]
+[[0 1 0]
+ [1 1 2]
+ [0 2 0]]
+---- ClTensor ----
+===============================
+[(0, 1, 2), (0, 2, 1), (1, 0, 2), (1, 2, 0), (1, 2, 2), (2, 0, 1), (2, 1, 0), (2, 2, 1)]
+mt=kzrs(3,3,int); seed(0); mt.r[:]=randi(3,[3*3]); ~*=ƒÉ x,y:mt[x,y];ls=range(3); [(a,b,c) for a,b,c in mitr(*[ls]*3) if (a~*b)~*c!= a~*(b~*c)]
+===============================
+[(0, 1, 2), (0, 2, 1), (1, 0, 2), (1, 2, 0), (1, 2, 2), (2, 0, 1), (2, 1, 0), (2, 2, 1)]
+((0,1),2) ¨ (1,2) ¨ 2
+(0,(1,2)) ¨ (0,2) ¨ 0
+
+### x~*y=y~*x ‚Æ x~*x==x ‚Æ Œ‹‡—¥‚ª¬‚è—§‚Â 3x3 ”•\
+mt=kzrs(3,3,int); f=~*=ƒÉ x,y:mt[x,y]; ls=range(3); lsTn=[ copy.deepcopy(mt) for v in mitr(*[ls]*9) if (mt.put(range(3*3), v),) and all((x~*x)==x for x in ls) and all((a~*b)==(b~*a) for a,b in mitr(ls,ls)) and all((a~*(b~*c)) == ((a~*b)~*c) for a,b,c in mitr(*[ls]*3))]; `print(lsTn)
+[ClTensor([[0, 0, 0],
+           [0, 1, 0],
+           [0, 0, 2]], dtype=int),
+ ClTensor([[0, 0, 0],
+           [0, 1, 1],
+           [0, 1, 2]], dtype=int),
+ ClTensor([[0, 0, 0],
+           [0, 1, 2],
+           [0, 2, 2]], dtype=int),
+ ClTensor([[0, 0, 2],
+           [0, 1, 2],
+           [2, 2, 2]], dtype=int),
+ ClTensor([[0, 1, 0],
+           [1, 1, 1],
+           [0, 1, 2]], dtype=int),
+ ClTensor([[0, 1, 1],
+           [1, 1, 1],
+           [1, 1, 2]], dtype=int),
+ ClTensor([[0, 1, 2],
+           [1, 1, 1],
+           [2, 1, 2]], dtype=int),
+ ClTensor([[0, 1, 2],
+           [1, 1, 2],
+           [2, 2, 2]], dtype=int),
+ ClTensor([[0, 2, 2],
+           [2, 1, 2],
+           [2, 2, 2]], dtype=int)]
+===============================
+None
+
+* Comments_1_2: Galois thinking bullet points
+# Galois Basic Theorem
+## How Galois thinked © a reversed problem
+### What is known © relations between coefficinets and roots
+ª symmetric equations
+ª Cardano method © 2 stages method
+ª Lagrange Resolvent;;http://home.ie.cuhk.edu.hk/~wkshum/wordpress/?tag=lagrange-resolvent
+    ª ˆêŒ©–³ŠÖŒW‚È—¼Ò‚ªŒQ˜_‚ğ‰î‚µ‚ÄŒ‹‚Ñ•t‚¯‚ç‚ê‚é
+
+## Galois thinking
+### let x0,x1, ... , x_n-1 be roots, and coefficients ¸ Q ¨ Q(x0,x1, .. ,x_n-1)the extention of the Field of Q
+ª be Cation Q(x0,x1, .. x_n-1) is not just an vector space for + oprator. Q(x0,x1, .. ,x_n-1) is extended by * operator too.
+
+## ©—RŒQ "©—R‘Ì"
+**** kfs([Sb(0,1,2), Sb(1,2,0), Sb(2,0,1)]), kfs([Sb(0,1,2), Sb(0,2,1)]) ‚ÅA©—R‘Ì Q[x0,x1,x2] ‚ğ•ªŠ„‚·‚édate:2014/10/27
+Sb(1,2,0)^0, Sb(1,2,0)^1, Sb(1,2,0)^2, Sb(1,2,0)^3
+===============================
+(Sb(0,1,2), Sb(1,2,0), Sb(2,0,1), Sb(0,1,2))
+ª x0         x1         x2
+
+## kfs([Sb(0,1,2), Sb(0,2,1)]) ‚Å©ŒÈ“¯Œ^‚È‹óŠÔ
+L20=x1+x2
+L21=x1-x2
+
+## kfs([Sb(0,1,2), Sb(1,2,0), Sb(2,0,1)]) ‚Å©ŒÈ“¯Œ^‚È‹óŠÔ
+L30=x0+     x1+      x2
+L31=x0+ƒÖ   x1+ ƒÖ^2 x2
+L32=x0+ƒÖ^2 x1+ ƒÖ^4 x2
+
+**** Q[L20,L21] ß Q[x1+x2, x1-x2] ‚Ì‹ï‘Ì—á date:2014/10/28 (‰Î) time:10:58
+ª x1 not ¸ Q[L20,L21], x2 not ¸ Q[L20,L21]
+ª Sb(0,2,1) ‘€ì‚Å‚«‚éBSb(0,2,1)(Q[L20,L21]) = Q[L20,L21]
+ts(); x1,x2=ts.symbols('x1 x2'); x1+x2, x1-x2, (x1+x2) (x1-x2), 2 (x1+x2) (x1-x2)^2 #, ...
+===============================
+(x1 + x2, x1 - x2, (x1 - x2)*(x1 + x2), (x1 - x2)**2*(2*x1 + 2*x2))
+
+## Q[L20,L21] ß Q[x1+x2, x1-x2] ‚Ì‹ï‘Ì—áß a,b=x1+x2, x1-x2; Q[a,b]
+ª Q[a,b] ‚Í Sb(0,2,1) ‚É‘Î‚µ‚Ä©ŒÈ“¯Œn
+ts(); x1,x2=ts.symbols('x1 x2'); a,b=x1+x2, x1-x2; a, b, a b, 2a b^2, `1r/2 a^2 b^2 #, ...
+===============================
+(x1 + x2, x1 - x2, (x1 - x2)*(x1 + x2), (x1 - x2)**2*(2*x1 + 2*x2), (x1 - x2)**2*(x1 + x2)**2/2)
+
+### x^2+1 ‚Ìª x1,x2=`i,-`i, Q[x1+x2, x1-x2] ß Q[`i]ßQ[`i,-`i] —L—‘Ì•¡‘f”
+#### Q[`i] —L—‘Ì•¡‘f”‚Ì—á a,b=1/2+2/3`i, 4/5+6/7`i ‚Ì a,b ‚É‘Î‚µ‚Ä‰ÁŒ¸æœZ‚ª‰Â”\
+ts();a,b=Oc(`1r/2,`1r 2/3),Oc(`1r 4/5,`1r 6/7); a+b, a-b, a b, a/b, 2 a + 3 b/(`1r 4)
+===============================
+(Oc(13/10, 32/21), Oc(-3/10, -4/21), Oc(-6/35, 101/105), Oc(595/842, 385/5052), Oc(8/5, 83/42))
+
+ƒ‰ƒOƒ‰ƒ“ƒWƒF‚Ì•û–@ ƒŠƒ]ƒ‹ƒxƒ“ƒg “ñŸ
+#### x1,x2=`i,-`i; L20,L21=x1+x2,x1-x2
+x1,x2=`i,-`i; L20,L21=x1+x2,x1-x2; L20, L21
+===============================
+(0j, 2j)
+
+* Comments_2  : counter mesure
+* Comments_3  : action scripts
+Comments_4  : open ”»‚Ö‚ÌC³
+

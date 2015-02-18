@@ -1,0 +1,50 @@
+Title       : hung up for not paired paren and ~==
+            : •Â‚¶‚Ä‚¢‚È‚¢ŠÛŠ‡ŒÊ‚Æ ~== ‚ğ‘g‚İ‡‚í‚¹‚é‚Æ hung up ‚·‚é
+
+Serial Num  : 00051,    State: opend: date:2014/09/22
+First issued: date: date:2014/09/22 (Œ) time:09:39
+
+Tags        : hung_up
+
+Comments_1  : an error example
+PythonSf hung up
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2);  (1-`i ƒÖ)/(1+`i ƒÖ)) ~== exp(`i ƒÂ)
+ª (1-`i ƒÖ)/(1+`i ƒÖ)) ‚ª‘Î‰‚·‚é ( ‚ğ‚Á‚Ä‚¢‚È‚­‚ÄA ~== ... ‚Æ‘g‚İ‡‚í‚³‚ê‚Ä‚¢‚é‚Æ‚« hung up ‚·‚é‚ç‚µ‚¢
+    ª‚±‚ê‚Å‚à hung up ‚·‚é;; 3)~==4
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2);  (1-`i ƒÖ)/(1+`i ƒÖ)) 
+invalid syntax (<string>, line 11)
+
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2)
+Warning: don't use assignment at last sentence. We ignore the assignment.
+===============================
+-1.21466743724
+
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2);  ((1-`i ƒÖ)/(1+`i ƒÖ)) ~== exp(`i ƒÂ)
+===============================
+True
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2);           (1+`i ƒÖ) ~== exp(`i ƒÂ)
+===============================
+False
+« (1-`i ƒÖ)/False ‚¾‚©‚ç 0 division error ‚É‚È‚Á‚Ä‚¢‚é
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2);  (1-`i ƒÖ)/(1+`i ƒÖ) ~== exp(`i ƒÂ)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "C:\Python27\lib\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 11, in <module>
+ZeroDivisionError: complex division by zero
+
+seed(0); ƒÂ=float(randn(1)); ƒÖ= tan(-ƒÂ/2);  (1     )/(1+`i ƒÖ)
+===============================
+(0.403972343582+0.490692051294j)
+
+
+Comments_2  : counter mesure
+Comments_3  : action scripts
+Comments_4  : open ”»‚Ö‚ÌC³
+

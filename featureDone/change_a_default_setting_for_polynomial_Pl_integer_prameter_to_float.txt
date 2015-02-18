@@ -1,0 +1,89 @@
+Title       : change a default setting for polynomial Pl integer prameter to float
+            ×: oc.Pl 多項式で integer 引数を与えたときでフォルトで float にする。ClTensor と同じ
+            : Ring 多項式クラス RnPl を新たにもうけ、割り算ができない係数の多項式は、ユーザーが RnPl を選択する
+
+Serial Num  : 00056,    State: resolving: 2014/09/24
+First issued:  2014/09/24
+
+Tags        : Pl
+
+Comments_1  : an error example
+s=oc.Pl(1,0); (1.5 s + 1.5)/(s + 2)
+===============================
+(Pl(1), Pl((-1)))
+↓↑ cf.  どうしても Pl(1,0) と書いてしまう
+s=oc.Pl(1.0,0); (1.5 s + 1.5)/(s + 2)
+===============================
+(Pl(1.5), Pl((-1.5)))
+↑ 行列のときより、int 係数多項式を使うことが多い。
+    ↑ default float が正しいか？
+        ↑ 高校ならば正しいけれど
+
+↑ pysf/octn.py 1927 ここで scale== 0 になる;; scale = 1/ lstV[0]
+    多項式割り算、%演算が上手く計算されるのは __inv__ を持っているときだけ
+        下を追加する
+            assert hasattr(lstV[0], '__inv__'), "You set a non field parameter:"+str(lstV)+"at Pl.__div__."
+    ↑ monic な多項式のときは体ではなく環でも割り算を可能にせねばならない
+            assert hasattr(lstV[0], '__inv__'), "You set a non field parameter:"+str(lstV)+"at Pl.__div__."
+            scale = 1/ lstV[0]
+            ↓date:2014/12/18 (木) time:03:47
+            if lstV[0] == 1:
+                # monic な多項式のときは体ではなく環でも割り算を可能にせねばならない
+                # We must calculate __div__ for monic ring polynomials
+                scale = 1
+            else:
+                assert hasattr(lstV[0], '__inv__'), "You set a non field parameter:"+str(lstV)+"at Pl.__div__."
+                scale = 1/ lstV[0]
+            ↓
+            # We must calculate __div__ for monic ring polynomials
+            scale = 1/ lstV[0]
+            assert lstV[0] == 1/scale, "You set a non field parameter:"+str(lstV)+"at Pl.__div__."
+
+Comments_1_invalid: 勝手に float にしてしまうことが許されない
+~[1,2,3] のときほど float が自明ではない。int と float を思い違いする頻度も少ない。
+↑逆に多項式だからこそ int 係数が必要になることが、行列ベクトルより多い
+    ↑ 徹底するならば、下は 1 にすべき？
+Pl=oc.Pl; pl=Pl(2,1); pl(0.3)
+===============================
+1.6
+        ↑ 整数係数多項式でも float 引数を扱えるようにしたいときも多い。
+
+↑ Plクラスとは別に、RnPl:Ring多項式クラスを別に設けるべき
+    ↑ リング多項式クラスには割り算を設けない
+    ↑ Pl は RnPl を継承する
+
+Comments_2  : counter mesure
+
+* Comments_3  : action scripts
+test first で作らんと、見逃しが発生する
+
+# add
+## with constant
+Pl=oc.Pl; pl=Pl(2,1); 1.6+pl == Pl(2,2.6)
+Pl=oc.Pl; pl=Pl(2,1); pl+1.6 == Pl(2,2.6)
+
+# sub
+## with constant
+Pl=oc.Pl; pl=Pl(2,1); 1.6-pl == Pl(-2,0.6)
+Pl=oc.Pl; pl=Pl(2,1); pl-1.6 == Pl(2,-0.6)
+
+# mul
+## with constant
+Pl=oc.Pl; pl=Pl(2,1); 1.6 pl == Pl(3.2,1.6)
+Pl=oc.Pl; pl=Pl(2,1); pl 1.6 == Pl(3.2,1.6)
+
+# div
+## with Pl instance
+Pl=oc.Pl; x=Pl(1,0); (x^2+1)%(2x^2+x+3)     # assert error
+Pl=oc.Pl; x=Pl(1.0,0); (x^2+1)%(2x^2+x+3) == Pl(-0.5,-0.5)
+Pl=oc.Pl; x=Pl(1.0,0); (x^2+1)/(2x^2+x+3) == (Pl(0.5), Pl(-0.5,-0.5))
+#Pl=oc.Pl; x=Pl(1.0,0); (x^2+1)/(2x^2+x+3) == (0.5, Pl(-0.5,-0.5))
+    ↑cf.
+    Pl=oc.Pl; x=Pl(1.0,0); (x^2+1)/(2x+x+3)
+    ===============================
+    (Pl(0.333333333333x+(-0.333333333333)), Pl(2.0))
+
+# pow
+
+Comments_4  : open 判への修正
+

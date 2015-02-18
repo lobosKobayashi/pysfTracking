@@ -1,0 +1,45 @@
+Title       : At PythonSfOp randint(.) function dosen't work
+            : PythonSfOp Ç≈ randin(.) ä÷êîÇ™ëSÇ≠ìÆÇ©Ç»Ç¢
+
+Serial Num  : 00047,    State: colsed: date:2014/08/23
+First issued: date:2014/08/
+
+Tags        : PythonSfOp randint
+
+Comments_1  : an error example
+seed(0); randint(5,size=[2,3])
+seed(0); randint(5,size=10)
+Warning! Don't use a assignment sentence in end.
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPPOp.py", line 49, in <module>
+    md.execLine( lstLineAt[0].strip() )
+  File "pysfOp\sfPPrcssrOp.py", line 190, in execLine
+    exec(usConvertedAt, globals())
+  File "<string>", line 9, in <module>
+  File "pysfOp\kNumericOp.py   line 1633, in randint
+    return sf.kryO(sf.sc.random.randint(*sqAg, **dctAg), dtype=int)
+  File "pysfOp\sfFnctnsOp.py        302, in kryO
+    assert False, "Yet not implemented!"
+
+Comments_2  : counter mesure
+def randint(*sqAg, **dctAg):
+    if len(dctAg)==0:
+        return        (sf.sc.random.randint(*sqAg))
+    else:
+        return sf.kryO(sf.sc.random.randint(*sqAg, **dctAg), dtype=int)
+Å´
+
+def randint(*sqAg, **dctAg):
+    return  sf.sc.random.randint(*sqAg, **dctAg)
+
+
+Comments_3  : action scripts
+len(randint(10,size=3)) == 3
+
+Comments_4  : open îªÇ÷ÇÃèCê≥
+Å™ Open î≈ only
+

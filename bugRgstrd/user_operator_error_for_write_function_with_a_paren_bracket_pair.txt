@@ -1,0 +1,83 @@
+Title       : error for user operators if there is a function that was enclosed by paren bracket pair 
+            : user operator の右側に括弧で囲まれた関数があるときエラーになる
+
+Serial Num  : 00038,    State: opend: date:2014/07/10
+First issued: date:2014/07/10 (木) time:12:31
+
+Tags        : user_operator
+
+* Comments_1_2  : an error example date:2014/11/04 (火) time:21:48
+PythonSf 仕様 bug  f2CT(~*) のように記述できない ← ~* を left side value にはできる
+
+mt=kzrs(3,3,int); seed(0); mt.r[:]=randi(3,[3*3]); f=~*=λ x,y:mt[x,y];ls=range(3); φ=f2CT(f); φ(0,1)
+
+* Comments_1_1  : an error example
+bug;;`X(1) ~== (`X)(3)
+'bool' object is not callable
+↑ 右辺関数を括弧で囲んだとき
+    ×↑ (X)((1) ~== (X))(3) と pre-processing していると思われる
+
+X=`X; X(1) ~+ (X)(3)
+===============================
+0.75
+
+_tmC.py
+
+X=`X; X(1) ~== (X)(3)
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 9, in <module>
+    rightSideValueGlb__= k__tilda__UsOp_eq____((X)(1) , (X))(3)
+TypeError: 'bool' object is not callable
+
+type _tmC.py
+from __future__ import division
+# -*- encoding: cp932 -*-
+from pysf.sfFnctns import *
+setDctGlobals(globals())
+from pysf.customize import *
+if os.path.exists('./sfCrrntIni.py'):
+    from sfCrrntIni import *
+X=k__bq_X___
+rightSideValueGlb__= k__tilda__UsOp_eq____((X)(1) , (X))(3)
+print "==============================="
+print rightSideValueGlb__
+putPv(rightSideValueGlb__, '_dt')
+
+X=`X; X(1) ~== (X)(3)
+`X(1) ~== (`X)(3)
+'bool' object is not callable
+`X(1) ~== `X(3)
+===============================
+False
+
+X^3+Y^3+Z^3- 3X Y Z == (X+Y+Z) (X + ω Y + ω^2 Z) (X + ω^2 Y + ω Z)
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); seed(0); v=randn(3); (X^3+Y^3+Z^3- 3X Y Z)(*v) ~== ((X+Y+Z) (X + ω Y + ω^2 Z) (X + ω^2 Y + ω Z))(*v)
+'bool' object is not callable
+
+f=λ x,y:x+y; f(*[1,2]) ~== 3
+===============================
+True
+f=λ x,y:x+y; f(*[1,2]) ~== f(*[-3,6])
+===============================
+True
+
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X^3+Y^3+Z^3)(*[1,2,3]) ~== ((X+Y+Z) (X + ω Y + ω^2 Z) (X + ω^2 Y + ω Z))(*[1,2,3])
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X^3+Y^3+Z^3)(*[1,2,3]) ~== ((X+Y+Z) (X + ω Y + ω^2 Z))(*[1,2,3])
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X^3+Y^3+Z^3)(*[1,2,3]) ~== (X+Y+Z)(*[1,2,3])
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X^3)(*[1,2]) ~== (X+Y)(*[2,3])
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X)(*[1,2]) ~== (X+Y)(*[2,3])
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X)(1) ~== (X+Y)(*[2,3])
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X)(1) ~== (X)(3)
+X=`X; (X)(1) ~== (X)(3)
+'bool' object is not callable
+X,Y,Z,ω=`X,`Y,`Z,exp(`i 2pi/3); (X^3+Y^3+Z^3)(*[1,2,3]) ~== X(*[1,2,3])
+===============================
+False
+
+X=`X; (X)(1)
+===============================
+1
+Comments_2  : counter mesure
+Comments_3  : action scripts
+

@@ -1,0 +1,304 @@
+Title       : error bug at O3 scalr multiplying O3 vector
+            : O3 scalar と O3 vector の掛け算でエラーになっていた
+
+Serial Num  : 00022,    State: closed: date:2014/06/29 (日) time:10:20
+First issued: date:2014/05/24 (土) time:10:41
+
+Tags        : ClOctonion __mul__
+
+Action Scripts: 
+
+* Comments(1) : an error example
+O3(0, 1, 0, 1) ~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 8, in <module>
+    a,b=O3(0, 1, 0, 1) * krry__(*[O3(0, 0, 0, 2), O3(1, 2, 2, 0)])
+  File "D:\my\vc7\mtCm\pysf\octn.py", line 353, in __mul__
+    return type(self)(lstAt)
+  File "D:\my\vc7\mtCm\sfCrrntIni.py", line 434, in __init__
+    Oc.__init__(self, sf.krry(tplAt, ftype=Z3))
+  File "pysf\sfFnctns.py", line 2394, in krry
+  File "pysf\sfFnctns.py", line 1116, in __init__
+  File "D:\my\vc7\mtCm\pysf\ptGrp.py", line 649, in __init__
+    assert ag.m_tpl[1] == 0
+AssertionError
+↑ O3(0,1,0,1) と 8 要素までの tuple,list,vector との積を計算する箇所で、O3 を要素とするベクトルを掛けた
+↑ O3(1,2,3,4) (5,6,7,8) と tuple や list との積も許している
+    ↑ O3(1,2,3,4) ~[1,2,3,Z3] のようなベクトルや行列を想定していた
+
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a b
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCmBkup\commercial\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3033, in start
+    __execLine( lstLineAt[0].strip() )
+  File "pysf\sfPPrcssr.py", line 2476, in __execLine
+    exec(strAt, globals())
+  File "<string>", line 9, in <module>
+  File "pysf\octn.py", line 353, in __mul__
+    return type(self)(lstAt)
+  File "sfCrrntIni.py", line 434, in __init__
+    Oc.__init__(self, sf.krry(tplAt, ftype=Z3))
+  File "pysf\sfFnctns.py", line 2394, in krry
+    return ClFldTns(elmAt, typeAt)
+  File "pysf\sfFnctns.py", line 1116, in __init__
+    sqAt[k] = ftype(elmAt)
+  File "pysf\ptGrp.py", line 649, in __init__
+    assert ag.m_tpl[1] == 0
+AssertionError
+
+* Comments(1-2) : an example
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a b
+===============================
+[O3(1, 0, 1, 0) O3(1, 2, 2, 0)]
+---- ClFldTns:< class 'sfCrrntIni.O3'> ----
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a b[0], a b[1]
+===============================
+(O3(1, 0, 1, 0), O3(1, 2, 2, 0))
+
+* Comments(2) : 対策
+ClOctonion.__mul__(..) に下のコードを追加した
+        elif isinstance(ag, sf.ClFldTns) and ag.m_type.__base__ == ClOctonion:
+            return ag.__rmul__(self)
+ 
+さらに下のように修正した
+        elif isinstance(ag, sf.ClFldTns) and (
+                (ag.m_type == ClOctonion) or            # Oc element ClFldTns instance
+                (ag.m_type.__base__ == ClOctonion)):    # O2 ... O7 element ClFldTns instance
+            return ag.__rmul__(self)
+
+さらに下のように修正した date:2014/06/29 (日) time:10:03
+        elif isinstance(ag, (sf.np.ndarray) ):
+            from ptGrp import ClZp
+            if(len(ag.shape)==1) and isinstance(ag[0],(int, ClZp)):
+                inLen = ag.shape[0]
+                assert 1<= inLen <= 8
+                if inLen<8:
+                    ag = tuple(ag)+(0,)*(8-inLen)
+
+                for j in range(8):
+                    for k in range(8):
+                        lstAt[dctMtPr[j,k][1]] += dctMtPr[j,k][0]*self.m_tpl[j]\
+                                                 *ag[k]
+            
+                return type(self)(lstAt)
+            else:
+                return ag.__rmul__(self)
+
+pysfOp\octnOp.py
+        elif isinstance(ag, (sf.np.ndarray) ):
+            from ptGrpOp import ClZp
+            if(len(ag.shape)==1) and isinstance(ag[0],(int, ClZp)):
+                inLen = ag.shape[0]
+                assert 1<= inLen <= 8
+                if inLen<8:
+                    ag = tuple(ag)+(0,)*(8-inLen)
+
+                for j in range(8):
+                    for k in range(8):
+                        lstAt[dctMtPr[j,k][1]] += dctMtPr[j,k][0]*self.m_tpl[j]\
+                                                 *ag[k]
+            
+                return type(self)(lstAt)
+            else:
+                return ag.__rmul__(self)
+* Comments(3) : 
+ClOctonion.__add__ の確認も必要です
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a+b
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCmBkup\commercial\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3033, in start
+    __execLine( lstLineAt[0].strip() )
+  File "pysf\sfPPrcssr.py", line 2476, in __execLine
+    exec(strAt, globals())
+  File "<string>", line 9, in <module>
+  File "pysf\octn.py", line 225, in __add__
+    return type(self)(lstAt)
+  File "sfCrrntIni.py", line 434, in __init__
+    Oc.__init__(self, sf.krry(tplAt, ftype=Z3))
+  File "pysf\sfFnctns.py", line 2404, in krry
+    return ClFldTns(elmAt, typeAt)
+  File "pysf\sfFnctns.py", line 1116, in __init__
+    sqAt[k] = ftype(elmAt)
+  File "pysf\ptGrp.py", line 649, in __init__
+    assert ag.m_tpl[1] == 0
+AssertionError
+↑date:2014/06/29 (日) time:04:49
+        elif isinstance(ag, sf.ClFldTns) and (
+                (ag.m_type == ClOctonion) or            # Oc element ClFldTns instance
+                (ag.m_type.__base__ == ClOctonion)):    # O2 ... O7 element ClFldTns instance
+            return ag.__radd__(self)
+
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a+b
+===============================
+[O3(0, 1) O3(1, 0, 2, 1)]
+---- ClFldTns:< class 'sfCrrntIni.O3'> ----
+
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a-b
+↑ これは __rsub__ がないので、add のような対策を打てない
+    ↑この例外発生は仕様とする
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCmBkup\commercial\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3033, in start
+    __execLine( lstLineAt[0].strip() )
+  File "pysf\sfPPrcssr.py", line 2476, in __execLine
+    exec(strAt, globals())
+  File "<string>", line 9, in <module>
+  File "pysf\octn.py", line 284, in __sub__
+    return type(self)(lstAt)
+  File "sfCrrntIni.py", line 434, in __init__
+    Oc.__init__(self, sf.krry(tplAt, ftype=Z3))
+  File "pysf\sfFnctns.py", line 2404, in krry
+    return ClFldTns(elmAt, typeAt)
+  File "pysf\sfFnctns.py", line 1116, in __init__
+    sqAt[k] = ftype(elmAt)
+  File "pysf\ptGrp.py", line 649, in __init__
+    assert ag.m_tpl[1] == 0
+AssertionError
+
+* Comments(4) : 下もまずい
+O3(1,2,3,4) ~[[1,2,3],[4,5,6],Z3]
+===============================
+O3(ClFldTns([Z3(2), Z3(1), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(0), Z3(0), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(1), Z3(2), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(1), Z3(2), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(0), Z3(0), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(0), Z3(0), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(0), Z3(0), Z3(0)], sfCrrntIni.Z3), ClFldTns([Z3(0), Z3(0), Z3(0)], sfCrrntIni.Z3))
+↑ 下のほうが round up がないので、行っている処理が見えやすい
+    ↑ O3( 1*~[1,2,3,Z3]-2*~[4,5,6,Z3], 1*~[4,5,6,Z3]+2*~[1,2,3,Z3], ....)
+    ↓ Ob( 1*~[1,2,3,Z257]-2*~[4,5,6,Z257], 1*~[4,5,6,Z257]+2*~[1,2,3,Z257], ....)
+Ob(1,2,3,4) ~[[1,2,3],[4,5,6],Z257]
+===============================
+Ob(ClFldTns([Z257(250), Z257(249), Z257(248)], sfCrrntIni.Z257), ClFldTns([Z257(  6), Z257(  9), Z257( 12)], sfCrrntIni.Z257), ClFldTns([Z257( 19), Z257( 26), Z257( 33)], sfCrrntIni.Z257), ClFldTns([Z257(249), Z257(250), Z257(251)], sfCrrntIni.Z257), ClFldTns([Z257(  0), Z257(  0), Z257(  0)], sfCrrntIni.Z257), ClFldTns([Z257(  0), Z257(  0), Z257(  0)], sfCrrntIni.Z257), ClFldTns([Z257(  0), Z257(  0), Z257(  0)], sfCrrntIni.Z257), ClFldTns([Z257(  0), Z257(  0), Z257(  0)], sfCrrntIni.Z257))
+
+↓
+        elif isinstance(ag, (list,tuple) ):
+            #assert len(ag) == 8
+            assert 1<= len(ag) <= 8
+            if len(ag)<8:
+                ag = tuple(ag)+(0,)*(8-len(ag))
+
+            for j in range(8):
+                for k in range(8):
+                    lstAt[dctMtPr[j,k][1]] += dctMtPr[j,k][0]*self.m_tpl[j]\
+                                             *ag[k]
+        
+            return type(self)(lstAt)
+
+        elif isinstance(ag, (sf.sc.ndarray, sf.ClFldTns) ):
+            if(len(ag.shape)==1):
+                inLen = ag.shape[0]
+                assert 1<= inLen <= 8
+                if inLen<8:
+                    ag = tuple(ag)+(0,)*(8-inLen)
+
+                for j in range(8):
+                    for k in range(8):
+                        lstAt[dctMtPr[j,k][1]] += dctMtPr[j,k][0]*self.m_tpl[j]\
+                                                 *ag[k]
+            
+                return type(self)(lstAt)
+            else:
+                return ag.__rmul__(self)
+
+x,y=Ob(1,2,3,4),~[[1,2,3],[4,5,6],Z257]; x y
+===============================
+[[Ob(  1,   2,   3,   4) Ob(  2,   4,   6,   8) Ob(  3,   6,   9,  12)]
+ [Ob(  4,   8,  12,  16) Ob(  5,  10,  15,  20) Ob(  6,  12,  18,  24)]]
+---- ClFldTns:< class 'sfCrrntIni.Z257'> ----
+
+x,y=Ob(1,2,3,4),~[[1,2,3],[4,5,6],Z257]; y.shape
+===============================
+(2, 3)
+
+x,y=Ob(1,2,3,4),~[1,2,3,Z257]; x y
+===============================
+Ob(245, 249,  14,   4)
+
+x,y=O3(1,2,3,4),~[[1,2,3],[4,5,6],Z3]; x y
+===============================
+[[O3(1, 2, 0, 1) O3(2, 1, 0, 2) O3(Z3(0))]
+ [O3(1, 2, 0, 1) O3(2, 1, 0, 2) O3(Z3(0))]]
+---- ClFldTns:< class 'sfCrrntIni.Z3'> ----
+
+Comment(4-2): O3(1,2,3,4)*kryO([[1,2,3],[4,5,6]],int)
+date:2014/06/29 (日) time:09:33
+pysfOp\octnOp.py
+        elif isinstance(ag, (list,tuple, sf.np.ndarray             ) ):
+            #assert len(ag) == 8
+            assert 1<= len(ag) <= 8
+            if len(ag)<8:
+                ag = tuple(ag)+(0,)*(8-len(ag))
+
+            for j in range(8):
+                for k in range(8):
+                    lstAt[dctMtPr[j,k][1]] += dctMtPr[j,k][0]*self.m_tpl[j]\
+                                             *ag[k]
+        
+            return type(self)(lstAt)
+↓
+        elif isinstance(ag, (sf.np.ndarray) ):
+            if(len(ag.shape)==1):
+                inLen = ag.shape[0]
+                assert 1<= inLen <= 8
+                if inLen<8:
+                    ag = tuple(ag)+(0,)*(8-inLen)
+
+                for j in range(8):
+                    for k in range(8):
+                        lstAt[dctMtPr[j,k][1]] += dctMtPr[j,k][0]*self.m_tpl[j]\
+                                                 *ag[k]
+            
+                return type(self)(lstAt)
+            else:
+                return ag.__rmul__(self)
+
+O3(1,2,3,4)*kryO([[1,2,3],[4,5,6]   ])
+unsupported operand type(s) for *: 'Z3' and 'float'
+O3(1,2,3,4)*kryO([[1,2,3],[4,5,6]],int)
+===============================
+[[O3(1, 2, 0, 1) O3(2, 1, 0, 2) O3(Z3(0))]
+ [O3(1, 2, 0, 1) O3(2, 1, 0, 2) O3(Z3(0))]]
+* Comments(5) : action script
+×PythonSfOp の修正も必要です
+↑ PythonSfOp には ClFldTns はありません
+
+testSf.vrf
+a,b=O3(0, 1, 0, 1),~[O3(0, 0, 0, 2), O3(1, 2, 2, 0)]; a b==~[O3(1,0,1,0),O3(1,2,2,0)]
+===============================
+True
+
+x,y=Ob(1,2,3,4),~[[1,2,3],[4,5,6],Z257]; y.shape==(2,3)
+===============================
+True
+
+x,y=Ob(1,2,3,4),~[1,2,3,Z257]; x y == Ob(245, 249,  14,   4)
+===============================
+True
+
+x,y=O3(1,2,3,4),~[[1,2,3],[4,5,6],Z3]; (x y)[1,1]==O3(2,1,0,2)
+===============================
+True
+
+testOp.vrf
+a,b=O3(0, 1, 0, 1),kryO([O3(0, 0, 0, 2), O3(1, 2, 2, 0)]); all(a*b==kryO([O3(1,0,1,0),O3(1,2,2,0)]))
+===============================
+True
+
+(O3(1,2,3,4)*kryO([[1,2,3],[4,5,6]],int)).shape==(2,3)
+===============================
+True
+
+(O3(1,2,3,4)*kryO([[1,2,3],[4,5,6]],int))[1,1]==O3(2,1,0,2)
+===============================
+True

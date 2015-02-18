@@ -1,0 +1,546 @@
+Title       : PythonSf Algebra Systems
+            : PythonSf 操作とエディタたち
+
+Serial Num  : 00005     State: opened:  date:2013/09/08
+First issued: date:2013/09/08
+
+Tags        : editor, Vim, Emacs, one-liner
+
+Comments(1) : theme:図を多用して、エディタ上での PythonSf 操作を一目で分かるようにする
+読者
+    群・正規部分群・自己同型の定義に触れたことがある
+    実数・複素数でのベクトル空間・行列を理解している
+
+theme science としての代数
+science としての具体例の帰納による法則の把握
+一切の漏れの無い完璧な形式的証明の価値を否定するものではない
+↑ ただし science としての把握の後でなければ、形式的証明は単なるパズルになってしまう。
+↑ Galois には形式的な三つの公理による群の定義なぞなかったはず。Sb:置換 ≡ 群だったはず。Galois 群の証明をするためには、それで十分なのだから。
+
+同型群 --- 対称性、正規部分群 --- 直積分解、「Sn(N) が任意の有限群を表わせる」 について説明せずに定義を示すだけで済ます教科書氏 science としての群ではないと主張します
+
+# 様々の代数系
+## `X and XX
+↑ 代数系ではない
+### 恒等式の多項式
+x=`X; x^2+2x+3
+
+x=`X; x^2+Z5(2)x+Z5(3)
+x=`X; (x^2+Z5(2)x+Z5(3))(Z5(4))
+===============================
+Z5(2)
+x=`X; (x^2+Z5(2)x+Z5(3))(   7 )
+===============================
+Z5(1)
+↑;;9+Z5(3)
+===============================
+Z5(2)
+
+x=XX; (x^2+Z5(2)x+Z5(3))(   7 )
+===============================
+Z5(1)
+
+A ~^ B ≡ A B - B A
+
+## Zp
+## 多項式 and % 演算
+## RS:GF(2^8)
+## 無限数列系
+
+## 実数・複素数係数多項式
+seed(0); poly1d(randn(4)+randn(4)`i).roots
+===============================
+[ 0.22744049-0.9782352j   0.60270946+0.95192416j -0.66056152+0.400768j  ]
+
+### % 演算は必要ない
+seed(0); poly1d(randn(4)) % poly1d(randn(2))
+unsupported operand type(s) for %: 'poly1d' and 'poly1d'
+
+### 実数係数有理体
+#### pole/zero cancel
+#### 二端子対行列
+##### V/I 
+
+## Oc 四元数、八元数
+### Oc 複素数
+seed(0); a,b=randn(2)+`i randn(2); oa,ob=Oc(a.real, a.imag),Oc(b.real, b.imag);a b, oa ob
+===============================
+((-1.4873490302066237+4.3447019645570322j), Oc(-1.4873490302066237, 4.3447019645570322))
+
+### norm 一定
+
+### 結合律の代わりに
+Moufang loop;;http://en.wikipedia.org/wiki/Moufang_loop
+
+    z (x (z y)) = ((z x) z) y
+    x (z (y z)) = ((x z) y) z
+    (z x) (y z) = (z (x y)) z
+    (z x) (y z) = z ((x y) z)
+
+
+## ON 四元数、八元数; N=2,3,4,5,6,7,127
+### norm 不変
+
+### On 積から作る群
+#### O2 四元数の積演算で群を引っ張り出す
+ls=[0,1]; [ v for v in mitr(*[ls]*4) if O2(v) O2(v).d != 0]
+===============================
+[(0, 0, 0, 1), (0, 0, 1, 0), (0, 1, 0, 0), (0, 1, 1, 1), (1, 0, 0, 0), (1, 0, 1, 1), (1, 1, 0, 1), (1, 1, 1, 0)]
+↑ 八要素からなる可換群
+
+#### O2 八元数の積演算で群を引っ張り出す
+ls=[0,1]; [ v for v in mitr(*[ls]*8) if O2(v) O2(v).d != 0]
+===============================
+いっぱい
+
+#### O2 八元数でも結合律が成り立たない？← 結合律どころか可換性が成り立つ
+seed(0); [ (O2(a) O2(b)) O2(c) == O2(a) (O2(b) O2(c)) for a,b,c in randi(2,[10,3,8])]
+===============================
+[True, True, True, True, True, True, True, True, True, True]
+
+#### 有限八元環
+##### Moufang loop だけを満たす演算表
+N=3; ar=~[range(N),Z3]; mt=~[kzrs(N,N),Z3]; ~*=λ x,y:mt[x,y]; [ copy.deepcopy(mt) for vv in mitr(*[ar]*N^2) if (mt.m_tnsr.put(range(N^2),vv), all( (z~*(x~*(z~*y)) == ((z~*x)~*z)~*y) and (x~*(z~*(y~*z)) == ((x~*z)~*y)~*z) and ((z~*x)~*(y~*z) == (z~*(x~*y))~*z == z~*((x~*y)~*z)) for x,y,z in mitr(*[ar]*3)) )[-1] ]
+===============================
+    [ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(1)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(0), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(2), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(0), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(2), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(2), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(2), Z3(0)],
+               [Z3(0), Z3(0), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(2), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(0), Z3(2), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(0), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(0)],
+               [Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(0), Z3(2)],
+               [Z3(2), Z3(2), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(0), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(0), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(1), Z3(0), Z3(1)],
+               [Z3(0), Z3(1), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(1), Z3(0), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(1), Z3(0), Z3(0)],
+               [Z3(1), Z3(0), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(0), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(1), Z3(0)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(1), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(2), Z3(0)],
+               [Z3(2), Z3(0), Z3(1)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(2), Z3(1)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3),
+     ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(1), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(2), Z3(0), Z3(0)],
+               [Z3(2), Z3(0), Z3(0)]], sfCrrntIni.Z3), ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(0), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(1)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(0), Z3(1)],
+               [Z3(0), Z3(1), Z3(0)],
+               [Z3(1), Z3(0), Z3(1)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(0), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(0)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(1)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(2), Z3(0)],
+               [Z3(2), Z3(0), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(2), Z3(1)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(1), Z3(2), Z3(1)]], sfCrrntIni.Z3), ClFldTns([[Z3(1), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(0), Z3(0)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(0), Z3(0)],
+               [Z3(0), Z3(2), Z3(2)],
+               [Z3(0), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(0), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(1), Z3(2), Z3(0)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(0), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(0), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(1), Z3(0)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(0), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(1), Z3(1), Z3(1)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(1), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(1), Z3(2)],
+               [Z3(1), Z3(2), Z3(1)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(0)],
+               [Z3(2), Z3(2), Z3(0)],
+               [Z3(0), Z3(0), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(1)],
+               [Z3(2), Z3(2), Z3(1)],
+               [Z3(1), Z3(1), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(2)],
+               [Z3(0), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(2)],
+               [Z3(1), Z3(1), Z3(1)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(0), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(1), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3), ClFldTns([[Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)],
+               [Z3(2), Z3(2), Z3(2)]], sfCrrntIni.Z3)]
+
+##### Moufang loop と行列式 !=0 を満たす演算表
+mt.m_dtrm != 0 は直感で追加した
+N=3; ar=~[range(N),Z3]; mt=~[kzrs(N,N),Z3]; ~*=λ x,y:mt[x,y]; [ copy.deepcopy(mt) for vv in mitr(*[ar]*N^2) if (mt.m_tnsr.put(range(N^2),vv), all( (z~*(x~*(z~*y)) == ((z~*x)~*z)~*y) and (x~*(z~*(y~*z)) == ((x~*z)~*y)~*z) and ((z~*x)~*(y~*z) == (z~*(x~*y))~*z == z~*((x~*y)~*z)) for x,y,z in mitr(*[ar]*3)) and mt.m_dtrm != 0 )[-1] ]
+===============================
+[]
+↑↓2^9 と 2^16 の違い if ... 判定にも同様な重さが加わる
+time:09:15
+N=4; ar=~[range(N),Z3]; mt=~[kzrs(N,N),Z3]; ~*=λ x,y:mt[x,y]; [ copy.deepcopy(mt) for vv in mitr(*[ar]*N^2) if (mt.m_tnsr.put(range(N^2),vv), all( (z~*(x~*(z~*y)) == ((z~*x)~*z)~*y) and (x~*(z~*(y~*z)) == ((x~*z)~*y)~*z) and ((z~*x)~*(y~*z) == (z~*(x~*y))~*z == z~*((x~*y)~*z)) for x,y,z in mitr(*[ar]*3)) and mt.m_dtrm != 0 )[-1] ]
+↑ time:09:27-- time:02:25 でも計算が終わらない
+
+### 有理複素数、四元数、八元数
+Oc(`1f/3,0,0,0) Oc(0,`1f/4, `1f/5)
+===============================
+Oc(Fraction(0, 1), Fraction(1, 12), Fraction(1, 15), Fraction(0, 1))
+
+ts(); Oc(`1r/3,0,0,0) Oc(0,`1r/4, `1r/5)
+===============================
+Oc(0, 1/12, 1/15, 0)
+
+# 二項演算系
+N=5; mt=randi(N,[N,N]); mt
+===============================
+[[2 1 1 0 4]
+ [1 1 2 0 3]
+ [1 0 4 3 1]
+ [4 1 1 3 1]
+ [2 4 4 4 2]]
+---- ClTensor ----
+
+# Sb: Symmetric Group
+## 入れ替え
+seed(0); Sb(shuffle(range(5)))(range(10))
+===============================
+[1, 2, 0, 3, 4, 5, 6, 7, 8, 9]
+
+# kfs
+
+# 無限数列
+↑ 直接演算は slice だけ
+
+# product
+product(range(1,5))
+===============================
+24
+
+product(O3(x) for x in randi(3,[5,4]))
+===============================
+O3(1, 2, 0, 1)
+
+product([Sb(shuffle(range(5))) for _ in range(3)], Sb(0,1))
+===============================
+Sb(3,4,0,1,2)
+*** group:群の定義
+現在の数学教科書にある群の定義では = が無定義後
+↑ associative 性により = の関係で結ばれる関係式が導かれる
+    ↑ めんくらう
+        ↑ 違和感が残る
+        ↑associativity,単位元や逆元の存在よりも、== 概念のほうが根源的
+            ↑にもかかわらず associativity,単位元や逆元の存在から == 概念を説明していくことへの違和感
+
+↑ 群であることの確認が面倒
+
+**** surjective 性による群の定義
+***** 群の定義 １
+　　半群 f G x G --> G が次の性質を満たすとき, (G, f) は群 group であるという。
+　　for ∀a∀b ∈G
+　　　　(∃x∃y ∈ G, f(a,x) = b and  f(y,a) = b )
+↑二項演算子関数f:半群 f G x G --> G を考えるなら、下の群の定義のほうがまし
+    ↑ 殆ど群の概念に拡張可能だから
+    ↑ 現代的な category theory での epic 概念で済ませられるから
+    ↑ surjective の根源的、汎用的な概念で済ませられるから
+***** 群の定義 ２
+半群 f G x G --> G が次の性質を満たすとき, (G, f) は群 group であるという。
+ Sn(N) ⊃ NormalGroup
+ ↑         ↑
+subGrp ⊇ subNormalGroup
+
+fn.fst(g):G → G        for ∀g∈G  # surjective
+fn.lst(g):G → G        for ∀g∈G  # surjective
+
+(fn.fst(a)(b) = a       for ∃b∈G) for ∀a∈G # because surjective
+↑ a * el == a      # there is a unit e1 that may not the unique element
+
+(fn.fst(a)(a^-1) = e1   for ∃a^-1∈G) for e1   # because f.fst(a) is surjective
+↑ a * a^-1 = el    # there is a unit a^-1 that may not the unique element
+
+fn(fn(a,b),c) == fn(a,fn(b,c))
+↑ この条件も必要
+    ↑ norm non zero 八元数の積は群ではない
+    ↑ fn.fst(a b)(c) == fn.fst(a)(b c) は surjective だけからは保障されない
+
+    z (x (z y)) = ((z x) z) y
+    x (z (y z)) = ((x z) y) z
+    (z x) (y z) = (z (x y)) z
+    (z x) (y z) = z ((x y) z)
+
+
+半群 f G x G --> G が次の性質を満たすとき, (G, f) は群 group であるという。
+　　for ∀a∀b ∈ G                 # surjective
+　　　　{f(a,x) for x ∈ G } == G
+                and
+　　　　{f(y,b) for y ∈ G } == G
+
+***** surjective 性による、単位元の汎用性の証明
+for ∃x∈G, f(a,e)=a
+上の e について、∀b∈G について f(b,e)==b
+proof
+for ∃x∈G, f(x,a)=b
+∴ f(b,e) == f(f(x,a),e) == f(x,f(a,e))==f(x,a)==b
+
+***** 正規部分群による直積分解 ∃!h は N H 分解
+=:SS3,SA3; SS3 / SA3
+===============================
+kfs([Sb(0,1,2), Sb(0,2,1)])
+
+=:SS3,SA3; N=kfs(x y x^-1 y^-1 for x,y in mitr(SA3,SA3)); SA3, N
+===============================
+(kfs([Sb(0,1,2), Sb(1,2,0), Sb(2,0,1)]),
+kfs([Sb(0,1,2)]))`
+
+sb0 sb1 = n0 h0 n1 h1 == n0  h0 n1 h0^-1  h0 h1
+sb1 sb0 = n1 h1 n0 h0 == n1  h1 n0 h1^-1  h1 h0
+↑ ∀sb1 置換に対し Lagrange Resolvent は cyclic 変換になるだけ
+
+
+Lagrange Resolvent
+n1 (h1 n0 h1^-1)∈N      h1 h0∈H
+
+   n0   p         q      h0
+   n1 ←─ N X| H  ─→  h1
+    ↑      ↑        ↑
+    │      │∃!h    │
+    │      │        │
+    └───G ────┘
+       f   sb0   e
+           sb1
+
+           g0 g1
+↑
+任意の置換に対して Lagrange Resolvent が対称式 → 係数:基本対称式の多項式と根号操作の組み合わせの式で表される。

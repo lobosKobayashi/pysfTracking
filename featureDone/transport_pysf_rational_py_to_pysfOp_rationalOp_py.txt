@@ -1,0 +1,200 @@
+Title       : For PythoSfOp, add poly1d, ClRational and `s.  transport pysf\rational.py to pysfOp\rationalOp.py
+            : Open îªÇ≈Ç‡ poly1d, ClRational, `s Çégópâ¬î\Ç…Ç∑ÇÈÅB ratonal.py Ç rationalOp.py Ç…à⁄êA
+
+Serial Num  : 00044,    State: resolving: date:2013/10/10
+First issued: date:2014/08/11 (åé) time:13:30
+
+Tags        : ClOctonion __lt__
+
+Comments_1  : an error example
+Comments_2  : counter mesure
+customizeOp.pyÅ@Ç…â∫Çí«â¡ÇµÇΩ
+Å™
+from rationalOp import ClRtnl
+k_bq_s = ClRtnl([1,0],1)         #`s: s of Laplace transformation
+
+sfFnctionsOp line 85 Ç…â∫Çí«â¡ÇµÇΩ
+from rationalOp import *
+
+fc /n pysf\rational.py pysfOp\rationalOp.py 
+    ÉtÉ@ÉCÉã PYSF\rational.py Ç∆ PYSFOP\RATIONALOP.PY Çî‰ärÇµÇƒÇ¢Ç‹Ç∑
+    ***** PYSF\rational.py
+      121:  import numpy as sc
+      122:  import sfFnctns as sf
+      123:  import copy
+    ***** PYSFOP\RATIONALOP.PY
+      121:  import numpy as sc
+      122:  import sfFnctnsOp as sf
+      123:  import copy
+    *****
+
+    ***** PYSF\rational.py
+      441:      def __call__(self, val):
+      442:          if isinstance(val, (tuple, list, sf.ClTensor)):
+      443:              return sf.krry([self(x) for x in val])
+      444:          else:
+    ***** PYSFOP\RATIONALOP.PY
+      441:      def __call__(self, val):
+      442:          if isinstance(val, (tuple, list, sc.ndarray)):
+      443:              return sc.array([self(x) for x in val])
+      444:          else:
+    *****
+
+    ***** PYSF\rational.py
+      447:      def __mul__(self, other):
+      448:          if isinstance(other, sf.ClFldTns):
+      449:              return other.__rmul__(self)
+      450:  
+      451:          if self == 0 or other == 0:
+    ***** PYSFOP\RATIONALOP.PY
+      447:      def __mul__(self, other):
+      448:          if self == 0 or other == 0:
+    *****
+
+    ***** PYSF\rational.py
+      594:          clRtn = ClRtnl(self)
+      595:          clRtn.m_plNumer = poly1d(-sf.krry(clRtn.m_plNumer.coeffs))
+      596:          return clRtn
+    ***** PYSFOP\RATIONALOP.PY
+      591:          clRtn = ClRtnl(self)
+      592:          clRtn.m_plNumer = poly1d(-sc.array(clRtn.m_plNumer.coeffs))
+      593:          return clRtn
+    *****
+
+    ***** PYSF\rational.py
+      633:          import scipy.integrate as si
+      634:          arrX = si.odeint( func, sf.krry( [0]*(N-1)+[1] )
+      635:                  , sf.arSqnc(0,dataN, float(time)/dataN) )
+    ***** PYSFOP\RATIONALOP.PY
+      630:          import scipy.integrate as si
+      631:          arrX = si.odeint( func, sf.kryO( [0]*(N-1)+[1] )
+      632:                  , sf.arSqnc(0,dataN, float(time)/dataN) )
+    *****
+
+    ***** PYSF\rational.py
+      639:          # 12.12.13 return sc.dot(arrX, C)
+      640:          return sf.krry__(sc.dot(arrX, C).view())
+      641:  
+    ***** PYSFOP\RATIONALOP.PY
+      636:          # 12.12.13 return sc.dot(arrX, C)
+      637:          return sf.kryO(sc.dot(arrX, C).view())
+      638:  
+    *****
+
+    ***** PYSF\rational.py
+      664:                      # è„Ç≈ denominatorAt ÇÃïÑçÜÇÕä˘Ç…îΩì]Ç≥ÇπÇƒÇ¢ÇÈ
+      665:                      sf.krry(numeratorAt[0:-1]) + D*sf.krry(denominatorAt) )
+      666:          elif ( len(numeratorAt) > N+1):
+    ***** PYSFOP\RATIONALOP.PY
+      661:                      # è„Ç≈ denominatorAt ÇÃïÑçÜÇÕä˘Ç…îΩì]Ç≥ÇπÇƒÇ¢ÇÈ
+      662:                      sf.kryO(numeratorAt[0:-1]) + sc.dot(D,sf.kryO(denominatorAt) ))
+      663:          elif ( len(numeratorAt) > N+1):
+    *****
+
+    ***** PYSF\rational.py
+      702:              def func(x,t):
+      703:                  return sc.dot(A,x) + inpAt*B
+      704:  
+    ***** PYSFOP\RATIONALOP.PY
+      699:              def func(x,t):
+      700:                  return sc.dot(A,x) + sc.dot(inpAt,B)
+      701:  
+    *****
+
+    ***** PYSF\rational.py
+      706:  
+      707:          return sc.dot(lsX[:-1], C)+D*sf.krry(input)
+      708:  
+    ***** PYSFOP\RATIONALOP.PY
+      703:  
+      704:          return sc.dot(lsX[:-1], C)+sc.dot(D,sf.kryO(input))
+      705:  
+    *****
+
+    ***** PYSF\rational.py
+      744:                      # è„Ç≈ denominatorAt ÇÃïÑçÜÇÕä˘Ç…îΩì]Ç≥ÇπÇƒÇ¢ÇÈ
+      745:                      sf.krry(numeratorAt[0:-1]) + D*sf.krry(denominatorAt) )
+      746:          elif ( len(numeratorAt) > N+1):
+    ***** PYSFOP\RATIONALOP.PY
+      741:                      # è„Ç≈ denominatorAt ÇÃïÑçÜÇÕä˘Ç…îΩì]Ç≥ÇπÇƒÇ¢ÇÈ
+      742:                      sf.kryO(numeratorAt[0:-1]) + sc.dot(D,sf.kryO(denominatorAt) ))
+      743:          elif ( len(numeratorAt) > N+1):
+    *****
+
+    ***** PYSF\rational.py
+      752:          lenAt = len(numeratorAt)
+      753:          C = numeratorAt + [0]*(N-lenAt)
+      754:          B = sc.zeros(N)
+    ***** PYSFOP\RATIONALOP.PY
+      749:          lenAt = len(numeratorAt)
+      750:          C = numeratorAt + [0]*(N-lenAt) # numeratorAt is list
+      751:          B = sc.zeros(N)
+    *****
+
+    ***** PYSF\rational.py
+      760:          #vctY = sc.zeros(dataN)
+      761:          vctY = sf.kzrs(dataN)
+      762:  
+    ***** PYSFOP\RATIONALOP.PY
+      757:          #vctY = sc.zeros(dataN)
+      758:          vctY = sc.zeros(dataN)
+      759:  
+    *****
+
+    ***** PYSF\rational.py
+      769:          for k in range(1,dataN):
+      770:              vctY[k] = sum(arState * C)
+      771:              arState = func(arState)
+    ***** PYSFOP\RATIONALOP.PY
+      766:          for k in range(1,dataN):
+      767:              vctY[k] = sc.dot(arState , C)
+      768:              arState = func(arState)
+    *****
+
+    ***** PYSF\rational.py
+      796:                      # denominatorAt ÇÃïÑçÜÇÕè„Ç≈îΩì]Ç≥ÇÍÇƒÇ¢ÇÈ
+      797:                      sf.krry(numeratorAt[0:-1]) + D*sf.krry(denominatorAt) )
+      798:          elif ( len(numeratorAt) > N+1):
+    ***** PYSFOP\RATIONALOP.PY
+      793:                      # denominatorAt ÇÃïÑçÜÇÕè„Ç≈îΩì]Ç≥ÇÍÇƒÇ¢ÇÈ
+      794:                      sf.kryO(numeratorAt[0:-1]) + sc.dot(D,sf.kryO(denominatorAt) ))
+      795:          elif ( len(numeratorAt) > N+1):
+    *****
+
+    ***** PYSF\rational.py
+      831:          #12.12.13 vctY = sc.zeros(dataN)
+      832:          vctY = sf.kzrs(dataN)
+      833:  
+    ***** PYSFOP\RATIONALOP.PY
+      828:          #12.12.13 vctY = sc.zeros(dataN)
+      829:          vctY = sc.zeros(dataN)
+      830:  
+    *****
+
+    ***** PYSF\rational.py
+      928:                      # è„Ç≈ denominatorAt ÇÃïÑçÜÇÕä˘Ç…îΩì]Ç≥ÇπÇƒÇ¢ÇÈ
+      929:                      sf.krry(numeratorAt[0:-1]) + D*sf.krry(denominatorAt) )
+      930:          elif ( len(numeratorAt) > N+1):
+    ***** PYSFOP\RATIONALOP.PY
+      925:                      # è„Ç≈ denominatorAt ÇÃïÑçÜÇÕä˘Ç…îΩì]Ç≥ÇπÇƒÇ¢ÇÈ
+      926:                      sf.kryO(numeratorAt[0:-1]) + sc.dot(D,sf.kryO(denominatorAt) ))
+      927:          elif ( len(numeratorAt) > N+1):
+    *****
+
+    ***** PYSF\rational.py
+      962:          # if not (0,0) then horizontal axis become wider if the span is us` order.
+      963:          vsVal = sc.dot(lsX[:-1], C)+D*sf.krry(input)
+      964:          #import pdb; pdb.set_trace()
+    ***** PYSFOP\RATIONALOP.PY
+      959:          # if not (0,0) then horizontal axis become wider if the span is us` order.
+      960:          vsVal = sc.dot(lsX[:-1], C)+sc.dot(D,sf.kryO(input))
+      961:          #import pdb; pdb.set_trace()
+    *****
+
+
+Comments_3  : action scripts
+
+Comments_4  : open îªÇ÷ÇÃèCê≥
+    Open îªèCê≥ÇÃÇ›
+
+

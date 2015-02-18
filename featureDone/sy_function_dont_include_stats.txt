@@ -1,0 +1,46 @@
+Title       : scipy.stats pakcage is too hevay to inport. So we abandoned including it to sy()
+            : sy() に scipy.stats packge も含めれば便利なのだが、import scipy.stats が重過ぎる
+
+Serial Num  : 00034,    State: invalid: date:2014/06/20
+First issued: date:2014/06/10
+
+Comments(1) :
+
+import 時間の計測
+time
+//@@
+import time
+startTimeAt = time.clock()
+import scipy.stats
+print "Total executing time:",time.clock() - startTimeAt
+//@@@
+Total executing time: 0.575118639379
+Total executing time: 0.573957568713
+↑ 重すぎ
+    ↑ scipy の import 時間もある？
+        ↑ ある。
+//@@
+import time
+import scipy
+startTimeAt = time.clock()
+import scipy.stats
+print "Total executing time:",time.clock() - startTimeAt
+//@@@
+Total executing time: 0.302877911322
+
+SVM\sfCrrntIni.py に下の stt() 関数を追加した
+\my\sf2\writings\othersMemoV.txt
+def stt():
+    import scipy.stats as stt
+    sf.__getDctGlobals().update(locals())
+
+//@@
+import time
+import scipy
+startTimeAt = time.clock()
+#import statsmodel
+import statsmodels as md; md
+print "Total executing time:",time.clock() - startTimeAt
+//@@@
+Total executing time: 0.00243146581825
+Total executing time: 0.00228287376145

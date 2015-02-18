@@ -1,0 +1,45 @@
+Title       : add plotDbl(..) function
+            : plotDbl(..) を追加した
+
+Serial Num  : 00054,    State: closed: date:2013/10/10
+First issued: date:2014/10/10
+
+Tags        : vsGraph
+
+Comments_1  : an error example
+For conviniences, we need a function that displays two graphs by one function
+
+Comments_2  : counter mesure
+add below codes
+
+def plotDbl(sq0,sq1, range=None, N=50):
+    if isinstance(sq0, (tuple, list, sf.np.ndarray)):
+        sf.plotGr(sq0)
+        return sf.plotGr(sq1,color=sf.red)
+    else:
+        assert hasattr(sq0,'__call__'), "at plotDbl(..), you set parameter sq0 that is not function"
+        assert hasattr(sq1,'__call__'), "at plotDbl(..), you set parameter sq1 that is not function"
+
+        if range==None:
+            range = [-1,1]
+        assert(isinstance(range,(tuple, list, np.ndarray)) and len(range)==2)
+        sf.plotGr(sq0,range[0],range[1],N=N)
+        return sf.plotGr(sq1, range[0], range[1], N=N, color=sf.red)
+
+Comments_3  : action scripts
+arF=fft(range(10)); plotDbl(arF.real, arF.imag); vs.scene.visible=0;0==0
+↓ 上では表示したグラフをなぜか消せん
+    ↑ render.. では下の処理を行っている
+    vs.scene.up=(0,0,1)
+    #vs.scene.center = [1.0/2.0,                1.0/2.0, centerHightAt]
+    vs.scene.center = [1.0/2.0, (rwLenAt/clfLenAt)/2.0, centerHightAt]
+    vs.scene.forward=(-1,+1,-1)
+    vs.scene.up=(0,0,1)
+
++1 calculateLineString __set "plotDbl; 0==0"
++0 blStt               __compare True
+
+Comments_4  : ammendment for open version
+Add plotDbl(..):same code to pysfOp\vsGraphOp.py
+
+

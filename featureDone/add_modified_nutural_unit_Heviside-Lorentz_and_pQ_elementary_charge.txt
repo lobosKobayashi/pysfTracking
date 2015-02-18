@@ -1,0 +1,283 @@
+Title       : add modified nutural unit Heviside-Lorentz and pQ elementary charge
+            : é•ë©ñßìx T Ç∆ÅApQ`:ÉuÉçÉgÉìÅEëfìdâ◊Çí«â¡ÇµÅAèCê≥é©ëRíPà ånÇ≈ÇÃ Heaviside-Lorentz íPà :Vkh,Ckh,Tkh Çí«â¡Ç∑ÇÈ
+
+Serial Num  : 00075,    State: closed: date:2015/02/01
+First issued: date:2015/02/01
+
+Tags        : unit
+
+* Comments_1  : new feature
+T` Åﬂ V` s`/m`^2
+pQ` Åﬂ eQ`
+
+* Comments_2  : modification
+
+** pysf\customize.py
+*** ts() ïœçX
+    # F`:Farad
+    k_F_bq____ = 1*ut.F                                 #@:F` --> k__bq_F___
+    k_uF_bq____ = ts.Rational(1,1000000)    *ut.F       #@:uF` -->1e-6 F
+    k_pF_bq____ = ts.Rational(1,1000000000000) * ut.F   #@:pF` -->1e-12 F
+Å´
+    # F`:Farad
+    k_F_bq____ = 1*ut.F                                 #@:F` --> k__bq_F___
+    k_uF_bq____ = ts.Rational(1,1000000)    *ut.F       #@:uF` -->1e-6 F
+    k_pF_bq____ = ts.Rational(1,1000000000000) * ut.F   #@:pF` -->1e-12 F
+
+    # T`:Tesra
+    k_T_bq____ = 1*ut.V*ut.s /ut.m**2
+
+
+    #ëfìdâ◊ eQ`  = 1.6021892 Å~10-19  C 
+    k_eQ_bq____ = 1.6021892e-19 * ut.C
+Å´
+    #ëfìdâ◊ pQ`  = 1.6021892 Å~10-19  C, eQ`=-pQ` 
+    k_eQ_bq____ = -1.6021892e-19 * ut.C
+    k_pQ_bq____ = 1.6021892e-19 * ut.C
+
+
+*** tr() ïœçX
+    # F`:Farad
+    k_F_bq____ = 1                                      #@:F` --> k__bq_F___
+    k_uF_bq____ = 1e-6                                  #@:uF` -->1e-6 F
+    k_pF_bq____ = 1e-12                                 #@:pF` -->1e-12 F
+Å´
+    # F`:Farad
+    k_F_bq____ = 1                                      #@:F` --> k__bq_F___
+    k_uF_bq____ = 1e-6                                  #@:uF` -->1e-6 F
+    k_pF_bq____ = 1e-12                                 #@:pF` -->1e-12 F
+
+    # T`:Tesra
+    k_T_bq____ = 1
+
+
+
+    #ëfìdâ◊ eQ`  = 1.6021892 Å~10-19  C 
+    k_eQ_bq____ = 1.6021892e-19            #* ut.C
+Å´
+    #ëfìdâ◊ pQ`  = 1.6021892 Å~10-19  C, eQ`=-pQ` 
+    k_eQ_bq____ = -1.6021892e-19
+    k_pQ_bq____ = 1.6021892e-19
+
+** pysfOp\customizeOp.py
+*** ts() ïœçX
+    # F`:Farad
+    Fk_bq_ = 1*ut.F                                 #@:F` --> k__bq_F___
+    uFk_bq_ = ts.Rational(1,1000000)    *ut.F       #@:uF` -->1e-6 F
+    pFk_bq_ = ts.Rational(1,1000000000000) * ut.F   #@:pF` -->1e-12 F
+Å´
+    # F`:Farad
+    Fk_bq_ = 1*ut.F                                 #@:F` --> k__bq_F___
+    uFk_bq_ = ts.Rational(1,1000000)    *ut.F       #@:uF` -->1e-6 F
+    pFk_bq_ = ts.Rational(1,1000000000000) * ut.F   #@:pF` -->1e-12 F
+
+    # T`:Tesra
+    Tk_bq_ = 1*ut.V*ut.s /ut.m**2
+
+
+    # Elementary electric charge eQ`  = 1.6021892 Å~10-19  C 
+    eQk_bq_ = 1.6021892e-19 * ut.C
+Å´
+    # Elementary electric charge pQ`  = 1.6021892 Å~10-19  C , eQ`=-pQ` 
+    eQk_bq_ = -1.6021892e-19 * ut.C
+    pQk_bq_ =  1.6021892e-19 * ut.C
+
+
+*** tr() ïœçX
+    # F`:Farad
+    Fk_bq_ = 1                                      #@:F` --> k__bq_F___
+    uFk_bq_ = 1e-6                                  #@:uF` -->1e-6 F
+    pFk_bq_ = 1e-12                                 #@:pF` -->1e-12 F
+Å´
+    # F`:Farad
+    Fk_bq_ = 1                                      #@:F` --> k__bq_F___
+    uFk_bq_ = 1e-6                                  #@:uF` -->1e-6 F
+    pFk_bq_ = 1e-12                                 #@:pF` -->1e-12 F
+
+    # T`:Tesra
+    Tk_bq_ = 1
+
+    # Elementary electric charge eQ`  = 1.6021892 Å~10-19  C 
+    eQk_bq_ = 1.6021892e-19            #* ut.C
+Å´
+    # Elementary electric charge eQ`  = 1.6021892 Å~10-19  C 
+    pQk_bq_ =  1.6021892e-19            #* ut.C
+    eQk_bq_ = -1.6021892e-19            #* ut.C
+
+
+
+
+** oneDay\sfCrrntIni.py
+k_mn_bq____ = k_gn_bq____ =k_sn_bq____ =k_eVn_bq____ =k_Cn_bq____ =k_Nn_bq____ =k_Jn_bq____ =k_Vn_bq____ =k_dVn_bq____ =k_e0n_bq____ =k_u0n_bq____ =k_hn_bq__bq____ = k_cn_bq____ = 1
+k_pQn_bq____ = 0.302824523103951
+Å´
+k_mn_bq____ = k_gn_bq____ =k_sn_bq____ =k_eVn_bq____ =k_Cn_bq____ =k_Nn_bq____ =k_Jn_bq____ =k_Vn_bq____ =k_dVn_bq____ =k_e0n_bq____ =k_u0n_bq____ =k_hn_bq__bq____ = k_cn_bq____  = k_Tn_bq____= 1
+k_pQn_bq____ =  0.302824523103951
+k_eQn_bq____ = -0.302824523103951
+
+k_mk_bq____ = k_gk_bq____ =k_sk_bq____ =k_eVk_bq____ =k_Ck_bq____ =k_Nk_bq____ =k_Jk_bq____ =k_Vk_bq____ =k_dVk_bq____ =k_eQk_bq____ =k_hk_bq__bq____ = k__sAlpha_k_bq____ = k_ck_bq____ = 1
+Å´
+k_mk_bq____ = k_gk_bq____ =k_sk_bq____ =k_eVk_bq____ =k_Ck_bq____ =k_Nk_bq____ =k_Jk_bq____ =k_Vk_bq____ =k_dVk_bq____ =k_pQk_bq____ =k_hk_bq__bq____ = k__sAlpha_k_bq____ = k_ck_bq____ = k_Tk_bq____ = 1
+k_eQk_bq____ == -1
+
+
+    # the charge of electron
+    k_eQn_bq____ = sym.sqrt(4*sf.pi*__alpha)* k_Cn_bq____
+Å´
+    # the charge of electron
+    k_eQn_bq____ = -sym.sqrt(4*sf.pi*__alpha)* k_Cn_bq____
+    k_pQn_bq____ =  sym.sqrt(4*sf.pi*__alpha)* k_Cn_bq____
+
+    # Tn` flux Tesra
+    k_Tn_bq____ = 1* k_Vn_bq____* k_sn_bq____ / k_mn_bq____ **2
+
+
+    # the charge of electron
+    k_eQk_bq____ = k_Ck_bq____
+Å´
+    # the charge of electron
+    k_eQk_bq____ = -k_Ck_bq____
+    k_pQk_bq____ =  k_Ck_bq____
+
+    # Tn` flux Tesra
+    k_Tk_bq____ = 1* k_Vk_bq____* k_sk_bq____ / k_mk_bq____ **2
+
+
+    k_eQp_bq____ = sym.sqrt(4*sf.pi*__alpha)* k_Cp_bq____
+Å´
+    k_eQp_bq____ = -sym.sqrt(4*sf.pi*__alpha)* k_Cp_bq____
+    k_pQp_bq____ =  sym.sqrt(4*sf.pi*__alpha)* k_Cp_bq____
+
+    # Tn` flux Tesra
+    k_Tp_bq____ = 1* k_Vp_bq____* k_sp_bq____ / k_mp_bq____ **2
+
+
+    k_eQs_bq____ = k_Cs_bq____
+Å´
+    k_eQs_bq____ = -k_Cs_bq____
+    k_pQs_bq____ =  k_Cs_bq____
+
+    # Ts` flux Tesra
+    k_Ts_bq____ = 1* k_Vs_bq____* k_ss_bq____ / k_ms_bq____ **2
+
+í«â¡
+# *******************************************************************************
+# Heaviside-Lorentz for modified natural unit system:pQhk`=Chk`, eQhk`, Vhk`, Thk`
+# *******************************************************************************
+k_pQhk_bq____ = k_Chk_bq____=0.302824523103951
+k_eQhk_bq____ = -0.302824523103951
+k_Vhk_bq____ = k_Thk_bq____ =3.30224246619792
+
+    # **********************************************
+    # Heaviside-Lorentz pQhk`=Chk`, eQhk`, Vhk`, Thk`
+    # **********************************************
+    k_pQhk_bq____=k_Chk_bq____=k_Ck_bq____ / sf.sqrt(k_e0k_bq____)
+    k_eQhk_bq____ = -k_pQhk_bq____
+    k_Vhk_bq____=k_Vk_bq____ * sf.sqrt(k_e0k_bq____)
+    k_Thk_bq____=k_Tk_bq____ / sf.sqrt(k_u0k_bq____)
+
+** oneDay\sfCrrntIniOp.py
+mnk_bq_ = gnk_bq_ =snk_bq_ =eVnk_bq_ =Cnk_bq_ =Nnk_bq_ =Jnk_bq_ =Vnk_bq_ =dVnk_bq_ =e0nk_bq_ =u0nk_bq_ =hnk_bq_____ = 1
+Å´
+mnk_bq_ = gnk_bq_ =snk_bq_ =eVnk_bq_ =Cnk_bq_ =Nnk_bq_ =Jnk_bq_ =Vnk_bq_ =dVnk_bq_ =e0nk_bq_ =u0nk_bq_ =hnk_bq_____ = 1
+pQnk_bq_ =  0.302824523103951
+eQnk_bq_ = -0.302824523103951
+
+mkk_bq_ = gkk_bq_ =skk_bq_ =eVkk_bq_ =Ckk_bq_ =Nkk_bq_ =Jkk_bq_ =Vkk_bq_ =dVkk_bq_ =eQkk_bq_ =hkk_bq_____ = k_sAlpha_kk_bq_ = 1
+Å´
+mkk_bq_ = gkk_bq_ =skk_bq_ =eVkk_bq_ =Ckk_bq_ =Nkk_bq_ =Jkk_bq_ =Vkk_bq_ =dVkk_bq_ =pQkk_bq_ =hkk_bq_____ = k_sAlpha_kk_bq_ = 1
+eQkk_bq_ = -1
+
+
+    # the charge of electron
+    eQnk_bq_ = sym.sqrt(4*sf.pi*__alpha)* Cnk_bq_
+Å´
+    # the charge of electron
+    pQnk_bq_ =  sym.sqrt(4*sf.pi*__alpha)* Cnk_bq_
+    eQnk_bq_ = -sym.sqrt(4*sf.pi*__alpha)* Cnk_bq_
+
+    # Tn` flux Tesra
+    Tnk_bq_ = 1* Vnk_bq_ * snk_bq_ / mnk_bq_ **2
+
+
+    # the charge of electron
+    eQkk_bq_ = Ckk_bq_
+Å´
+    # the charge of electron
+    pQkk_bq_ =  Ckk_bq_
+    eQkk_bq_ = -Ckk_bq_
+
+    # Tn` flux Tesra
+    Tkk_bq_ = 1* Vkk_bq_ * skk_bq_ / mkk_bq_ **2
+
+
+    eQpk_bq_ = sym.sqrt(4*sf.pi*__alpha)* Cpk_bq_
+Å´
+    pQpk_bq_ =  sym.sqrt(4*sf.pi*__alpha)* Cpk_bq_
+    eQpk_bq_ = -sym.sqrt(4*sf.pi*__alpha)* Cpk_bq_
+
+    # Tn` flux Tesra
+    Tpk_bq_ = 1* Vpk_bq_ * spk_bq_ / mpk_bq_ **2
+
+    eQsk_bq_ = Csk_bq_
+
+í«â¡
+# *******************************************************************************
+# Heaviside-Lorentz for modified natural unit system:pQhk`=Chk`, eQhk`, Vhk`, Thk`
+# *******************************************************************************
+k_e0k_bq____ = 10.904805305561
+k_u0k_bq____ = 0.0917026917931351
+
+k_pQhk_bq____ = k_Chk_bq____=0.302824523103951
+k_eQhk_bq____ = -0.302824523103951
+k_Vhk_bq____ = k_Thk_bq____ =3.30224246619792
+
+    # **********************************************
+    # Heaviside-Lorentz pQhk`=Chk`, eQhk`, Vhk`, Thk`
+    # **********************************************
+    pQhkk_bq_=Chkk_bq_=Ckk_bq_ / sf.sqrt(e0kk_bq_)
+    eQhkk_bq_ = -pQhkk_bq_
+    Vhkk_bq_=Vkk_bq_ * sf.sqrt(e0kk_bq_)
+    Thkk_bq_=Tkk_bq_ / sf.sqrt(u0kk_bq_)
+
+* Comments_3  : action scripts
+ts(); pQ` == -eQ`
+ts(); T`  == V` s`/m`^2
+
+Tn`==Vn` sn`/mn`^2
+Tk`==Vk` sk`/mk`^2
+pQn`== -eQn`
+pQk`== -eQk`
+
+** oneDay sfCrrntIni.py
+tt(); Tn`==Vn` sn`/mn`^2
+tt(); Tk`==Vk` sk`/mk`^2
+tt(); Ts`==Vs` ss`/ms`^2
+tt(); pQn`== -eQn`
+tt(); pQk`== -eQk`
+tt(); pQs`== -eQs`
+
+** oneDay sfCrrntIniOp.py
+tt(); Tn`==Vn` * sn`/mn`^2
+tt(); Tk`==Vk` * sk`/mk`^2
+tt(); Ts`==Vs` * ss`/ms`^2
+tt(); pQn`== -eQn`
+tt(); pQk`== -eQk`
+tt(); pQs`== -eQs`
+
+*** Heaviside-Lorentz for modified natural
+tt(); (Vhk`/mk`)^2 - Thk`^2
+===============================
+-1.77635683940025e-15*gk`/(mk`*sk`**2)
+
+eQhk`, pQhk`, Chk`, Vhk`,Thk`
+===============================
+(-0.302824523103951, 0.302824523103951, 0.302824523103951, 3.30224246619792, 3.30224246619792)
+
+Comments_4  : open îª test
+ts(); pQ` == -eQ`
+ts(); T`  == V` * s`/m`^2
+
+
+
+

@@ -1,0 +1,46 @@
+Title       : __str__ of poly1d instances, which generated from a ClTensor array,  return "cannot accumulate" errors
+            : ClTensor 引数から作った poly1d インスタンスで __str__(.) を呼び出すと "cannot accumulate" エラーになる
+
+Serial Num  : 00052,    State: closed: date:2014/09/22
+First issued: date: date:2014/09/22 (月) time:10:20
+
+Tags        : poly1d
+
+Comments_1  : an error example
+N=5; seed(0); x=randn(N); poly1d(x)
+===============================
+cannot accumulate on a scalar
+x=~[1,2,3]; poly1d(x)
+===============================
+cannot accumulate on a scalar
+
+でも __str__ is the one in numpy\lib\polynomial.py
+
+Comments_2  : counter mesure
+poly1d.__init__(..) で ClTensor 引数は numpy array に変えてしまう
+
+    def __init__(self, sqAg, **dctAg):
+        #assert not sc.iscomplexobj(sqAg)
+        if not 'variable' in dctAg:
+            dctAg['variable']='s'
+
+        sc.poly1d.__init__(self, sqAg, **dctAg)
+↓
+    def __init__(self, sqAg, **dctAg):
+        #assert not sc.iscomplexobj(sqAg)
+        if not 'variable' in dctAg:
+            dctAg['variable']='s'
+
+        if isinstance(sqAg, sf.ClTensor):
+            sqAg = sc.array(sqAg)
+
+        sc.poly1d.__init__(self, sqAg, **dctAg)
+
+Comments_3  : action scripts
+x=~[1,2]; poly1d(x).__str__()[2:]=='1 s + 2'
+
+Comments_4  : open 判への修正
+無し
+↑ ClTensor 引数に限ってのエラーだから
+
+

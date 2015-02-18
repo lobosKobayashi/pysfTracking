@@ -1,0 +1,24 @@
+Title       : can't read integer type ClTensor file variables 
+            : ClTensor が int type のとき、ファイル変数の読み出しでエラーになる
+
+Serial Num  : 00040,    State: closed: date:2014/08/07
+First issued: 2014/08/05
+
+Tags        : ClTensor
+
+Comments_1  : an error example
+tmp:=~[1,2,int]; :=tmp; tmp=~[1,2]
+
+Comments_2  : counter mesure
+ClTensor.__repre__(self)
+
+         if self.dtype.kind == 'i':
+             return strAt[:-1]+ ", dtype=int)"
+         ↓
+         if self.dtype.kind == 'i':
+             #return strAt[:-1]+ ", dtype=int)" #to adjust position date:2014/08/06 (水) time:04:26
+             return strAt[:-2]+ ", dtype=int)"
+
+Comments_3  : action scripts
+
+tmp:=~[1,2,int]; =:tmp; tmp==~[1,2]

@@ -1,0 +1,608 @@
+Title       : never ending ketchen sink memo
+            : 終わりの無い考察メモ
+
+Serial Num  : 00069,    State: resolving: date:2014/11/14
+First issued: date:2014/11/14
+
+We add "#reason " for  each makeupped bullet line.
+↑ 正式項目にアップした #理由 **** ... に変更する
+
+* all first
+** 2014
+*** 11 finished
+**** kfs に __getitem__ を追加する ← SNf:00070へ 
+同時に p 属性も追加し、 ClTensor/ClFldTns ど同様に tuple を返す date:2014/11/15 (土) time:10:31
+↑ kfs(..).sl を tuple にしたものを返す
+    ↑ 注意! kfsInstance.__getattr__(..) の name == sl のとき self.sl=sorted(tupe(self)) を行えん
+        ↑ kfsInstance.sl リスト r.h.s.v. はユーザーが変更する可能性があるから、再利用できない
+    ↑ 逆に kfsInstance.p r.h.s.v. は hashable であり、ユーザーが 変更できないので再利用できる
+↑ __getitem__ が呼び出されたとき
+
+↑
+if neme == 'p':
+    self.__dict__['p'] = tuple(sorted(self))
+    ↑ if name == 'sl' .. の箇所は return list(self.p)) で済ます
+    ↑ kfs.__getitem__(ag) は return self.p[ag] で済ませられる
+    ×↑ self.sl 属性を設けて __dict__.update("sl",tplAt) とする
+        ↑ sorted(..): sorted list は list を返すので sl 属性を残せない
+↑
+sorted( {3,1,2,0} )
+===============================
+[0, 1, 2, 3]
+
+SNf:00070へ ***** action scripts
+ksf(shuffle(range(5))).p[0] == 0
+ksf(shuffle(range(5))).p[-1] == 5
+ksf(shuffle(range(5))).p[3:] == (3,4,5)
+ksf(shuffle(range(5))).p[:2] == (0,1)
+ksf(shuffle(range(5))).p[1:4] == (1,2,3)
+
+***** Cayley graph dictionary で、values を kfs(...).p にすることで sorted tuple にできる
+
+**** group(..) 関数に fn=None キーワードを追加する← invalid 
+fn が None でないとき multiply 操作を fn(x,y) 二項関数で行う
+↑ fn(elm, kfs(...)) の方が汎用性がある
+    ↑ 両方実装する？
+↑ Cayley graph を得たい
+    ↑ Cayley graph は dict で実装することが多いだろうが、それを group(..) で扱うのは無理筋
+        ↑ Cayley graph の edge は数個の generator 要素からリカーシブな演算で生成される
+        ↑ あまりにも多くのデータ構造が予想できてしまう
+        ↑ Cayley graph edge 集合は vertex pair tuple の集合として表現できる
+↑valid に変更date:2014/12/22 (月) time:02:59
+
+
+*** 11
+
+
+**** oc.RS の val は __val にすべき
+date:2014/11/14 (金) time:01:38
+
+**** W:私自身は git コマンドの大部分を vim エディタで書き込みしているデイリー・ノート・テキスト上で操作している
+毎日の作業ノート
+↑ 自動的に作業履歴が残る
+
+
+
+**** Writing 宇宙空間に時刻同芯球を描く。
+
+ビッグ・バンの瞬間には原点が一致している。その X,Y,Z 軸が互いに平行だとする。宇宙のはてまでの距離の割合に c` を掛けた速度で座標系が動いていく
+
+
+**** ClFldTns に put method を追加し、これが呼ばれたら m_dtrm,m_inv を None にする必要がある date:2014/11/02
+×ClFldTns に put method を追加し、これが呼ばれたら self.__ditc__ から m_dtrm,m_inv を消去する必要がある
+× ClFldTns に put method を追加し self.m_dtrm=None に戻す操作を追加する必要がある
+↑ self.m_dtrm=None に戻すのではなく __dict__.pop('m_dtrm') が必要
+↑ ClTensor についても同じ date:2014/11/04 (火) time:08:32
+mt=kzrs(3,3,int); mt[0,:]=[0,1,2]; ~*=λ x,y:mt[x,y];ls=range(3); `print([copy.copy(mt) for v in mitr(*[ls]*6) if ( mt.put(range(3,9),v), all((a~*b)~*c== a~*(b~*c) for a,b,c in mitr(*[ls]*3)) )[-1] and not(mt.m_dtrm ~== 0)])
+↑↓cf.
+mt=kzrs(3,3,int); mt[0,:]=[0,1,2]; ~*=λ x,y:mt[x,y];ls=range(3); `print([copy.copy(mt) for v in mitr(*[ls]*6) if ( mt.put(range(3,9),v), all((a~*b)~*c== a~*(b~*c) for a,b,c in mitr(*[ls]*3)) )[-1] and not(mt.m_dtrm ~== 0)])
+
+date:2014/11/03 (月) time:05:11
+mt=kzrs(2,2,Z3); print mt.m_dtrm; mt.m_tnsr[0,0],mt.m_tnsr[1,1]=Z3(1),Z3(1);mt.m_dtrm
+Z3(0)
+===============================
+Z3(0)
+mt=kzrs(2,2,Z3); print mt.m_dtrm; mt.m_tnsr[0,0],mt[1,1]=Z3(1),Z3(1);mt.m_dtrm
+Z3(0)
+===============================
+Z3(1)
+×↑ __setitem__(..) でも mt.m_dtrm=None が必要です
+↑ mt=kzrs(2,2,Z3); source(mt.__setitem__)
+In file: pysf\sfFnctns.py
+
+    def __setitem__(self, k, ag):
+        self.m_tnsr[k] = ag
+        #import pdb; pdb.set_trace()
+        self.__dict__.pop('m_inv', None)
+        self.__dict__.pop('m_dtrm', None)
+
+**** ClFldTns.__setitem__ で self.m_type によるキャスティングを行うべき  date:2014/11/02
+↑ 上の put 対策と同時に行うべき
+↑ isinstans(ag[k],self.m_type) check を要素ごとに行うべき
+    ↑ casting よる変化を極力発生させたくない
+↑ oc.Pl 要素の ClFldIns では要素のタイプを揃えられない
+    ↑ m_type は oc.Pl でしかない
+        ↑ oc.Pl instance が 別に m_type を持つ
+    ↑ ClFldTns 要素が ClFldTns 要素となる recursive 構造もありえる
+        ↑ oc.Pl でも同様な recursive 構造が発生しうる
+        ↑ 通常は複雑になりすぎて行わない
+        ↑ Oc でも同様な recursive 構造が発生しうる
+
+mt=kzrs(2,2,Z3); mt[0,0]=2; mt
+===============================
+[[2 Z3(0)]
+ [Z3(0) Z3(0)]]
+---- ClFldTns:< class 'sfCrrntIni.Z3'> ----
+
+v=np.array([1,2], dtype=O3); v,v[0]
+===============================
+(array([1, 2], dtype=object), 1)
+v=np.array([1,2], O3); v,v[0]
+===============================
+(array([1, 2], dtype=object), 1)
+
+v=krry([1,2], dtype=O3); v,v[0]
+===============================
+(ClTensor([1, 2], dtype=object)
+, 1)
+
+***** ↑ sympy 単位付 行列・ベクトルも扱えるようにしたい ← これも含んで検討していくだけで、tracking ticket は別に設ける
+    ↑ ClFldTns 出扱える sympy 要素は単位系だけに限定する
+        ↑ そうしないと複雑になりすぎる。
+            ↑ sympy.matrix に任せる
+    ↑ type の積による m_type 変更処理が必要になる
+    ↑
+    ~[Z3(1),Z3(2)] `X
+    ===============================
+    [<pysf.basicFnctns.ClAfOp object at 0x02E0A210>
+     <pysf.basicFnctns.ClAfOp object at 0x02E0A250>]
+    ---- ClFldTns:< class 'sfCrrntIni.Z3'> ----
+    not picklable
+
+****** sympy.unit については、ユーザーの責任で dtype=object の ClTensor で扱う date:2014/11/19 (水) time:05:03
+↑ ClFldTns を使うのではなくdate:2014/12/15 (月) time:09:48
+ts(); ts.Matrix([`x, m`])
+===============================
+[ x]
+[m`]
+↑ sympy 自体では 行列・ベクトル要素のタイプを凡て同じにすることを考えていない
+    ↑ ClFldTns で要素の型を凡て同じにしようとしても sympy instance に関して矛盾無く実装することは難しい
+    ↑ sympy.unit については加減乗除・整数べき乗が付きまとうので ClFldTns で扱うのはあきらめる
+        ↑ sypy type を管理しきれないdate:2014/12/15 (月) time:09:49
+    ↑ 下のようにユーザーの責任で 
+    ts(); v=~[1m`,2m`, dtype=object]; v /s`
+    invalid syntax (<string>, line 9)
+    ts(); v=~[1m`,2m`,       object]; v /s`
+    ===============================
+    [m`/s` 2*m`/s`]
+    ---- ClTensor ----
+
+    ts(); v=~[1,2,object] m`; v /s`
+    ===============================
+    [m`/s` 2*m`/s`]
+    ---- ClTensor ----
+
+    ts(); v=~[1,2       ] m`; v /s`
+    ===============================
+    [1.0*m`/s` 2.0*m`/s`]
+    ---- ClTensor ----
+
+    ts(); v=krry(1m`,2m`, dtype=object); v /s`
+    ===============================
+    [m`/s` 2*m`/s`]
+    ---- ClTensor ----
+
+
+ts(); ts.Matrix([1,2,3]) m`
+===============================
+[  m`]
+[2*m`]
+[3*m`]
+
+↑ 単位系付きから数値のみに変換
+    ts(); vc=~[2m`, 1.5m`,object]; [float(x   ) for x in vc]
+    Symbolic value, can't compute
+    ts(); vc=~[2m`, 1.5m`,object]; [float(x/m`) for x in vc]
+    ===============================
+    [2.0, 1.5]
+    ts(); vc=~[2m`, 1.5m`,object]; ~[float(x/m`) for x in vc]
+    ===============================
+    [ 2.   1.5]
+    ---- ClTensor ----
+******* ×unit class に細工をすれば ClFldTns で sympy.unit 付き計算を可能にできそうdate:2014/11/18 (火) time:11:19
+ただし全要素が一つの単位でなければならない
+↑ sympy.core.mul, Pow の組み合わせになる。
+    ↑ 簡単ではない。まだ扱いきれない
+    ↑ 扱える余地を残した ClFldTns の修正にしたい
+
+ts(); dir(`x `y) == dir(s` m`)
+===============================
+True
+
+ts(); dir(m` s`)
+
+ts(); (s` m`).as_numer_denom()
+===============================
+(m`*s`, 1)
+ts(); (s` m`).args
+===============================
+(m`, s`)
+
+ts(); (m`/s` m`).as_numer_denom()
+===============================
+(m`**2, s`)
+ts(); (m`/s` m`).args
+===============================
+(m`**2, 1/s`)
+
+ts(); type((m`/s` m`).args[0])
+===============================
+<class 'sympy.core.power.Pow'>
+ts(); ((m`/s` m`).args[0]).args
+===============================
+(m`, 2)
+ts(); type((m`/s` m`).args[1])
+===============================
+<class 'sympy.core.power.Pow'>
+ts(); ((m`/s` m`).args[1]).args
+===============================
+(s`, -1)
+ts(); ((m`/s` m` kg`).args[2])
+===============================
+kg`
+ts(); ((m`/s` m` kg`).args[2]).args
+===============================
+()
+ts(); dir(m`/s` m` kg`)
+
+****** ClTensor の __setitem__ もキャスティングを行う？
+現状;; `σx[0,0] = Z3(2); `σx
+float() argument must be a string or a number
+
+mt=krry([Z3(1),Z3(2)], dtype=Z3); mt[0]=`X; mt, mt.dtype
+===============================
+(ClTensor([<pysf.basicFnctns.ClAFX object at 0x02DBACD0>, 2], dtype=object)
+, dtype('object'))
+not picklable
+
+`σx Z3(2)
+float() argument must be a string or a number
+
+現状の ClTensor には m_type がない int,float,complex 以外は object;;dir(`σx)
+===============================
+['T', '__abs__', '__add__', '__and__', '__array__', '__array_finalize__', '__array_interface__', '__array_prepare__', '__array_priority__', '__array_struct__', '__array_wrap__', '__class__', '__contains__', '__copy__', '__deepcopy__', '__delattr__', '__delitem__', '__delslice__', '__dict__', '__div__', '__divmod__', '__doc__', '__eq__', '__float__', '__floordiv__', '__format__', '__ge__', '__getattr__', '__getattribute__', '__getitem__', '__getslice__', '__gt__', '__hash__', '__hex__', '__iadd__', '__iand__', '__idiv__', '__ifloordiv__', '__ilshift__', '__imod__', '__imul__', '__index__', '__init__', '__int__', '__invert__', '__ior__', '__ipow__', '__irshift__', '__isub__', '__iter__', '__itruediv__', '__ixor__', '__le__', '__len__', '__long__', '__lshift__', '__lt__', '__mod__', '__module__', '__mul__', '__ne__', '__neg__', '__new__', '__nonzero__', '__oct__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdiv__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__setitem__', '__setslice__', '__setstate__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__xor__', 'all', 'any', 'argmax', 'argmin', 'argsort', 'astype', 'base', 'byteswap', 'choose', 'clip', 'cntrct', 'compress', 'conj', 'conjugate', 'copy', 'ctypes', 'cumprod', 'cumsum', 'data', 'diagonal', 'dot', 'dtype', 'dump', 'dumps', 'fill', 'flags', 'flat', 'flatten', 'getfield', 'imag', 'inv', 'item', 'itemset', 'itemsize', 'max', 'mean', 'min', 'nbytes', 'ndim', 'newbyteorder', 'nonzero', 'prod', 'ptp', 'put', 'ravel', 'real', 'repeat', 'reshape', 'resize', 'round', 'searchsorted', 'setasflat', 'setfield', 'setflags', 'shape', 'size', 'sort', 'squeeze', 'std', 'strides', 'sum', 'swapaxes', 'take', 'tofile', 'tolist', 'tostring', 'trace', 'transpose', 'tuple_', 'var', 'view']
+
+mt=np.array([Z3(1),Z3(2)], dtype=int); mt.dtype
+===============================
+int32
+
+mt=np.array([Z3(1),Z3(2)], dtype=Z3); mt.dtype
+===============================
+object
+↑c code での type(*pointer) になっていると思う
+
+****** ↑ typeAt = type(self.r[0]) で済ますべき？
+type(self.r[0]) 操作を何度もしたくない
+ClFldTns と なるべく同じにしたい
+↓↑
+ClTensor に不必要なデータ・メンバーを追加したくない
+
+****** Sb を要素とする ClFldTns
+v=~[Sb(0,1,2), Sb(0,2,1), Sb(1,2,0)]; v
+===============================
+[[ 0.  1.  2.]
+ [ 0.  2.  1.]
+ [ 1.  2.  0.]]
+---- ClTensor ----
+↑ 下のようになってしまうため
+ls=[Sb(0,1,2), Sb(0,2,1), Sb(1,2,0)]; np.array(ls)
+===============================
+[[0 1 2]
+ [0 2 1]
+ [1 2 0]]
+↑ 下で一度 ndarray(..) 行列を作ってから ClTensor/ClFldTns にしている ← has a 関係
+2358 ->                         elmAt = sc.array(elmAt, dtype=object)
+source(Sb)
+
+v=~[Sb(0,1,2), Sb(0,2,1), Sb(1,2,0), Sb]; v
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 8, in <module>
+    v=krry__(*[Sb(0,1,2), Sb(0,2,1), Sb(1,2,0), Sb])
+  File "D:\my\vc7\mtCm\pysf\sfFnctns.py", line 2210, in krry__
+    return krry(*ag, **dctAg)
+  File "D:\my\vc7\mtCm\pysf\sfFnctns.py", line 2431, in krry
+    return ClFldTns(elmAt, typeAt)
+  File "D:\my\vc7\mtCm\pysf\sfFnctns.py", line 1117, in __init__
+    sqAt[k] = ftype(elmAt)
+  File "D:\my\vc7\mtCm\pysf\ptGrp.py", line 132, in __init__
+    assert max(tplAt)+1 == len(tplAt)
+AssertionError
+
+v=~[Sb(0,1,2), Sb(0,2,1), Sb(1,2,0), λ sb: sb Sb(2,0,1)]; v
+unsupported operand type(s) for +: 'Sb' and 'Sb'
+v=krry(Sb(0,1,2), Sb(0,2,1), Sb(1,2,0), ftype=λ sb: sb Sb(2,0,1)); v
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 8, in <module>
+    v=krry(Sb(0,1,2), Sb(0,2,1), Sb(1,2,0), ftype=lambda sb: sb * Sb(2,0,1))
+  File "D:\my\vc7\mtCm\pysf\sfFnctns.py", line 2431, in krry
+    return ClFldTns(elmAt, typeAt)
+  File "D:\my\vc7\mtCm\pysf\sfFnctns.py", line 1116, in __init__
+    if not isinstance(elmAt, ftype):
+TypeError: isinstance() arg 2 must be a class, type, or tuple of classes and types
+↑ 単純には function を type 引数に追加できない？
+
+v=~[Sb(0,1,2), Sb(0,2,1), Sb(1,2,0), Sb]; v #date:2014/12/15 (月) time:09:59
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 8, in <module>
+  File "pysf\sfFnctns.py", line 2210, in krry__
+    return krry(*ag, **dctAg)
+  File "pysf\sfFnctns.py", line 2431, in krry
+    return ClFldTns(elmAt, typeAt)
+  File "pysf\sfFnctns.py", line 1117, in __init__
+    sqAt[k] = ftype(elmAt)
+  File "pysf\ptGrp.py", line 132, in __init__
+    assert max(tplAt)+1 == len(tplAt)
+AssertionError
+****** oc.Pl を要素とする ClFldTns
+v=~[oc.Pl(0,1,2), oc.Pl(0,2,1), oc.Pl(1,2,0)]; v
+===============================
+[1x+2 2x+1 1x^2+2x]
+---- ClFldTns:< class 'pysf.octn.Pl'> ----
+
+oc.Pl(0,1,2)[1]
+'Pl' object does not support indexing
+
+****** kfs を要素とする ClFldTns
+v=~[kfs([0,1,2]), kfs([0,2,1]), kfs([1,2,0])]; v
+===============================
+[kfs([0, 1, 2]) kfs([0, 1, 2]) kfs([0, 1, 2])]
+---- ClFldTns:< class 'pysf.ptGrp.kfs'> ----
+↑__getitem__(..) を追加したら 3x3 ClTensor になりそう
+    ↑ 下になった
+unsupported operand type(s) for +: 'NoneType' and 'NoneType'
+
+v=~[kfs([0,1,2]), kfs([0,2,1]), kfs([1,2,0]),object]; v
+===============================
+[kfs([0, 1, 2]) kfs([0, 1, 2]) kfs([0, 1, 2])]
+---- ClTensor ----
+
+v=~[kfs([0,1,2]), kfs([0,2,1]), kfs([1,2,0]),object]; v 3
+===============================
+[kfs([0, 3, 6]) kfs([0, 3, 6]) kfs([0, 3, 6])]
+---- ClTensor ----
+***** m_sqTy
+
+**** SNf71:kfs(...) で kfs(0,2,3) のように [..] 括弧を省いた記述を可能にしたい。date:2014/11/21 (金) time:06:11
+new でできるはず
+参考
+class ClTuple(tuple):
+    def __new__(cls,tplAg):
+        n=len(tplAg)
+        for k in range(n)[::-1]:
+            if tplAg[k] != 0:
+                break
+
+        return tuple.__new__(cls, tplAg[:k+1])
+
+    def __equ__(self, tplAg):
+        pass
+
+print ClTuple((0,1,0,0))
+//@@@
+(0, 1)
+
+**** 回路部品買い物
+マイクロサーボ SG90 (10個入) @2.38k\;;http://www.amazon.co.jp/Tower-Pro-%E8%BC%B8%E5%85%A5%E8%B2%A9%E5%A3%B2%E3%83%BB%E6%A2%85%E6%9C%AC%E6%9C%89%E9%99%90%E8%B2%AC%E4%BB%BB%E4%BA%8B%E6%A5%AD%E7%B5%84%E5%90%88-%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B5%E3%83%BC%E3%83%9C-SG90/dp/B00ESBHZVE/ref=pd_rhf_cr_s_cp_4_FFPF?ie=UTF8&refRID=0BAYGCD6GBJB31E1V37X
+SG90 @400;;http://akizukidenshi.com/catalog/g/gM-08761/
+
+USB-IO2.0(AKI)
+
+リモコン受信モジュール;;http://akizukidenshi.com/catalog/goods/search.aspx?search=x&keyword=%83%8A%83%82%83R%83%93&image=%8C%9F%8D%F5
+D:\my\sf\ArmArduino\dwnld\SPS-448_SNYOS03246-1.pdf
+
+http://akizukidenshi.com/catalog/g/gI-00872/
+オプトサプライ赤外線リモコン @300;;http://akizukidenshi.com/catalog/g/gM-07245/
+調光機
+zener 5v
+
+送信モジュール;;http://www.aitendo.com/product/3894
+受信モジュール;;http://www.aitendo.com/product/3878
+【ジャンク扱い】太陽電池パネル [SBP52X52];;http://www.aitendo.com/product/7407
+
+ラジコン受信機 回路
+ラジコン ＡＭ式２７ＭＨｚ、デジタルプロポーショナル受信機を作ってみました。;;http://www.geocities.jp/y80000000218129/am_receiver.html
+Xbee 受信機の製作;;http://www.asahi-net.or.jp/~gt3n-tnk/framepageRC_RX.html
+ラジコン送信機・受信機の製作;;http://tutujith.blog.fc2.com/blog-entry-9.html
+ラジコン送信機・受信機製作.lzh
+33-2．おもちゃのラジコンを利用した;;http://cac-japan.com/electronics/chim2/
+time:16:31
+その３．組み立て式ラジコンカー　;;http://cac-japan.com/electronics/chim/index.htm
+4040UB
+74HCU04
+40MHz セラミック @25;;http://akizukidenshi.com/catalog/g/gP-02886/
+40MHz XTAL oscilator 10@500;;http://akizukidenshi.com/catalog/g/gP-05663/
+20.055MHz XTAL @20;;http://akizukidenshi.com/catalog/g/gP-08727/
+通常在庫商品 ブレッドボード・ジャンパーコード（オス－オス）セット @200;;http://akizukidenshi.com/catalog/g/gC-05159/
+10MHz セラミック;;
+
+コロナ ６ＣＨシンセサイザー受信機RP6D1（40MHｚ）　/25A7B価格: 	2,263円 (税込);;http://www.kkhobby.com/SHOP/RV024.html
+40MHz標準クリスタル（Futaba送信機用) @1000;;http://indoor-airplane-world.com/?mode=cate&cbid=163685&csid=4
+
+ブレッドボード・ジャンパーコード（オス－オス）セット
+
+電気二重層コンデンサー１Ｆ５．５Ｖ（薄型）;;http://akizukidenshi.com/catalog/g/gP-04249/
+最大等価直列抵抗(ESR)：１０Ω（＠１ｋＨｚ）
+電気二重層コンデンサー５Ｆ２．５Ｖ 最大等価直列抵抗(ESR)：　１１０ｍΩ（＠１ｋＨｚ）250@1;;http://akizukidenshi.com/catalog/g/gP-02446/
+電気二重層コンデンサー１２０Ｆ２．５Ｖ ESR 18mΩ @1500;;http://akizukidenshi.com/catalog/g/gP-02450/
+電気二重層コンデンサー１０００Ｆ２．５Ｖ ESR10mΩ @11000;;http://akizukidenshi.com/catalog/g/gP-02830/
+
+電解コンデンサ　４７００μＦ　５０Ｖ　８５℃ @70;;http://akizukidenshi.com/catalog/g/gP-01211/
+電解コンデンサ２７００μＦ５０Ｖ１０５℃（４個入）100@1pack 4つ;;http://akizukidenshi.com/catalog/g/gP-02987/
+
+ts(); C=350F`; V=2.5V`; 0.5 C V^2 J`/s`/W`
+===============================
+1093.75*kg`*m`**2/s`**2
+
+電解コンデンサ 等価直列抵抗
+ この3つの性質があるために、現実のコンデンサ特性は右図のようになります。これは東信工業製の標準品UTESタイプの1000μF/25Vのアルミ電解コンデンサの実測特性です。
+
+このコンデンサのESRは0.08Ωくらいです。インダクタンス成分があるために、100kHz以上の周波数ではインピーダンスが増加しています。電子回路の設計では、コンデンサの現実の特性を考えなければなりません。
+
+電解コンデンサ 等価直列抵抗 tanδ
+tan(δ) = 2pi f C R;;http://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q1270782517
+
+38mΩ @20degree
+tan(δ)= 0.1 @120Hz
+ts(); C=2700uF`; f=120Hz`; 0.1/(2pi f C) 
+===============================
+0.0491218960160171*V`/A`
+
+ＰＦＭステップアップＤＣ／ＤＣコンバータ　ＨＴ７７５０Ａ（５個入） 200@4;;http://akizukidenshi.com/catalog/g/gI-02800/
+ショットキーバリアダイオード　４０Ｖ１Ａ　ＥＲＡ８１－００４ 150@10;;http://akizukidenshi.com/catalog/g/gI-07235/
+
+分割ロングピンソケット　１ｘ４２　（４２Ｐ） @80;;http://akizukidenshi.com/catalog/g/gC-05779/
+ブレッドボード用ＤＣジャックＤＩＰ化キット 2@100;;http://akizukidenshi.com/catalog/g/gK-05148/
+通常在庫商品 ブレッドボード　ＢＢ－８０１ @200;;http://akizukidenshi.com/catalog/g/gP-05294/
+細ピンヘッダ　１×４０　アソートパック　（１０本入）@350;;http://akizukidenshi.com/catalog/g/gC-06641/
+
+高精度４．０９６Ｖ±０．１％　シャントレギュレータ　ＬＭ４０４０ＡＩＭ３－４．１（２個入）@100;;http://akizukidenshi.com/catalog/g/gI-06479/
+
+レールスプリッタＩＣ（仮想ＧＮＤ用ＩＣ）　ＴＬＥ２４２６ＣＬＰ @150;;http://akizukidenshi.com/catalog/g/gI-06868/
+rail to rail ２回路入り入出力フルスイングオペアンプ　ＮＪＭ２７３２Ｄ @100;;http://akizukidenshi.com/catalog/g/gI-04723/
+
+フォトカプラ　ＦＯＤ８１７Ｂ３００ @100(四個);;http://akizukidenshi.com/catalog/g/gI-06482/
+
+SainSmart;;http://www.amazon.co.jp/s/ref=sr_pg_3?rh=n%3A2127209051%2Cp_4%3A%E3%82%B5%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%EF%BC%88SainSmart%EF%BC%89&page=3&ie=UTF8&qid=1419305197
+
+GAOHOU
+マイクロコントロール用 NRF24L01+2.4GHz アンテナ ワイヤレス トランシーバ モジュール;;http://www.amazon.co.jp/%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E7%94%A8-NRF24L01-2-4GHz-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9-%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B7%E3%83%BC%E3%83%90/dp/B00K05W4QI/ref=pd_rhf_dp_s_cp_2_6KJQ?ie=UTF8&refRID=1JK5Y4V87W3QCHJHC6WA
+
+1PCS ステッピングモータ+ドライバボード ULN2003 5V 4フェーズ 5ライン;;http://www.amazon.co.jp/1PCS-%E3%82%B9%E3%83%86%E3%83%83%E3%83%94%E3%83%B3%E3%82%B0%E3%83%A2%E3%83%BC%E3%82%BF-%E3%83%89%E3%83%A9%E3%82%A4%E3%83%90%E3%83%9C%E3%83%BC%E3%83%89-ULN2003-4%E3%83%95%E3%82%A7%E3%83%BC%E3%82%BA/dp/B00K7YYEVK/ref=pd_sim_e_1?ie=UTF8&refRID=0E2TQY6ZP5RM95KRWNBN
+
+USB－デュアル 2 PS2 PS/2 マウス キーボード 変換 アダプタ スプリッタ;;http://www.amazon.co.jp/USB%EF%BC%8D%E3%83%87%E3%83%A5%E3%82%A2%E3%83%AB-PS2-%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89-%E3%82%A2%E3%83%80%E3%83%97%E3%82%BF-%E3%82%B9%E3%83%97%E3%83%AA%E3%83%83%E3%82%BF/dp/B00MYOGADG/ref=sr_1_4?s=computers&ie=UTF8&qid=1417552537&sr=1-4
+
+@250:65pcs ワイヤー ブレッドボード プラグ ワイヤ ブレッドボード・ケーブル ブレッドボード タイライン;;http://www.amazon.co.jp/65pcs-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC-%E3%83%96%E3%83%AC%E3%83%83%E3%83%89%E3%83%9C%E3%83%BC%E3%83%89-%E3%83%96%E3%83%AC%E3%83%83%E3%83%89%E3%83%9C%E3%83%BC%E3%83%89%C2%B7%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-%E3%82%BF%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%B3/dp/B00JUDWILM/ref=sr_1_3?m=A33O0YS89LH5EA&s=computers&ie=UTF8&qid=1417552668&sr=1-3
+
+@563:C 220V 3800W SCR 電圧 レギュレータ 調光器 スピード コントローラ サーモスタット センサー;;http://www.amazon.co.jp/220V-3800W-%E3%83%AC%E3%82%AE%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%BF-%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9-%E3%82%B5%E3%83%BC%E3%83%A2%E3%82%B9%E3%82%BF%E3%83%83%E3%83%88/dp/B00HV560JM/ref=sr_1_49?m=A33O0YS89LH5EA&s=computers&ie=UTF8&qid=1417553473&sr=1-49
+http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01
+
+トランシーバ nRF24XXシリーズ
+トランシーバ nRF24XXシリーズ インターフェース
+nRF24XX blog
+nRF24XX "c source" blog
+nRF24XX control blog
+*** 12 finished
+**** SNf71:kfs に <, <=, >,>= 演算を導入し ⊂　⊆　⊃　⊇ の意味を持たせる。
+返り値は True,False
+集合論 ⊂　⊆ 違い
+http://ja.wikibooks.org/wiki/集合論
+
+***** <,⊂は真部分集合のときのみ True にする
+A<B ≡;; all(x in B for x in A) and any(b not in A for b in B)
+A<=B≡;; all(x in B for x in A)
+< ≡ A \subsetneq B が数学の慣習とは異なる
+↑ でも < の数学的類推からすると、< に ⊆ の意味を持たせるのも変だ。
+
+**** PythonSf spec and comment: group(..) date:2014/12/22 (月) time:03:02
+D:\my\vc7\pysfTracking\featureRgstrd\add_a_two_term_function_to_group_parameters.txt
+
+def group( ag, newerAg=None ):
+    """' make the minimum sub group which includes setAg
+        There must be a smarter algorithm.
+        setAg 引数に行列やベクトルの要素を含めるとエラーになる
+        行列やベクトルの __eq__ 結果は True/Fall の行列・ベクトルになる
+        対策としては 対策としては <== ClTensor, np.ndarray クラスを継承しない行列クラスを作らねばならない
+    '"""
+comment は誤り。
+***** group(..) は ~[1,3,Z5] 引数を受け付けない
+
+group(~[1,3,Z5])
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 8, in <module>
+  File "pysf\ptGrp.py        674, in group
+    assert isinstance(ag, kfs)
+AssertionError
+            assert isinstance(ag, kfs)
+            kfsAt = ag
+
+            if isinstance(ag, kfs)
+                kfsAt = ag
+            else:
+                kfsAt = kfs(ag)
+↓↑ cf.
+group(kfs(~[1,3,Z5]))
+===============================
+kfs(1, 2, 3, 4)
+***** def group( ag, newerAg=None, defaultGroupingMethod=None):
+"""' default grouping method is *:__mul__. if you want any other method, you must set a 2 term function
+For example
+
+group(~[1,3,Z5],λ x,y:x+y)
+↑ newerAg が kfs でないときは二項関数でなければならない
+    ↑ defaultGroupingMethod
+
+↑ D:\my\vc7\pysfTracking\neverEndingKitchenSinkMemo.txt 42:**** group(..) 関数に fn=None キーワードを追加する← invalid 
+D:\my\vc7\pysfTracking\neverEndingKitchenSinkMemo.txt:47:    ↑ Cayley graph は dict で実装することが多いだろうが、それを group(..) で扱うのは無理筋
+        ↑ kfs 集合属では + による group も作りたくなる
+        ↑ Cayley graph edge 集合は vertex pair tuple の集合としても表現できる
+            ↑ vertex pair tuple では、有限個の generator によ Cayley graph は表現できないが
+            ↑ Cayley graph の edge は数個の generator 要素とのリカーシブな演算で生成される
+
+
+
+
+
+
+*** 12
+* registerd
+
+* difficult bug
+**** 下の PythonSf Block 式が動かないことが希にある。再現性が無い date:2014/11/04 (火) time:22:11 OK
+//@@
+ar=~[0,1,2,Z3]
+mt=kzrs(2,2,Z3)
+blSentinel=False
+for v in mitr(*[ar]*4):
+    mt.m_tnsr.put([0,1,2,3],v)
+    if (v == (Z3(1),Z3(0),Z3(0),Z3(1))) or blSentinel:
+        print mt.m_dtrm,
+//@@@
+_tmC.py
+  File "D:\my\vc7\mtCm\_tmC.py", line 9
+    
+***** エラー内容
+IndentationError: expected an indented block
+↑;;type _tmC.py
+from __future__ import division
+# -*- encoding: cp932 -*-
+from pysf.sfFnctns import *
+setDctGlobals(globals())
+from pysf.customize import *
+if os.path.exists('./sfCrrntIni.py'):
+    from sfCrrntIni import *
+if (v == (Z3(1),Z3(0),Z3(0),Z3(1))) or blSentinel:
+↑ 上のように _tmC.py から print mt.m_dtrm 文が抜けることがある。再現性が不安定 
+↑ type _tmC.py, copy _tmC.py temp.py の後下を実行したら print mt.m_dtrm, も _tmC.py に追加されるように戻った
+//@@
+import collections as md; md.namedtuple('nd', 'a', 'b', 'c')
+//@@@
+        print mt.m_dtrm,
+
+
+* big feature
+* writing
+* invalid feature
+* invalid bug
+**** Open 判で最後の式に keyward 引数を使うと 余分な Warning が出るdate:2014/11/04 (火) time:22:02
+↑ source が簡潔であることも重要
+    ↑ kVerifier との関連が見通しやすい
+
+    seed(0); randi(5,10, size=[3,5])
+Warning! Don't use a assignment sentence in end.
+===============================
+[[9 5 8 8 8]
+ [6 8 7 9 5]
+ [5 9 7 6 5]]
+
+* feature
+* bug
+
+

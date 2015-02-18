@@ -1,0 +1,84 @@
+Title       : cmps in sfCrrntIni.py have a mulfunction for the None parameter 
+            : sfCrrntIni.py ÇÃ cmps:ä÷êîçáê¨ä÷êîÇ™ None à¯êîÇÃÇ∆Ç´åÎìÆçÏÇ∑ÇÈ
+
+Serial Num  : 00068,    State: closed: date:2014/11/13
+First issued: 2014/11/04 (âŒ) time:22:02
+
+Tags        : sfCrrntIni cmps
+
+Comments_1  : an error example
+f=É… x,y:   x y ; fn=f2CT(f); a,b,x=0,1,1; (fn.fst(a) ~% fn.fst(b))(x)
+
+***** f2CT bug ?  date:2014/11/04 (âŒ) time:22:02
+mt=~[[0,1,0],[1,1,2],[0,2,0],int]; f=~*=É… x,y:mt[x,y];ls=range(3); É”=f2CT(f); a,b=0,1; all((É”.fst(a) ~% É”.fst(b))(x) == É”.fst(É”(a,b))(x) for x in ls)
+Å~mt=~[[0 1 0],[1 1 2],[0 2 0],int]; f=~*=É… x,y:mt[x,y];ls=range(3); É”=f2CT(f); a,b=0,1; [((É”.fst(a) ~% É”.fst(b))(x)                    ) for x in ls]
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 13, in <module>
+  File "sfCrrntIni.py   line 352, in cmps
+    assert f.dom == g.cod
+AssertionError
+(Pdb) f.dom
+(None,)
+(Pdb) g.cod
+(Pdb) g.cod==None
+(Pdb) (f.dom, g.cod)
+((None,), None)
+
+Comments_2  : counter mesure
+def cmps(f,g):
+    """' composition of typed functions:f ~* g. f's argemnt must be only 1.
+    '"""
+    if hasattr(g, '__call__'):
+        pass
+    else:
+        assert hasattr(g, 'func_code') and g.func_code.co_argcount == 1
+
+    if ( hasattr(f, 'dom') and hasattr(g, 'cod')
+     and hasattr(f, 'dom') and hasattr(g, 'cod')
+     and not (f.dom == None) and not (g.dom == None)
+    ):
+        assert f.dom == g.cod
+
+def cmps(f,g):
+    """' composition of typed functions:f ~* g. f's argemnt must be only 1.
+    '"""
+    if hasattr(g, '__call__'):
+        pass
+    else:
+        assert hasattr(g, 'func_code') and g.func_code.co_argcount == 1
+
+    if ( hasattr(f, 'dom') and hasattr(g, 'cod')
+     and hasattr(f, 'dom') and hasattr(g, 'cod')
+     and not (f.dom == None) and not (g.dom == None)
+    ):
+        assert f.dom == g.cod
+
+Å´
+
+def cmps(f,g):
+    """' composition of typed functions:f ~* g. f's argemnt must be only 1.
+    '"""
+    if hasattr(g, '__call__'):
+        pass
+    else:
+        assert hasattr(g, 'func_code') and g.func_code.co_argcount == 1
+
+    if ( hasattr(f, 'dom') and hasattr(g, 'cod')
+     and not ((f.dom == None) or (f.dom == (None,))) and not (g.dom == None)
+    ):
+        assert f.dom == g.cod
+
+Comments_3  : action scripts
+f=É… x,y:x y ; fn=f2CT(f); a,b,x=2,1,3; (fn.fst(a) ~% fn.fst(b))(x) == 6
+
+Comments_4  : open îªÇ÷ÇÃèCê≥
+f=É… x,y:x*y ; fn=f2CT(f); a,b,x=2,1,3; cmps(fn.fst(a), fn.fst(b))(x) == 6
+

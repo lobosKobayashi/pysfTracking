@@ -1,0 +1,78 @@
+Title       : add copy() method to ClFldTns
+            : ClFldTns ‚É copy() method ‚ð’Ç‰Á‚·‚é
+
+Serial Num  : 00036,    State: closed: date:2014/07/07 (ŒŽ) time:12:21
+First issued: date:2014/07/07 (ŒŽ) time:11:46
+
+Tags        : ClFldTns
+
+Comments_1 : an error example
+‰º‚Ì‚æ‚¤‚Èˆ—‚Å copy() ‚ª•K—v‚É‚È‚é
+//@@
+RS=oc.RS
+vc=~[0xb,0x45,0x93,0xdc,RS]
+ls=~[0,1,RS]
+ls4=list(mitr(*[ls]*4))
+ls16=list(mitr(*[ls]*16))
+fGC=ƒÉ x:[vb for vb in ls4 if x == vb vc][0]
+sqrtRS=ƒÉ x:[vb for vb in ls4 if x == (vb vc)^2][0] vc
+fSb=ƒÉ ƒÐ,x:ƒÐ(fGC(x)) vc; [sqrtRS(x) for x in vc]
+fMb=ƒÉ  m,x: m fGC(x) vc
+=:SS4
+=:kfsRSF
+
+mt=kzrs(4,4,RS)
+lsAM=[]
+for vb in ls16:
+    mt.r[:] = vb
+    if any(fMb(mt,v) fMb(mt,v) != fMb(mt,v^2) for v in kfsRSF):
+        continue
+
+    if any(fMb(mt,vx vy) != fMb(mt,vx) fMb(mt,vy) for vx,vy in mitr(kfsRSF,kfsRSF)):
+        continue
+    
+    print mt
+    lsAM.append(~[mt.m_tnsr.copy()])
+
+lsAM:=lsAM
+//@@@
+time:12:54
+
+time:03:34
+D:\my\vc7\mtCm>_tmC.py
+[[0x00 0x00 0x00 0x00]
+ [0x00 0x00 0x00 0x00]
+ [0x00 0x00 0x00 0x00]
+ [0x00 0x00 0x00 0x00]]
+---- ClFldTns:< class 'pysf.octn.RS'> ----
+[[0x00 0x00 0x00 0x01]
+ [0x00 0x00 0x01 0x00]
+ [0x00 0x01 0x00 0x00]
+ [0x01 0x00 0x00 0x00]]
+---- ClFldTns:< class 'pysf.octn.RS'> ----
+[[0x00 0x00 0x01 0x00]
+ [0x01 0x00 0x00 0x00]
+ [0x00 0x00 0x00 0x01]
+ [0x00 0x01 0x00 0x00]]
+---- ClFldTns:< class 'pysf.octn.RS'> ----
+[[0x00 0x01 0x00 0x00]
+ [0x00 0x00 0x00 0x01]
+ [0x01 0x00 0x00 0x00]
+ [0x00 0x00 0x01 0x00]]
+---- ClFldTns:< class 'pysf.octn.RS'> ----
+[[0x01 0x00 0x00 0x00]
+ [0x00 0x01 0x00 0x00]
+ [0x00 0x00 0x01 0x00]
+ [0x00 0x00 0x00 0x01]]
+---- ClFldTns:< class 'pysf.octn.RS'> ----
+
+Comments_2 : counter mesure
+ClFldTsn ‚É‰º‚ð’Ç‰Á‚µ‚½
+    def copy(self):
+        return krry(self.m_tnsr.copy(), ftype=self.m_type)
+
+Comments_3 : action scripts
+
+mt=~[[0,1],[0,0],Z3]; ls=[mt]; mtX=mt.copy(); mtX[0,0]=Z3(2); ls.append(mtX); ls[0][0,0]==0
+===============================
+True

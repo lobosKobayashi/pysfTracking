@@ -1,0 +1,33 @@
+Title       :ClFldTns instance.m_dtrm returns sign inverted value occasionally 
+            : ClFldTns で行列式の値の符号が反転することがあった
+
+Serial Num  : 00010,    State: : date:2013/10/10
+First issued: date:2014/08/07
+
+Tags        : ClOctonion __lt__
+
+Comments_1  : an error example
+~[[0,1],[1,0],Z3].m_dtrm
+===============================
+Z3(1)
+
+N=3; seed(0); det=λ v:v[0]v[4]v[8]+v[1]v[5]v[6]+v[2]v[3]v[7]-v[2]v[4]v[6]-v[1]v[3]v[8]-v[0]v[5]v[7]; all((Bf(mt=~[randint(N,size=[N,N]),Z3]), Bf.mt.m_dtrm == det(Bf.mt.r))[-1] for _ in range(10))
+===============================
+False
+
+↑ 列入れ替え:self.m_vlrInExchanged が発生したときの符合変更が抜けていた
+
+Comments_2  : counter mesure
+下のコードを追加した
+                # SNb:00042 date:2014/08/08 (金) time:00:38
+                import ptGrp as md
+                if md.Sb(*self.m_vlrInExchanged).sign == -1:
+                    self.m_dtrm *= -self.m_T(1)
+
+Comments_3  : action scripts
+
+~[[0,1],[1,0],Z3].m_dtrm == Z3(2)
+N=3; seed(0); det=λ v:v[0]v[4]v[8]+v[1]v[5]v[6]+v[2]v[3]v[7]-v[2]v[4]v[6]-v[1]v[3]v[8]-v[0]v[5]v[7]; all((Bf(mt=~[randint(N,size=[N,N]),Z3]), Bf.mt.m_dtrm == det(Bf.mt.r))[-1] for _ in range(10))
+
+Comments_4  : open 判への修正
+無し ClFldTns のバグだから

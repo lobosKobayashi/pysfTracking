@@ -1,0 +1,37 @@
+Title       : At PythonSfOp, norm(..) raised NameError: global name 'sc' is not defined 
+            : PythonSfOp ‚Å norm(..) ŠÖ”‚© NameError: global name 'sc' is not defined —áŠO‚ğ”­¶‚³‚¹‚Ä‚¢‚½
+
+Serial Num  : 00046,    State: resolving: date:2014/08/23
+First issued: date:2014/08/23
+
+Tags        : norm
+
+Comments_1  : an error example
+norm([3,4])
+global name 'sc' is not defined
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 8, in <module>
+    rightSideValueGlb__ = norm([3,4])
+  File "D:\my\vc7\mtCm\pysfOp\basicFnctnsOp.py", line 1097, in __call__
+    return self.m_fn(*ag)
+  File "D:\my\vc7\mtCm\pysfOp\kNumericOp.py        675, in __norm
+    if isinstance( sqAg, sc.ndarray) and sqAg.shape==():
+NameError: global name 'sc' is not defined
+
+Comments_2  : counter mesure
+np.ndarray ‚ğ np.ndarray ‚É’¼‚µ‚½
+ª
+‘¼‚Ì sc ‚à np ‚É’¼‚µ‚½
+import numpy as np
+ª sf.sc. ‚Í np ‚É‚¹‚¸‚É sc ‚Ì‚Ü‚Üc‚µ‚½
+
+Comments_3  : action scripts
+norm([3,4]) == 5
+===============================
+True
+
+Comments_4  : open ”»‚Ö‚ÌC³
+ª open ”Å‚Ì‚İ
+
+

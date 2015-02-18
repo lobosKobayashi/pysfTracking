@@ -1,0 +1,40 @@
+Title       :plotDbl function with a function parameter cause assert error 
+            : PythonSf featue bug ごった煮メモ
+
+Serial Num  : 00066,    State: closed: date:2014/11/13
+First issued: date:2014/11/13
+
+Tags        : plotDbl
+
+Comments_1  : an error example
+plotDbl(sin, cos, [0,2 pi])
+global name 'np' is not defined
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\vc7\mtCm\_tmC.py", line 8, in <module>
+    rightSideValueGlb__= plotDbl(sin, cos, [0,2 * pi])
+  File "D:\my\vc7\mtCm\pysf\vsGraph.py        2076, in plotDbl
+    assert(isinstance(range,(tuple, list, np.ndarray)) and len(range)==2)
+NameError: global name 'np' is not defined
+
+Comments_2  : counter mesure
+        assert(isinstance(range,(tuple, list, np.ndarray)) and len(range)==2)
+↓
+        assert(isinstance(range,(tuple, list, sf.np.ndarray)) and len(range)==2)
+
+Comments_1_1  : range default 引数名が range : Python で使用頻度の高い関数名
+ついでに ***** plotDbl 引数に range を使っている
+Python の range と誤解しやすい
+↑plotGr は range を使っていない
+info(plotGr)
+ plotGr(vctAg, start=(), end=None, N=50, color=(0, 1, 1))
+↑region にした
+
+Comments_3  : action scripts
+なし
+Comments_4  : open 判への修正
+        assert(isinstance(range,(tuple, list, np.ndarray)) and len(range)==2)
+        ↓
+        assert(isinstance(range,(tuple, list, sf.np.ndarray)) and len(range)==2)
+
+plotDbl(sin, cos, [0,2*pi])

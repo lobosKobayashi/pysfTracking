@@ -1,0 +1,61 @@
+Title       : Assert error At ClFldTns.__repr__(..) for a extremely long ClFldTns element
+            : 極端に長い文字列となるClFldTns 要素があるととき ClFldTns.__repr__ が assert error
+
+Serial Num  : 00023,    State: closed: date:2014/06/05
+First issued: date:2014/06/05
+
+Tags        : ClFldTns __repr__
+
+Comments(1) : an error example
+U=kzrs(2,2,Oc); U[0,1]=Oc(1, 2, 0, 2)^-1; U.__repr__()
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\utSf\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3033, in start
+  File "pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 10, in <module>
+  File "D:\my\vc7\utSfBkup\commercial\pysf\sfFnctns.py", line 1632, in __repr__
+    assert sztFirstSqInLoopBrAt > 0
+AssertionError
+
+Comments(2) : 原因
+下のように極端に長い ClFldTns 要素を持つ行列を __repr__(..) 表示するとき、[...] が一行に収まらなくなり次の行に回されることを想定していなかった
+(Oc(1, 2, 0, 2)^-1).__repr__()
+===============================
+Oc(0.1111111111111111, -0.2222222222222222, 0.0, -0.2222222222222222)
+
+Comments(3) : 対策
+Assert を止めて if ひとつの [...] が次の行に回されたときの対策コードを sfFnctns.py:ClFldTns.__repr__ に追加した
+
+        # align 2'nd line positions of the self matrix
+        if len(self.m_tnsr.shape) >= 2:
+            for k, elmAt in enumerate(lstStrAt[1:]):
+                sztFirstSqInLoopBrAt = elmAt.find('[')
+                assert sztFirstSqInLoopBrAt > 0
+                if sztFirstSqInLoopBrAt < sztLastLeftSqBrAt:
+                    lstStrAt[k+1] = ' '*(sztLastLeftSqBrAt + 1
+                                        -sztFirstSqInLoopBrAt) + lstStrAt[k+1]
+        ↓
+
+        # align 2'nd line positions of the self matrix
+        if len(self.m_tnsr.shape) >= 2:
+            for k, elmAt in enumerate(lstStrAt[1:]):
+                sztFirstSqInLoopBrAt = elmAt.find('[')
+                if sztFirstSqInLoopBrAt > 0:
+                    if sztFirstSqInLoopBrAt < sztLastLeftSqBrAt:
+                        lstStrAt[k+1] = ' '*(sztLastLeftSqBrAt + 1
+                                        -sztFirstSqInLoopBrAt) + lstStrAt[k+1]
+                else:
+                    # very long element which cannot be written in one-line
+                        lstStrAt[k+1] = ' '*(sztLastLeftSqBrAt + 1
+                                            ) + lstStrAt[k+1]
+Action Scripts: 
+# 2014.06.05 SN:00023 bug fix: ClFldTns.__repr__(..) が assert error だった
++1 calculateLineString __set "U=kzrs(2,2,Oc); U[0,1]=Oc(1, 2, 0, 2)^-1; strAt=U.__repr__(); strAt[37:59]"
++0 strStt              __compare "Oc(0.1111111111111111,"
+
+

@@ -1,0 +1,41 @@
+Title       : fix fftshift to return an ClTensor instance and add ifftshift
+            : fftshit(..) で ClTensor インスタンスを返す。ifftshift を追加する
+
+Serial Num  : 00063,    State: closed: date:2014/11/02
+First issued: date:2014/10/10
+
+Tags        : fft
+
+Comments_1  : an error example
+fftshift(~[1,2,3,4,5])
+===============================
+[ 4.  5.  1.  2.  3.]
+↑ ClTensor でなければならない。
+
+Comments_2  : counter mesure
+from numpy.fft import fftshift
+↓
+def fftshift(sq):
+    from numpy.fft import fftshift
+    return sf.krry(fftshift(sq))
+
+def ifftshift(sq):
+    from numpy.fft import ifftshift
+    return sf.krry(ifftshift(sq))
+
+Open 判
+from numpy.fft import fftshift
+↓
+from numpy.fft import fftshift, ifftshift
+
+Comments_3  : action scripts
+v=fftshift([1,2,3,4,5]); v == ~[4,5,1,2,3] and isinstance(v,ClTensor)
+v=ifftshift([1,2,3,4,5]); v == ~[3,4,5,1,2] and isinstance(v,ClTensor)
+
+Open 判
+v=fftshift([1,2,3,4,5]); (norm(v - [4,5,1,2,3])==0) and isinstance(v,np.ndarray)
+v=ifftshift([1,2,3,4,5]); (norm(v - [3,4,5,1,2])==0) and isinstance(v,np.ndarray)
+
+Comments_4  : open 判への修正
+open 判は ifftshit だけを追加す
+

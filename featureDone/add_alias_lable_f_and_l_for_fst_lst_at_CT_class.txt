@@ -1,0 +1,36 @@
+Title       : add alias label _.f _.l for _.fst _.lst at CT class
+            : 
+
+Serial Num  : 00039,    State: closed: date:2014/07/28 (Œ) time:09:41
+First issued: date:2014/07/28 (Œ) time:09:33
+
+Tags        : 
+
+Comments_1  : an error example
+f.fst, f.lst ‚ğ‘½—p‚·‚é‚Æ PythonSf ®‚ª’·‚­‚È‚é‚Ì‚Å f.f,fl ‚ğg‚¦‚é‚æ‚¤‚É‚·‚é
+Comments_2  : counter mesure
+Comments_3  : action scripts
+f=f2CT(ƒÉ x,y:x+y, Z5); g=ƒÉ x:(f.f(x)~%f.f(Z5(2)))(Z5(0)); all([f.l(Z5(2))(x)==g(x) for x in ~[range(5),Z5]])
+Comments_4  : open ”»‚Ö‚ÌC³
+
+sfCrrntIniOp.py
+        elif len(_.dom) >= 2:
+            _.fst = fst
+            _.lst = lst
+
+        return _
+
+«
+
+        elif len(_.dom) >= 2:
+            _.fst = fst
+            _.lst = lst
+
+        _.f, _.l=fst,lst
+        return _
+f=f2CT(ƒÉ x,y:x+y, Z5); g=ƒÉ x:(f.f(x)~%f.f(Z5(2)))(Z5(0)); all([f.l(Z5(2))(x)==g(x) for x in [Z5(y) for y in range(5)]])
+ª ~% ‚ğg‚¦‚È‚¢
+f=f2CT(ƒÉ x,y:x+y, Z5); f.f(Z5(1))(Z5(2))==f.fst(Z5(1))(Z5(2))==Z5(3)
+f=f2CT(ƒÉ x,y:x+y, Z5); f.l(Z5(1))(Z5(2))==f.lst(Z5(1))(Z5(2))==Z5(3)
+
+

@@ -1,0 +1,17 @@
+Title       : never ending comment modification
+            : コメント修正記録
+
+Serial Num  : 00072,    State: resolving: date:2014/12/03
+First issued: date:2014/12/03
+
+** 2014
+*** 12 finished
+**** norm コメント date:2014/12/03 (水) time:04:13
+# norm(oc.Pl(1,2,3)) が scalar を返さねばならない。
+#     ClAfNorm を作らないと、上の式が関数合成になる
+# 「normAF is an Arithmitic Function of norm」 を追加して設ける
+# normF(..) を使わせることで、危なっかしい計算を始めている注意信号の意味も
+# 持たせられる
+↓
+# ClAfNorm により 1/r≡ 1/norm(~[`X,`Y,`Z])(...) を記述可能にする
+

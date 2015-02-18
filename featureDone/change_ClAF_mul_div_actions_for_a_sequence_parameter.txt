@@ -1,0 +1,167 @@
+Title       : change ClAF mul div actions for a sequence parameter 
+            : ClAF の sequecce 引数にたいする div/mul 動作を修正する
+
+Serial Num  : 00057,    State: resolving: date:2014/09/24
+First issued: date:2014/09/24
+
+Tags        : ClAF
+
+* Comments_1  : an error example
+
+(1/(1-`X))(klsp(3,4))
+You set 1/ for not square matrix
+
+iterator 引数を可能にする
+積と商演算では list, tuple, dictionary, ndarray, ClTensor に要素ごとの処理を行うようにコードを追加する
+↑ _mul _div _rdiv を設ける必要がありそう
+    def __rdiv__(self, ag):
+        return ClAfOp(lambda *x:ag/self(*x))
+    def __rtruediv__(self, ag):
+        return ClAfOp(lambda *x:ag/self(*x))
+↑ __rdiv__ は既に存在する。 __rdiv__ の問題ではない
+
+***** ;;ls=[1,2,3]; `X(ls)/`X(ls)
+↓↑ 同じ意味
+(`X/`X)([1,2,3])
+ar=klsp(-10,10); w=3; (`X^2/(w-`X))(ar)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "C:\Python27\lib\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 10, in <module>
+  File "C:\Python27\lib\site-packages\pysf\basicFnctns.py", line 972, in __call__
+    return self.m_fn(*ag)
+  File "C:\Python27\lib\site-packages\pysf\basicFnctns.py", line 1034, in <lambda>
+    / _call(ag, *x) )
+  File "pysf\sfFnctns.py", line 583, in __truediv__
+  File "pysf\sfFnctns.py", line 534, in inv
+  File "pysf\sfFnctns.py", line 997, in __getattr__
+  File "C:\Python27\lib\site-packages\numpy\linalg\linalg.py", line 445, in inv
+    return wrap(solve(a, identity(a.shape[0], dtype=a.dtype)))
+  File "C:\Python27\lib\site-packages\numpy\linalg\linalg.py", line 311, in solve
+    _assertRank2(a, b)
+  File "C:\Python27\lib\site-packages\numpy\linalg\linalg.py", line 155, in _assertRank2
+    two-dimensional' % len(a.shape)
+numpy.linalg.linalg.LinAlgError: 1-dimensional array given. Array must be             two-dimensional
+
+***** 元々のエラーが発生した式
+gn=1/(`X^2+`X+1); ge=ClAF(λ t:gn(t)+gn(-t)); ge(~[1,2,3])
+You set 1/ for not square matrix
+_tmC.py
+Traceback (most recent call last):
+  File "D:\my\sf\control\_tmC.py", line 10, in <module>
+    rightSideValueGlb__= ge(krry__(*[1,2,3]))
+  File "C:\Python27\lib\site-packages\pysf\basicFnctns.py", line 980, in __call__
+    return self.m_fn(ag[0])
+  File "D:\my\sf\control\_tmC.py", line 9, in <lambda>
+    ge=ClAF(lambda t:gn(t)+gn(-t))
+  File "C:\Python27\lib\site-packages\pysf\basicFnctns.py", line 972, in __call__
+    return self.m_fn(*ag)
+  File "C:\Python27\lib\site-packages\pysf\basicFnctns.py", line 1041, in <lambda>
+    return ClAfOp(lambda *x:ag/self(*x))
+  File "pysf\sfFnctns.py", line 601, in __rtruediv__
+TypeError: You set 1/ for not square matrix
+
+* Comments_2  : counter mesure
+
+* Comments_3_0: 仕様
+↑ ClAF.. 系の testClAF_.vrf を作って体系的に action scripts を記述する
+    ↑ ついでに testClTensor_ClFldTns.vrf も設ける
+    ↑ この二つの pysfTracking issue は、何時までも closed, resolving を繰り返すことになるだろう
+↑ `X:ClAFX と XX:ClAFXX の二種類の恒等関数を導入しているのだから、 matlab like/数学 like 動作を分けることを徹底する
+↑ Open 版と commercial 版で同じ結果を得るには commercial 版の式に .b を追加する
+↑ dict 行列引数を受け付ける
+↑ 計算速度を犠牲にしない
+    ↑ 計算結果が ClTensor でないとき、 ClTensor に変更する
+
+** ver0.97 からの変更動作
+*** ClAF, ClAFX どちらも generator 引数を受け付ける
+
+*** XX:ClAFXX instance は ndarray 引数のときでも ClTensor インスタンスを返す
+ar=np.array([1,2,3]); XX(ar)
+===============================
+[1 2 3]
+↓
+ar=np.array([1,2,3]); arX=XX(ar); type(arX)==ClTensor       # 0.97A → 0.97B で変更
+ar=np.array([1,2,3]); arX=XX(ar); (arX==~[1,2,3]) is True   # 0.97A → 0.97B で変更
+
+** ClAF は ClTensor を返す以外は sequence/matrix 引数の返り値は scipy と同じにする
+↑ open 版では np.ndarray instance を返す
+↑ ユーザーは、戻り値が予測できることが望ましい
+
+** ClAFX は、四則べき乗演算を引数に直接施す
+
+** 問題・疑問点
+*** ClAF(`X), ClAF(XX), ClAF(~[`X]), ClAF(~[`X,0]]), ClAF(~[`X,`Y^2]) を、どのように扱う
+↑ self.m_fn に ~[`X,`Y^2] インスタンスを代入する
+    ↑ ClAF(~[X,0]のときに下にすべきではない。ClAF(`X), ClAF(XX) 専用だ
+            self.m_fn = lambda *x: ag    # constant function for ClAF(~[`X,0])
+
+* Comments_3  : action scripts
+↑ test first で作らんと見逃しが入り込む
+
+## comparing `X equations with XX equations
+## ndarray parameters → ClTensor を返すように修正する
+↑ .b を追加するだけで nd.array にできる。
+↑ ifftshift などとの仕様での整合性
+(2 XX)([1,2,3])
+===============================
+[1, 2, 3, 1, 2, 3]
+↑ 恒等式で ndarray 引数に対して ndarray を返すのが正しい？← ndarray を返す
+    ↑(2XX)(Pl(1,0)) == 2 Pl(1,0) であることと整合性を保つため
+    ↑(2XX)([1,2,3]) == [1,2,3, 1,2,3] and (2XX)((1,2,3)) == (1,2,3, 1,2,3)
+
+ar=np.array([1,2,3]); `X(ar)
+===============================
+[1 2 3]
+ar=np.array([1,2,3]); XX(ar)
+===============================
+[1 2 3]
+
+## tuple, list, iterator parameters
+## argment position selector 
+## integer type sequence instance
+↑ default float
+
+# add
+(2+`X)((1,2,3)) ==(2+`X)([1,2,3]) ==(2+`X)(xrange(2,4)) == ~[3,4,5]
+
+## type check for a sequence parameter
+type((2+`X)((1,2,3))) ==type((2+`X)([1,2,3])) ==type((2+`X)(xrange(2,4))) ==type((2+`X)(np.array([2,4]))) == ClTensor
+(2+`X)((1,2,3)).dtype ==(2+`X)([1,2,3]).dtype ==(2+`X)(xrange(2,4)).dtype == (2+`X)(np.array([2,4])).dtype == np.float64
+
+## argment position selector 
+(2+`X)(1,2,3) == 3
+(2+`Y)(1,2,3) == 4
+(2+`Z)(1,2,3) == 6
+(2+`T)(1,2,3) == 6
+
+(2+XX)(1,2,3) == 3
+#(2+YY)(1,2,3) # there isn't YY
+
+## with consttant
+
+# sub
+## with constant
+
+# mul
+## with constant
+
+## with Pl instance
+
+# div
+
+# pow
+
+# others
+## ufunc でなくても ClTensor を返す
+import math; type(ClAF(math.sin)([1,2,3])) == ClTensor
+import math; type(ClAF(λ x:2x)([1,2,3])) == ClTensor
+
+* Comments_4  : open 判への修正
+

@@ -1,0 +1,31 @@
+Title       : coverage 100% tests of ClTensor/ClFldTns 
+            : ClTensor/ClFldTns coverage 100% tests
+
+Serial Num  : 00060,    State: opend: date:2014/10/06
+First issued: date:2014/10/06
+
+Tags        : test ClTensor ClFldTns
+
+* Comments_1  : an error example
+** ³‚µ‚¢‚©–À‚Á‚Ä‚¢‚é®
+*** 0 x N s—ñ‚ğì‚ç‚È‚¢
+seed(0); ~[np.r_[1,randi(3,[3]),1],Z3]
+===============================
+[Z3(1) Z3(0) Z3(1) Z3(0) Z3(1)]
+---- ClFldTns:< class 'sfCrrntIni.Z3'> ----
+
+seed(0); ~[[1,2,3]        ,int]
+===============================
+[1 2 3]
+---- ClTensor ----
+«ª 0 x N s—ñ‚ğì‚ç‚È‚¢‚Æ‚·‚é‚±‚Æ‚Åã‚ğ³‚µ‚­‚Å‚«‚é
+seed(0); ~[[1,2,3],[4,5,6],int]
+===============================
+[[1 2 3]
+ [4 5 6]]
+---- ClTensor ----
+
+Comments_2  : counter mesure
+Comments_3  : action scripts
+Comments_4  : open ”»‚Ö‚ÌC³
+

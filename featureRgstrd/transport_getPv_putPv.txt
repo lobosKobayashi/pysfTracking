@@ -11,3 +11,17 @@ Comments(1) :
     =:, := 記述機能は移植しない
     最終値の _dt.pvl 記録は行う
 
+PythonSf open 判では ファイル変数を関数呼び出しによる pickles で実装する
+その pickles load/store 関数を PythonSf commercial 判でも使えるようにすることで commercial を Open の upper compatible 変数とする
+    ↑
+    form pickle import dump,load
+    ↑pysf\customize.py, pysfOp\customizeOp.py の二つへ追加する
+↑ 拡張子を pickles のときは pvm とし pvl と区別する
+    ↑ 拡張子の自動付加
+        ↑最後の四文字が ".pvm" でないとき
+        ↑最後の四文字が ".pvl" のときは、エラーにする
+↑ pvm ファイル用の関数名は getPvm/putPvm とする
+↑ Open 版でも := 演算子をゆるす
+   同時に block 式でも := を使えるようにする
+    ↑ "=:" 演算子を見つけて名前処理をするだけだ
+↑ Open 版でも _dt.pvm をデフォルトで作るように改善する

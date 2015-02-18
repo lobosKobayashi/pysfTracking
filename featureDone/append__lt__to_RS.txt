@@ -1,0 +1,68 @@
+Title       : append __lt__ to RS class
+            : __lt__ method を RS class に追加する
+
+Serial Num  : 00027,    State: closed: date:2014/06/29 (日) time:10:47
+First issued: date:2014/06/25 (水) time:13:17
+
+Tags        : ClRS __lt__
+
+Comments(1) : an old action example
+RS=oc.RS; kfs([RS(0x3e), RS(4), RS(0x1c), RS(7)])
+===============================
+kfs([RS(0x3e), RS(0x04), RS(0x1c), RS(0x07)])
+↓
+RS=oc.RS; kfs([RS(0x3e), RS(4), RS(0x1c), RS(7)])
+===============================
+kfs([RS(0x04), RS(0x07), RS(0x1c), RS(0x3e)])
+
+Comments(2) : counter mesure
+
+oc.RS に下の __lt__(..) method を追加する
+
+    def __lt__(self, ag):
+        if isinstance(ag, RS):
+            return self.m_val < ag.m_val
+        elif isinstance(ag, int) or isinstance(ag, float):
+            return self.m_val < ag
+        elif isinstance(ag, complex):
+            if ag.imag == 0:
+                return self.m_val < ag.real
+            else:
+                assert False, ("You compared complex val:"+ str(ag)
+                              +" with RS instance.")
+        else:
+            return False
+
+それまでの vfPP.bat チェック OK
+
+Comments(3) : Open 判にも対策の追加が必要です
+Comments(5) : 検討
+ClZp:Z2,Z3, ... Z7, O2,O3, ... ,O7 との比較は考えない。比較すべきでない。
+
+追加した　date:2014/06/29 (日) time:10:40
+    def __lt__(self, ag):
+        if isinstance(ag, RS):
+            return self.m_val < ag.m_val
+        elif isinstance(ag, int) or isinstance(ag, float):
+            return self.m_val < ag
+        elif isinstance(ag, complex):
+            if ag.imag == 0:
+                return self.m_val < ag.real
+            else:
+                assert False, ("You compared complex val:"+ str(ag)
+                              +" with RS instance.")
+        else:
+            return False
+
+
+Comments(4) : action scripts
+RS=oc.RS; RS(8) > Z3(5), Z7(5) < RS(8)
+int() argument must be a string or a number, not 'RS'
+
++1 calculateLineString __set "RS=oc.RS; kfs([RS(0x3e), RS(4), RS(0x1c), RS(7)]).sl[0]==RS(4)"
++0 blStt               __compare True
+
+↑testSfOp.vrf にも必要です
+追加した　date:2014/06/29 (日) time:10:47
+
+

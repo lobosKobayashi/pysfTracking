@@ -1,0 +1,46 @@
+Title       : error bug at Oc scalr multiplying Oc vector
+            : O3 scalar と O3 vector の掛け算で Oc(Oc(...), ..) を返すエラーになっていた
+
+Serial Num  : 00025,    State: closed: date:2014/06/29 (日) time:04:01
+
+First issued: date:2014/06/15 (日) time:03:54
+
+Tags        : ClOctonion __mul__
+
+Action Scripts: 
+# a,b=Oc(1,2), ~[Oc(3,4),Oc(5,6)]; a b が Oc(Oc(-7, -8), Oc(11, 14)) だった
+a,b=Oc(1,2), ~[Oc(3,4),Oc(5,6)]; a b == ~[Oc(-5,10), Oc(-7,16)]
+===============================
+True
+
+** Comments(1) : an error example
+a,b=Oc(1,2), ~[Oc(3,4),Oc(5,6)]; a b
+===============================
+Oc(Oc(-7, -8), Oc(11, 14))
+
+a,b=Oc(1,2), ~[Oc(3,4),Oc(5,6)]; a+b
+===============================
+Oc(Oc(4, 4), Oc(7, 6))
+
+a,b=Oc(1,2), ~[Oc(3,4),Oc(5,6)]; a-b
+===============================
+Oc(Oc(-2, -4), Oc(-3, -6))
+
+** Comments(2) : an error example
+積演算については以下の修正とします
+
+ClOctoniton.isinstance.__mul__
+        elif isinstance(ag, sf.ClFldTns) and ag.m_type.__base__ == ClOctonion:
+            return ag.__rmul__(self)
+↓
+        elif isinstance(ag, sf.ClFldTns) and (
+                (ag.m_type == ClOctonion) or            # Oc element ClFldTns instance
+                (ag.m_type.__base__ == ClOctonion)):    # O2 ... O7 element ClFldTns instance
+            return ag.__rmul__(self)
+
+下の演算に変わりました。
+a,b=Oc(1,2), ~[Oc(3,4),Oc(5,6)]; a b
+===============================
+[Oc(-5, 10) Oc(-7, 16)]
+
+** Comments(3) : pysfOp には修正が不必要です。Open 判には ClFldTns が無いからです。

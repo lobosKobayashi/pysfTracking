@@ -1,0 +1,114 @@
+Title       : narrowed Sb.__equ__ True objects 
+            : Sb.__equ__ ‚ª True ‚ð•Ô‚·‘ÎÛ‚ð­‚È‚­‚µ‚½
+
+Serial Num  : 00074,    State: closed: date:2014/12/25
+First issued: date:2014/12/25
+
+Tags        : Sb __equ__
+
+Comments_1  : an error example
+(0,1)==Sb(0,1)==Sb(0,1,2)==(0,1,2)     # ‚±‚ê‚ÍÙ‚¢B (0,1)==(0,1,2) ‚Æ‚È‚Á‚Ä‚µ‚Ü‚¤Bdate:2014/12/24 (…)
+===============================
+True
+
+Comments_2  : counter mesure
+    def __ne__(self, ag):
+        if not isinstance(ag,Sb):
+            return True
+        else:
+            return not self.__equ__(ag)
+ª V‹K‚É’Ç‰Á
+
+    def __eq__(self, ag):
+        if not isinstance(ag,Sb):
+            return False
+
+        tplL,tplR = self.m_tpl,ag.m_tpl
+        if len(tplL) > len(tplR):
+            tplL,tplR = tplR,tplL
+
+        lenL,lenR = len(tplL),len(tplR)
+
+        if tplL != tplR[:lenL]:
+            return False
+
+        if tplR[lenL:] == tuple(range(lenL, lenR)):
+            return True
+        else:
+            return False
+ªC³
+    def __eq__(self, ag):
+        """'
+        if hasattr(ag, "m_tpl"):
+            return self.m_tpl == ag.m_tpl
+        elif hasattr(ag, "__len__"):
+        
+        2011/11/20 ã‚ÌðŒ‚ð“ü‚ê‚é‚Æ Sb(0,1) == Sb(0,1,2) ‚ÆŒ¾‚¦‚È‚­‚È‚é
+        m_tpl ‚ð‚Í‘½—p‚³‚ê‚Ä‚¨‚èAag.m_tpl ‚Æ‚Ì”äŠr‚ª³“–‚¾‚Æ‚·‚éª‹’‚ª”–‚¢
+        '"""
+        if hasattr(ag, "__len__"):
+            if len(self) > len(ag):
+                lenAt = len(ag)
+                if self.m_tpl[lenAt:] != tuple(range(lenAt, len(self.m_tpl))):
+                    return False
+                else:
+                    return self.m_tpl[:lenAt] == tuple(ag)
+            elif len(self) == len(ag):
+                at = tuple(ag)
+                return self.m_tpl == at
+            else:
+                # len(self) < len(ag):
+                lenAt = len(self.m_tpl)
+                if tuple(ag[lenAt:]) != tuple(range(lenAt, len(ag))):
+                    return False
+                else:
+                    return self.m_tpl == tuple(ag)[:lenAt]
+        elif hasattr(ag, "__getitem__"):
+            ag = ag[:]
+            if len(self) > len(ag):
+                lenAt = len(ag)
+                if self.m_tpl[lenAt:] != tuple(range(lenAt, len(self.m_tpl))):
+                    return False
+                else:
+                    return self.m_tpl[:lenAt] == tuple(ag)
+            elif len(self) == len(ag):
+                at = tuple(ag)
+                return self.m_tpl == at
+            else:
+                # len(self) < len(ag):
+                lenAt = len(self.m_tpl)
+                if tuple(ag[lenAt:]) != tuple(range(lenAt, len(ag))):
+                    return False
+                else:
+                    return self.m_tpl == tuple(ag)[:lenAt]
+        else:
+            return self.m_tpl == ag
+
+Comments_3  : action scripts
+Sb(0,1)==(0,1)
+===============================
+False
+
+Sb(1,0) == Sb(0,1)
+===============================
+False
+
+Sb(0,1)!=(0,1)
+Sb(0,1) == Sb(0,1)
+===============================
+True
+
+Sb(0,1) == Sb(0,1,2)
+===============================
+True
+Sb(1,0) == Sb(1,0,2)
+Sb(1,0,2) == Sb(1,0)
+
+Sb(1,0) == Sb(0,1,2)
+===============================
+False
+Sb(1,0,2) == Sb(0,1)
+
+Comments_4  : open ”»‚Ö‚ÌC³
+Sb.__ne__(..)/__eq__(..) ‚ð ptGrp.py ‚Æ ptGrpOp.py ‚Å“¯‚¶‚É‚µ‚½
+

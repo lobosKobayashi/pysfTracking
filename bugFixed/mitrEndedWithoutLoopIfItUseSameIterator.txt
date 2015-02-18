@@ -1,0 +1,357 @@
+Title       : mitr(..) で id(..) が同じ iterator を複数使ったとき、繰り返しをせずに終わっていた。
+            : mitr(..) ended without loop if it use a same id iterator
+
+Serial Num  : 00021,    State: closed: date:2014/06/29 (日) time:03:31
+First issued: date:2014/05/22
+
+Tags        : mitr
+
+* Comments(1) : an example
+
+            itr=mitr(3  )          ; [(v0,v1) for v0,v1 in mitr(itr,itr)]
+===============================
+[]
+↓
+            itr=mitr(3  )          ; [(v0,v1) for v0,v1 in mitr(itr,itr)]
+===============================
+[(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+
+mitr=prdct; itr=mitr(3  )          ; [(v0,v1) for v0,v1 in mitr(itr,itr)]
+'int' object is not iterable
+mitr=prdct; itr=mitr([0,1,2])      ; [(v0,v1) for v0,v1 in mitr(itr,itr)]
+===============================
+[]
+mitr=prdct; itr=mitr([0,1,2],[4,5])      ; [(v0,v1) for v0,v1 in mitr(itr,itr)]
+===============================
+[]
+mitr=prdct; itr=    ([0,1,2])      ; [(v0,v1) for v0,v1 in mitr(itr,itr)]
+===============================
+[(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+
+Action Scripts: 
+# 2014.05.22 SN:00021 bug fix: itr=mitr(3); [(v0,v1) for v0,v1 in mitr(itr,itr)] が [] だった
++1 calculateLineString __set "itr=mitr(3); [(v0,v1) for v0,v1 in mitr(itr,itr)][8]==(2,2)"
++0 blStt               __compare True
+
+Source:
+pysf\basicFnctns.py: line 463
+        if len(tail) == 1 and hasattr(tail[0],'next'):
+            # to avoid multiple use of one iterator
+            tailAt = (tuple(tail[0]), )
+↓
+        if len(tail) == 1 and hasattr(tail[0],'next'):
+            # to avoid multiple use of one iterator
+            tailAt = (tuple(tail[0]), )
+            if id(head) == id(tail[0]):
+                head = tailAt[0]
+
+* Comments(2) : 下のとき誤動作する date:2014/05/23 (金) time:04:47
+mitr=prdct; X,Y={4,5},{6,7,8}; len([(f,g) for f,g in mitr(mitr(X,X,X),mitr(Y,Y,Y))])
+===============================
+216
+↑ 上`は正常に動く
+X,Y={4,5},{6,7,8}; len([(f,g) for f,g in mitr(mitr(X,X,X),mitr(Y,Y,Y))])
+===============================
+216
+↑ OK ↓NG
+X,Y={4,5},{6,7,8}; len([(f,g) for f,g in mitr(mitr(X,X,X),mitr(Y,Y,Y))])
+===============================
+27
+↑mitr を itertools.product に置き換えた下のコードにすることで対策できた
+    ↑ vfPP.bat も通った
+    import itertools as md
+    if len(args)==1 and isinstance(args[0], (int,long,float)):
+        return xrange(int(args[0]))
+    else:
+        return md.product(*
+                   [xrange(int(elm)) if isinstance(elm, (int,long,float)) else elm
+                               for elm in args]
+               )
+``
+* Comments(3) : comment(2) の対策:pdct では enmitr(..) が上手くいかん
+ls=[1,2,3]; list(enmitr(ls,ls))
+===============================
+[(0, (1, 1)), (1, (1, 2)), (2, (1, 3)), (3, (2, 1)), (4, (2, 2)), (5, (2, 3)), (6, (3, 1)), (7, (3, 2)), (8, (3, 3))]
+↓↑ この違いがある
+    ↑ PythonSf では　enmitr(..) は matrix のインデックスに使えるように連番ではなく index tuple を返すように考えている
+ls=[1,2,3]; list(enmitr(ls,ls))
+===============================
+[((0, 0), (1, 1)), ((0, 1), (1, 2)), ((0, 2), (1, 3)), ((1, 0), (2, 1)), ((1, 1), (2, 2)), ((1, 2), (2, 3)), ((2, 0), (3, 1)), ((2, 1), (3, 2)), ((2, 2), (3, 3))]
+
+ls=[1,2,3]; list(enmitr(2,3))
+===============================
+[(0, (0, 0)), (1, (0, 1)), (2, (0, 2)), (3, (1, 0)), (4, (1, 1)), (5, (1, 2))]
+↓↑ この違いがある
+ls=[1,2,3]; list(enmitr(2,3))
+===============================
+[((0, 0), (0, 0)), ((0, 1), (0, 1)), ((0, 2), (0, 2)), ((1, 0), (1, 0)), ((1, 1), (1, 1)), ((1, 2), (1, 2))]
+
+ls=[1,2,3]; list(enmitr(3))
+===============================
+[(0, 0), (1, 1), (2, 2)]
+↓↑ このときは同じ
+ls=[1,2,3]; list(enmitr(3))
+===============================
+[(0, 0), (1, 1), (2, 2)]
+
+** Comments(3-2): date:2014/06/26 (木) time:02:35
+        """'
+        if len(tail) == 1 and hasattr(tail[0],'next'):
+            # to avoid multiple use of one iterator
+            tailAt = (tuple(tail[0]), )
+            if id(head) == id(tail[0]):
+                head = tailAt[0]
+        else:
+            tailAt = tail
+        '"""
+↓
+    head, tail = args[0], args[1:]
+
+    if type(head) in [int, long, float]:
+        head = range(int(head))
+
+    if tail:
+        if hasattr(head,'next'): # mitr(..) has 'next' attribute
+            # to avoid multiple use of one mitr(..) iterator
+            idAt=id(head)
+            ls=[k for k,elm in enumerate(tail) if idAt == id(elm)]
+            if ls:
+                tplAt = tuple(head)
+                tailAt = list(tail)
+                head = tplAt
+                for k in ls:
+                    tailAt[k] = tplAt
+            else:
+                tailAt = tail
+        else:
+            tailAt = tail
+
+        if len(tailAt)==1 and hasattr(tailAt[0],'next'):
+            # tailAt[0] == mitr(..)
+            lstTailAt = list(tailAt[0])
+            for i in head:
+                for j in lstTailAt:
+                    if len(tail) == 1:
+                        yield (i, j)
+                    else:
+                        yield (i,)+j
+        else:
+            for i in head:
+                for j in mitr(*tailAt):
+                    if len(tail) == 1:
+                        yield (i, j)
+                    else:
+                        yield (i,)+j
+    else:
+        for i in head:
+            yield i
+
+X,Y=[4,5],[6,7]; list(mitr([4,5], mitr(Y,Y)))
+===============================
+[(4, (6, 6)), (4, (6, 7)), (4, (7, 6)), (4, (7, 7))]
+↓
+X,Y=[4,5],[6,7]; list(mitr([4,5], mitr(Y,Y)))
+===============================
+[(4, (6, 6)), (4, (6, 7)), (4, (7, 6)), (4, (7, 7)), (5, (6, 6)), (5, (6, 7)), (5, (7, 6)), (5, (7, 7))]
+
+X,Y=xrange(4,6),xrange(6,8); list(mitr([4,5], mitr(Y,Y)))
+** Comments(3-3):
+    まだ enmitr(..) 側を対策していない
+    ↑ enmitr(..) 側は正常に動いてしまう
+X,Y=xrange(4,6),xrange(6,8); list(enmitr([4,5], mitr(Y,Y)))
+===============================
+[((0, 0), (4, (6, 6))), ((0, 1), (4, (6, 7))), ((0, 2), (4, (7, 6))), ((0, 3), (4, (7, 7))), ((1, 0), (5, (6, 6))), ((1, 1), (5, (6, 7))), ((1, 2), (5, (7, 6))), ((1, 3), (5, (7, 7)))]
+
+X,Y=[4,5],xrange(6,8); list(enmitr([4,5], mitr(Y,Y)))
+===============================
+[((0, 0), (4, (6, 6))), ((0, 1), (4, (6, 7))), ((0, 2), (4, (7, 6))), ((0, 3), (4, (7, 7))), ((1, 0), (5, (6, 6))), ((1, 1), (5, (6, 7))), ((1, 2), (5, (7, 6))), ((1, 3), (5, (7, 7)))]
+
+X,Y=[4,5],[6,7]; list(enmitr([4,5], mitr(Y,Y)))
+===============================
+[((0, 0), (4, (6, 6))), ((0, 1), (4, (6, 7))), ((0, 2), (4, (7, 6))), ((0, 3), (4, (7, 7))), ((1, 0), (5, (6, 6))), ((1, 1), (5, (6, 7))), ((1, 2), (5, (7, 6))), ((1, 3), (5, (7, 7)))]
+
+X,Y={4,5},{6,7,8}; len([(f,g) for _, (f,g) in enmitr(enmitr(X,X,X),enmitr(Y,Y,Y))])
+===============================
+216
+        ↑ Open 側では　enmitr(..) 側も正常に動いてしまう
+        
+** Comments(3-4):
+    Open 側をまったく対策していない
+
+pysfOp\basicFnctnsOp.py
+
+def mitr(*args):
+    """ 多次元の繰り返しを生成するジェネレータ
+        generator generating for multiple dimention iterators
+    e.g.
+    list(mitr(2,3))
+    ===============================
+    [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]
+
+    s=set(['a','b']);list(mitr(s,s))
+    ===============================
+    [('a', 'a'), ('a', 'b'), ('b', 'a'), ('b', 'b')]
+
+    s=[1,2,3];list(mitr(s,s))
+    ===============================
+    [(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2), (3, 3)]
+
+    """
+    head, tail = args[0], args[1:]
+
+    if type(head) in [int, long, float]:
+        head = range(int(head))
+
+    if tail:
+        if len(tail) == 1 and hasattr(tail[0],'next'):
+            # to avoid multiple use of one iterator
+            tailAt = (tuple(tail[0]), )
+        else:
+            tailAt = tail
+
+        for i in head:
+            for j in mitr(*tailAt):
+                if len(tail) == 1:
+                    yield (i, j)
+                else:
+                    yield (i,)+j
+    else:
+        for i in head:
+            yield i
+↓
+** Comments(3-5): itertools.product を prdct で使えるようにする
+↑ マニュアルにまだ書いていない
+import itertools as itl;
+prdct=itl.product
+↑ マニュアルにはかかない。混乱させるだけだろう
+
+* Comments(4) : × mrng を obsolete にし use mitr(..) を載せる
+下の違いがある。Obsolete にできない
+        list(mrng((1,4),(5,7)))
+===============================
+[(1, 5), (1, 6), (2, 5), (2, 6), (3, 5), (3, 6)]
+
+        list(mitr((1,4),(5,7)))
+===============================
+[(1, 5), (1, 7), (4, 5), (4, 7)]
+
+* Comments(5) : PythonSf open を修正していない
+ prdct と mitr 関数をコピーした
+date:2014/06/29 (日) time:03:29
+
+* Comments(5) : action scripts
+# X,Y={4,5},{6,7,8}; len([(f,g) for f,g in mitr(mitr(X,X,X),mitr(Y,Y,Y))]) == 27 だった。 216が正解
+
+X,Y=xrange(4,6),xrange(6,8); list(mitr(mitr(X,X), mitr(Y,Y)))[15]==((5, 5), (7, 7))
+===============================
+True
+
+X,Y=xrange(4,6),xrange(6,8); list(enmitr(mitr(X,X), mitr(Y,Y)))[15]==((3, 3), ((5, 5), (7, 7)))
+===============================
+True
+
+X,Y={4,5},{6,7,8}; len([(f,g) for f,g in mitr(mitr(X,X,X),mitr(Y,Y,Y))]) == 216
+===============================
+True
+
+## ついでに prdct = itertools.product を追加する
+X,Y=xrange(4,6),xrange(6,8); list(prdct(prdct(X,X), prdct(Y,Y)))[15]== ((5, 5), (7, 7))
+===============================
+True
+
+* Comments_6 : 経緯
+下の二つのファイルを比較すると 518th から 527th が本質的な違いがある。でも下は、Counter Measure がないほうでも下のように正しく動く。
+・ファイルのタイム・スタンプは \my\vc7\mtCm\pysf\basicFnctns.py のほうが新しい。
+・\my\vc7\mtCmBkup\commercial\pysf\basicFnctns は直接弄らないようにしている
+・これ以上過去の経緯を追及する時間がもったいない
+・\my\vc7\mtCmBkup\commercial\testSf.vrf ⊂　\my\vc7\mtCm\testSf.vrf になっている
+
+\my\vc7\mtCmBkup\commercial\git に pysf\basicFnctns.py,testSf は保存するが、その後 \my\vc7\mtCm\pysf\sfFnctns.py  \my\vc7\mtCm\pysf\testSf.vrf で上書きする
+
+
+ X,Y=[4,5],[6,7]; list(mitr([4,5], mitr(Y,Y)))
+===============================
+[(4, (6, 6)), (4, (6, 7)), (4, (7, 6)), (4, (7, 7)), (5, (6, 6)), (5, (6, 7)), (5, (7, 6)), (5, (7, 7))]
+
+dir \my\vc7\mtCmBkup\commercial\pysf\basicFnctns.py
+2014/05/23  10:21            50,229 basicFnctns.py
+
+dir \my\vc7\mtCm\pysf\basicFnctns.py
+2014/06/29  03:07            50,620 basicFnctns.py
+
+
+fc /n \my\vc7\mtCmBkup\commercial\pysf\basicFnctns.py \my\vc7\mtCm\pysf\basicFnctns.py
+***** PYSF\basicFnctns.py
+  502:      if tail:
+  503:          """'
+  504:          if len(tail) == 1 and hasattr(tail[0],'next'):
+  505:              # to avoid multiple use of one iterator
+  506:              tailAt = (tuple(tail[0]), )
+  507:              if id(head) == id(tail[0]):
+  508:                  head = tailAt[0]
+  509:          else:
+  510:              tailAt = tail
+  511:          '"""
+  512:          if hasattr(head,'next'):
+  513:              idAt=id(head)
+***** ..\..\MTCM\PYSF\BASICFNCTNS.PY
+  502:      if tail:
+  503:          if hasattr(head,'next'): # mitr(..) has 'next' attribute
+  504:              # to avoid multiple use of one mitr(..) iterator
+  505:              idAt=id(head)
+*****
+
+***** PYSF\basicFnctns.py
+  525:  
+  526:          for i in head:
+  527:              for j in mitr(*tailAt):
+  528:                  if len(tail) == 1:
+  529:                      yield (i, j)
+  530:                  else:
+  531:                      yield (i,)+j
+  532:      else:
+***** ..\..\MTCM\PYSF\BASICFNCTNS.PY
+            518th から 527th が本質的な違いがある
+  517:  
+  518:          if len(tailAt)==1 and hasattr(tailAt[0],'next'):
+  519:              # Counter Measure for X,Y=[4,5],[6,7]; list(mitr([4,5], mitr(Y,Y))): Issue:00021
+  520:              # tailAt[0] == mitr(..)
+  521:              lstTailAt = list(tailAt[0])
+  522:              for i in head:
+  523:                  for j in lstTailAt:
+  524:                      if len(tail) == 1:
+  525:                          yield (i, j)
+  526:                      else:
+  527:                          yield (i,)+j
+  528:          else:
+  529:              for i in head:
+  530:                  for j in mitr(*tailAt):
+  531:                      if len(tail) == 1:
+  532:                          yield (i, j)
+  533:                      else:
+  534:                          yield (i,)+j
+  535:      else:
+*****
+
+***** PYSF\basicFnctns.py
+  559:  #               )
+  560:  
+  561:      head, tail = args[0], args[1:]
+***** ..\..\MTCM\PYSF\BASICFNCTNS.PY
+  562:  #               )
+  563:  #    ↑上では連番を返すだけになる。Matrix のインデックスに使える tuple を返さない
+  564:      
+  565:      head, tail = args[0], args[1:]
+*****
+
+***** PYSF\basicFnctns.py
+  571:      if tail:
+  572:          if len(tail) == 1 and hasattr(tail[0],'next'):
+  573:              # to avoid multiple use of one iterator
+***** ..\..\MTCM\PYSF\BASICFNCTNS.PY
+  575:      if tail:
+  576:          if len(tail) == 1 and hasattr(tail[0],'next'): # mitr(..) has 'next' attribute
+  577:              # to avoid multiple use of one iterator
+*****
+
+

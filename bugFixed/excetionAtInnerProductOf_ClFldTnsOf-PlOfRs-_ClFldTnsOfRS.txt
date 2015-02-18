@@ -1,0 +1,266 @@
+Title       : Exeptions at Inner Product Of (ClFldTns of (oc.Pl of oc.RS)) and (ClFldTns of oc.RS)
+            : ClFldTns of (oc.Pl of oc.RS) と ClFldTns of ocRS の内積で例外が発生していた
+
+Serial Num  : 00026,    State: closed: date:2014/06/24
+First issued: date:2014/06/24
+
+Tags        : ClFldTns oc.Pl oc.RS
+
+* Comments(1) : an error example
+RS=oc.RS; x=oc.Pl(1,0,RS); x,y=~[x,1],~[1,2,RS]; x y
+int() argument must be a string or a number, not 'RS'
+↑ 下でも同じだった
+RS=oc.RS; x=oc.Pl(1,0,RS); x,y=~[x,RS(1)],~[1,2,RS]; x y
+
+* Comments(2) : counter mesure
+** Comments(2-1) : ClFldTns.__mul__(self,ag) の修正
+*** 修正前
+pysf\sfFnctns.py 1223
+            if len(shapeAt) == 1:
+                # ClFldTns * vector
+                if len(shapeSelfAt) == 1:
+                    sumAt = self.m_type(0)
+                    for k in range(shapeAt[0]):
+                        sumAt = sumAt + self[k] * ag[k]
+                    return sumAt
+                else:
+                    mtRtn = ClFldTns.__kzrs(shapeSelfAt[:-1], self.m_type)
+                    assert lenAt == shapeAt[0]
+                    for idxSelfAt in mrng(*shapeSelfAt[:-1]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = sumAt + self[addTpl(idxSelfAt,k)] * ag[k]
+                        mtRtn[idxSelfAt] = sumAt
+                    return mtRtn
+            elif len(shapeSelfAt) == 1:
+                # self:vector * Matrix/ClFldTns
+                mtRtn = ClFldTns.__kzrs(shapeAt[1:], self.m_type)
+                assert shapeSelfAt[0] == shapeAt[0]
+                for idx in mrng(*shapeAt[1:]):
+                    sumAt = self.m_type(0)
+                    for k in range(shapeSelfAt[0]):
+                        sumAt = sumAt + self[k]*ag[addTpl(k,idx)]
+                    mtRtn[idx] = sumAt
+                return mtRtn
+            else:
+                # ClFldTns *matrix or ClFldTns * tensor
+                mtRtn = ClFldTns.__kzrs(
+                                shapeSelfAt[:-1]+shapeAt[1:], self.m_type)
+                assert lenAt == shapeAt[0]
+                for idxSelfAt in mrng(*shapeSelfAt[:-1]):
+                    for idxAt in mrng(*shapeAt[1:]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = sumAt + self[
+                                    addTpl(idxSelfAt,k)] * ag[addTpl(k,idxAt)]
+                        mtRtn[addTpl(idxSelfAt, idxAt)] = sumAt
+                return mtRtn
+
+*** 修正後
+
+            if len(shapeAt) == 1:
+                # ClFldTns * vector
+                if len(shapeSelfAt) == 1:
+                    sumAt = self.m_type(0)
+                    for k in range(shapeAt[0]):
+                        sumAt = self[k] * ag[k] + sumAt
+                    return sumAt
+                else:
+                    mtRtn = ClFldTns.__kzrs(shapeSelfAt[:-1], self.m_type)
+                    assert lenAt == shapeAt[0]
+                    for idxSelfAt in mrng(*shapeSelfAt[:-1]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = self[addTpl(idxSelfAt,k)] * ag[k] + sumAt
+                        mtRtn[idxSelfAt] = sumAt
+                    return mtRtn
+            elif len(shapeSelfAt) == 1:
+                # self:vector * Matrix/ClFldTns
+                mtRtn = ClFldTns.__kzrs(shapeAt[1:], self.m_type)
+                assert shapeSelfAt[0] == shapeAt[0]
+                for idx in mrng(*shapeAt[1:]):
+                    sumAt = self.m_type(0)
+                    for k in range(shapeSelfAt[0]):
+                        sumAt = self[k]*ag[addTpl(k,idx)] + sumAt
+                    mtRtn[idx] = sumAt
+                return mtRtn
+            else:
+                # ClFldTns *matrix or ClFldTns * tensor
+                mtRtn = ClFldTns.__kzrs(
+                                shapeSelfAt[:-1]+shapeAt[1:], self.m_type)
+                assert lenAt == shapeAt[0]
+                for idxSelfAt in mrng(*shapeSelfAt[:-1]):
+                    for idxAt in mrng(*shapeAt[1:]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = self[ addTpl(idxSelfAt,k)] * ag[addTpl(k,idxAt)
+                                    ] + sumAt
+                        mtRtn[addTpl(idxSelfAt, idxAt)] = sumAt
+                return mtRtn
+
+** Comments(2-2) : ClFldTns.__rmul__(self,ag) の修正
+*** 修正前
+    def __rmul__(self, ag):
+        # print "Now in ClFldTns:__rmul__"  # to debug
+        import octn as oc
+        if '__len__' in dir(ag) and not isinstance(ag, oc.Pl):
+            def addTpl(lftAg, rghtAg):
+                if isinstance(lftAg, int):
+                    if isinstance(rghtAg, int):
+                        return (lftAg, rghtAg)
+                    else:
+                        return (lftAg,)+ rghtAg
+                else:
+                    if isinstance(rghtAg, int):
+                        return (lftAg,)+ rghtAg
+                    else:
+                        return lftAg + rghtAg
+
+            shapeSelfAt = self.shape
+            if not isinstance(ag, (sc.ndarray, ClFldTns) ):
+                assert isinstance(ag, (tuple,list, dict))
+                ag = ClFldTns(ag, self.m_type)
+
+            lenAt = shapeSelfAt[0]
+            shapeAt = ag.shape
+            if len(shapeAt) == 1:
+                # ClFldTns * vector
+                mtRtn = ClFldTns.__kzrs(shapeSelfAt[1:], self.m_type)
+                assert lenAt == shapeAt[0]
+                for idxSelfAt in mrng(*shapeSelfAt[1:]):
+                    sumAt = self.m_type(0)
+                    for k in range(lenAt):
+                        sumAt = sumAt + ag[k]*self[addTpl(k,idxSelfAt)]
+                    mtRtn[idxSelfAt] = sumAt
+                return mtRtn
+            else:
+                # ClFldTns *matrix or ClFldTns * tensor
+                mtRtn = ClFldTns.__kzrs(
+                                shapeSelfAt[:-1]+shapeAt[1:], self.m_type)
+                assert lenAt == shapeAt[0]
+                for idxAt in mrng(*shapeAt[:-1]):
+                    for idxSelfAt in mrng(*shapeSelfAt[1:]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = sumAt + ag[
+                                    addTpl(idxAt,k)]*self[addTpl(k,idxSelfAt)]
+                        mtRtn[addTpl(idx,idxSelfAt)] = sumAt
+                return mtRtn
+        else:
+            # scalar * ClFldTns
+            shapeSelfAt = self.shape
+            mt = ClFldTns.__kzrs(shapeSelfAt, self.m_type)
+            for idxAt in mrng(*shapeSelfAt):
+                mt[idxAt] = ag * self[idxAt]
+
+            return mt
+
+*** 修正後
+行列 self:vector のときのインデックスの順序も誤っていたので修正した
+    def __rmul__(self, ag):
+        # print "Now in ClFldTns:__rmul__"  # to debug
+        import octn as oc
+        if '__len__' in dir(ag) and not isinstance(ag, oc.Pl):
+            def addTpl(lftAg, rghtAg):
+                if isinstance(lftAg, int):
+                    if isinstance(rghtAg, int):
+                        return (lftAg, rghtAg)
+                    else:
+                        return (lftAg,)+ rghtAg
+                else:
+                    if isinstance(rghtAg, int):
+                        return (lftAg,)+ rghtAg
+                    else:
+                        return lftAg + rghtAg
+
+            shapeSelfAt = self.shape
+            if not isinstance(ag, (sc.ndarray, ClFldTns) ):
+                assert isinstance(ag, (tuple,list, dict))
+                ag = ClFldTns(ag, self.m_type)
+
+            lenAt = shapeSelfAt[0]
+            shapeAt = ag.shape
+            if len(shapeAt) == 1:
+                #  list or tuple or ClTensor * ClFldTns 
+                if len(shapeSelfAt) == 1:
+                    sumAt = self.m_type(0)
+                    for k in range(shapeAt[0]):
+                        sumAt = ag[k] * self[k] + sumAt
+                    return self.m_type(sumAt)
+
+                else:
+                    mtRtn = ClFldTns.__kzrs(shapeSelfAt[1:], self.m_type)
+                    assert lenAt == shapeAt[0]
+                    for idxSelfAt in mrng(*shapeSelfAt[1:]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = ag[k]*self[addTpl(k,idxSelfAt)] + sumAt
+                        mtRtn[idxSelfAt] = self.m_type(sumAt)
+                    return mtRtn
+            elif len(shapeSelfAt) == 1:
+                # Matrix * self:vector 
+                mtRtn = ClFldTns.__kzrs(shapeAt[:-1], self.m_type)
+                assert shapeAt[-1] == shapeSelfAt[0]
+                for idx in mrng(*shapeAt[1:]):
+                    sumAt = self.m_type(0)
+                    for k in range(shapeSelfAt[0]):
+                        sumAt = ag[addTpl(idx,k)]*self[k] + sumAt
+                    mtRtn[idx] = self.m_type(sumAt)
+                return mtRtn
+
+            else:
+                #  list/tuple of matrix*ClFldTns or tensor * ClFldTns
+                mtRtn = ClFldTns.__kzrs(
+                                shapeSelfAt[:-1]+shapeAt[1:], self.m_type)
+                assert lenAt == shapeAt[0]
+                for idxAt in mrng(*shapeAt[:-1]):
+                    for idxSelfAt in mrng(*shapeSelfAt[1:]):
+                        sumAt = self.m_type(0)
+                        for k in range(lenAt):
+                            sumAt = ag[addTpl(k,idxAt)*self[addTpl(k,idxSelfAt)]
+                                    ] + sumAt
+                        mtRtn[addTpl(idxSelfAt,idxAt)] = self.m_type(sumAt)
+                return mtRtn
+        else:
+            # scalar * ClFldTns
+            shapeSelfAt = self.shape
+            mt = ClFldTns.__kzrs(shapeSelfAt, self.m_type)
+            for idxAt in mrng(*shapeSelfAt):
+                mt[idxAt] = ag * self[idxAt]
+
+            return mt
+* Comments(3) : action scripts
+
+RS=oc.RS; x=oc.Pl(1,0,RS); x,y=~[x,RS(1)],~[1,2,RS]; x y == x+RS(2)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCmBkup\commercial\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3033, in start
+    __execLine( lstLineAt[0].strip() )
+  File "pysf\sfPPrcssr.py", line 2476, in __execLine
+    exec(strAt, globals())
+  File "<string>", line 11, in <module>
+  File "pysf\octn.py", line 2002, in __eq__
+    return sf.sc.alltrue(self.coeffs == ag.coeffs)
+  File "pysf\sfFnctns.py", line 1728, in __getattr__
+    raise AttributeError("There is no attribute in ClFldTns:"+ name)
+AttributeError: There is no attribute in ClFldTns:coeffs
+
+RS=oc.RS; x=oc.Pl(1,0,RS); y,z=~[x,RS(1)],~[1,2,RS]; y z == x + RS(2)
+===============================
+True
+RS=oc.RS; x=oc.Pl(1,0,RS); y,z=~[x,RS(1)],~[1,2,RS]; y z == x +   (2)
+===============================
+True
+RS=oc.RS; x=oc.Pl(1,0,RS); y,z=~[x,  (1)],~[1,2,RS]; y z == x + RS(2)
+int() argument must be a string or a number, not 'RS'
+↑~[x,1] が x と oc.Pl(1,int) になってしまう
+    ↑ oc.Pl で 1をキャストするから
+        ↑　これをなまじ対策すべきでない　統一した対策ができない
+            ↑　二重キャストが必要になるから
+
+[[Z7(1),Z7(2)],[Z7(3),Z7(4)]] ~[Z7(1),Z7(2)] == ~[Z7(5),Z7(4)]

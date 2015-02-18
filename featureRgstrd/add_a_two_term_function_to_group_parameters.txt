@@ -1,0 +1,78 @@
+Title       : change name:group(..) to extend(..) and add defaultGroupingMethod:a two term function to group parameters 
+            : group 関数の名前を extend に変え、また二項関数引数:defaultGroupingMethod を追加して grouping 制御可能にする
+
+Serial Num  : 00073,    State: closed: date:2014/12/25
+First issued: date:2014/12/22
+
+Tags        : group defaultGroupingMethod
+
+* Comments_1  : added feature
+def group( ag, newerAg=None ):
+↓
+def group( ag, newerAg=None, defaultGroupingMethod=None):
+
+** comment
+"""'Extend a sqeuence:tuple,list,ndarray,set or a iterator to a ksf by 2 term operation:default *.
+    fnAg: default grouping method --> if None then use __mul__:*
+
+For example.
+extend([Cy(0,1), Cy(0,1,2)])
+===============================
+kfs(Sb(0,1), Sb(1,0), Sb(0,2,1), Sb(1,2,0), Sb(2,0,1), Sb(2,1,0))
+
+extend([Cy(1,2,0), Cy(0,1,2)])
+===============================
+kfs(Sb(0,1,2), Sb(1,2,0), Sb(2,0,1))
+
+ar=~[4,Z5]; extend(ar)
+===============================
+kfs(1, 4)
+
+ar=~[4,Z5]; extend(ar,λ x,y:x+y)
+===============================
+kfs(0, 1, 2, 3, 4)
+
+extend([kfs(0,1),kfs(1,2),kfs(2,3)])
+===============================
+kfs(kfs(), kfs(0, 1), kfs(1), kfs(1, 2), kfs(2), kfs(2, 3))
+
+extend([kfs(0,1),kfs(1,2),kfs(2,3)],λ x,y:x+y)
+===============================
+kfs(kfs(0, 1), kfs(0, 1, 2), kfs(0, 1, 2, 3), kfs(1, 2), kfs(1, 2, 3), kfs(2, 3))
+
+extend(extend([kfs(0,1),kfs(1,2),kfs(2,3)]), λ x,y:x+y)
+===============================
+kfs(kfs(), kfs(0, 1), kfs(0, 1, 2), kfs(0, 1, 2, 3), kfs(1), kfs(1, 2), kfs(1, 2, 3), kfs(2), kfs(2, 3))
+'"""
+
+* Comments_2  : counter mesure
+
+* Comments_3  : action scripts
+## extending action by default *
+extend([Cy(0,1), Cy(0,1,2)])==kfs(Sb(0,1), Sb(1,0), Sb(0,2,1), Sb(1,2,0), Sb(2,0,1), Sb(2,1,0))
+ar=~[4,Z5]; extend(ar)==kfs(1, 4)
+extend([kfs(0,1),kfs(1,2),kfs(2,3)]) == kfs(kfs(), kfs(0, 1), kfs(1), kfs(1, 2), kfs(2), kfs(2, 3))
+
+## extending action by default +
+ar=~[4,Z5]; extend(ar,λ x,y:x+y)==kfs(0, 1, 2, 3, 4)
+extend([kfs(0,1),kfs(1,2),kfs(2,3)],λ x,y:x+y) == kfs(kfs(0, 1), kfs(0, 1, 2), kfs(0, 1, 2, 3), kfs(1, 2), kfs(1, 2, 3), kfs(2, 3))
+extend(extend([kfs(0,1),kfs(1,2),kfs(2,3)]), λ x,y:x+y) == kfs(kfs(), kfs(0, 1), kfs(0, 1, 2), kfs(0, 1, 2, 3), kfs(1), kfs(1, 2), kfs(1, 2, 3), kfs(2), kfs(2, 3))
+
+* Comments_4  : open 判への修正
+pysf\ptGrp.extend をそのままコピーするだけですます
+Sbもpysf\ptGrp.extend をそのままコピーする必要があります
+
+** action scripts
+## extending action by default *
+extend([Cy(0,1), Cy(0,1,2)])==kfs(Sb(0,1), Sb(1,0), Sb(0,2,1), Sb(1,2,0), Sb(2,0,1), Sb(2,1,0))
+ar=[Z5(4)]; extend(ar)==kfs(1, 4)
+extend([kfs(0,1),kfs(1,2),kfs(2,3)]) == kfs(kfs(), kfs(0, 1), kfs(1), kfs(1, 2), kfs(2), kfs(2, 3))
+
+## extending action by default +
+ar=[Z5(4)]; extend(ar,λ x,y:x+y)==kfs(0, 1, 2, 3, 4)
+extend([kfs(0,1),kfs(1,2),kfs(2,3)],λ x,y:x+y) == kfs(kfs(0, 1), kfs(0, 1, 2), kfs(0, 1, 2, 3), kfs(1, 2), kfs(1, 2, 3), kfs(2, 3))
+extend(extend([kfs(0,1),kfs(1,2),kfs(2,3)]), λ x,y:x+y) == kfs(kfs(), kfs(0, 1), kfs(0, 1, 2), kfs(0, 1, 2, 3), kfs(1), kfs(1, 2), kfs(1, 2, 3), kfs(2), kfs(2, 3))
+
+
+
+

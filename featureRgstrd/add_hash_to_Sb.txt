@@ -1,0 +1,158 @@
+Title       : add __hash__ to Sb
+            : __hash__ 関数を Sb に追加する
+
+Serial Num  : 00067,    State: resolving: date:2014/11/13
+First issued: date:2014/11/13
+
+Tags        : Sb hash
+
+* Comments_1  : 検討
+Sb に == のとき同じになる hash を実装したい
+hash(Sb(0,1)) == hash(Sb(0,1,2)) == hash((Sb(0,1,2,3))
+range(len(sb))
+これを入れれば group(..) 関数の中で長さを揃える必要がなくなる。
+↑ ;;kfs([Sb(0,1), Sb(0,1,2)])
+    ===============================
+    kfs([Sb(0,1), Sb(0,1,2)])
+    ↑ Sb(0,1) == Sb(0,1,2) が True であることから len(kfs([Sb(0,1), Sb(0,1,2)]))==2 はおかしい。
+        ↑ ==1 でなければならない。
+        ↑ この意味で feature というより bug に近い
+↑group を Sb 以外の集合:sequence 引数に使えるようになる
+↑Sb(..) 関連の操作が、今より遅くなるのが心配
+    ×↑hash 値は生成するときに計算して保存しているはず
+        ↑ 下の //@@ ... //@@@ コードの実行例のように hash() を実行するたびに __hash__ が呼ばれる
+            ↑ __init__(..) のときではない
+    Sb インスタンス要素からなる kfs や set を作るとき遅くなる
+    ↑ とりあえず実装してみて使ってみる
+        experimental implement
+
+↑ rang(len(sb)) に対して、後ろ側が同じものを除いた tuple 値を作り、その sum を、または tuple 値を hash 値とする
+Bf(len=len(sb); ls=range(Bf.len); 
+
+//@@
+import time
+timeAtStart = time.time()
+
+class ClTest(object):
+    def __init__(self, ag=3):
+        self.m_in=ag
+
+    def __hash__(self):
+        time.sleep(5)
+        return 33333
+print "After class definition:", time.time() - timeAtStart
+cl=ClTest()
+print "After ClTest():", time.time() - timeAtStart
+print cl.m_in
+print hash(cl)
+print "After hash():", time.time() - timeAtStart
+print hash(cl)
+print "After second hash():", time.time() - timeAtStart
+//@@@
+After class definition: 0.0
+After ClTest(): 0.0
+3
+33333
+After hash(): 5.0
+33333
+After second hash(): 10.0
+
+dir(Sb(0,2,1))
+===============================
+['__call__', '__class__', '__cmp__', '__delattr__', '__dict__', '__doc__', '__eq__', '__format__', '__getattr__', '__getattribute__', '__getitem__', '__hash__', '__init__', '__len__', '__module__', '__mul__', '__new__', '__pow__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_blGAPglb', 'index', 'm_tpl', 'next']
+
+def hash(self):
+    n=len(self.m_tpl))
+    ls=tuple(range(n))
+    for k in ls:
+        if ls[n-k] != self.m_tpl[n-k]:
+            break
+
+    return hash(tuple(self.m_tpl[:k]))
+
+↑ default value:0 を追加する？
+Sb()
+max() arg is an empty sequence
+
+下は assersion error
+Sb(1)
+Sb([1])
+↑ 下はあり
+Sb(0)
+===============================
+Sb(0,)
+
+***** 動き出した
+a,b=(Sb(0,1)), hash(Sb(0)); print hash(a); hash(b)
+-1660481949
+===============================
+-1660481949
+
+hash((0,))
+===============================
+-1660481949
+
+***** kfs 引数の最初の要素が残る
+kfs([Sb(0,1), Sb(0)])
+===============================
+kfs([Sb(0,1)])
+kfs([Sb(0), Sb(0,1)])
+===============================
+kfs([Sb(0,)])
+
+* Comments_1_1: def group(..):.. の修正
+def group( ag, newerAg=None ):
+    """' make the minimum sub group which includes setAg
+        There must be a smarter algorithm.
+        setAg 引数に行列やベクトルの要素を含めるとエラーになる
+        行列やベクトルの __eq__ 結果は True/Fall の行列・ベクトルになる
+        対策としては 対策としては <== ClTensor, np.ndarray クラスを継承しない行列クラスを作らねばならない
+    '"""
+    if newerAg == None:
+        # Now is the first time. Align Sb instance length.
+        maxAt = max([len(elm) for elm in ag])
+        lstAt = list(ag)
+        #import pdb; pdb.set_trace()
+        for k in range(len(lstAt)):
+            assert isinstance(lstAt[k], Sb)
+            if len(lstAt[k])< maxAt:
+                lstAt[k] = lstAt[k] * range(maxAt)
+
+        kfsAt = kfs(lstAt)
+    else:
+↓
+def group( ag, newerAg=None ):
+    """' make the minimum sub group which includes setAg
+        There must be a smarter algorithm.
+        setAg 引数に行列やベクトルの要素を含めるとエラーになる
+        行列やベクトルの __eq__ 結果は True/Fall の行列・ベクトルになる
+        対策としては 対策としては <== ClTensor, np.ndarray クラスを継承しない行列クラスを作らねばならない
+    '"""
+    if newerAg == None:
+        # Now is the first time. Align Sb instance length.
+        if True:
+            # experimental implement
+            assert isinstance(ag, kfs)
+            kfsAt = ag
+        else:
+            maxAt = max([len(elm) for elm in ag])
+            lstAt = list(ag)
+            #import pdb; pdb.set_trace()
+            for k in range(len(lstAt)):
+                assert isinstance(lstAt[k], Sb)
+                if len(lstAt[k])< maxAt:
+                    lstAt[k] = lstAt[k] * range(maxAt)
+
+            kfsAt = kfs(lstAt)
+    else:
+
+***** 動き出した
+group(kfs([O3(1,2,3),O3(1,2,3,3)]))
+===============================
+kfs([O3(0, 1), O3(0, 2), O3(Z3(1)), O3(1, 1), O3(1, 2), O3(Z3(2)), O3(2, 1), O3(2, 2)])
+
+* Comments_2  : counter mesure
+* Comments_3  : action scripts
+* Comments_4  : open 判への修正
+まだ全く修正していない
+

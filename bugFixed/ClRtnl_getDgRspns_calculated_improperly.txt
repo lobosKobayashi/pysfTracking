@@ -1,0 +1,69 @@
+Title       : ClRtnl.getDgRspns() calculated improperly 
+            : ClRtnl ‚Ì getDgRspns() ‰“šŒvZ‚Ì‚µ‚©‚½‚ÉŒë‚è‚ª‚ ‚Á‚½
+
+Serial Num  : 00045,    State: closed: date:date:2014/08/23 
+First issued: date:2014/08/23 
+
+
+Tags        : ClRtnl
+
+Comments_1  : an error example
+
+‰º‚Ì‰“š‚ª”­U‚µ‚Ä‚¢‚é
+z=`s; F=1/(1-0.5z^-1); G=(F F); G.getDgRspns([1]+[0]*128)
+
+Comments_2  : counter mesure
+        C = numeratorAt + [0]*(N-lenAt)
+        A = sc.array(denominatorAt)
+        arState = sc.array( [0.]*N )
+        dataN= len(input)
+        #12.12.13 vctY = sc.zeros(dataN)
+        vctY = sf.kzrs(dataN)
+
+        for k in range(dataN):
+            vctY[k] = sc.dot(arState, C)+ D*input[k]
+            arState = sc.roll(arState, -1)
+            arState[-1] = sc.dot(A, arState)+ input[k]
+
+        return vctY
+
+«
+
+        C = numeratorAt + [0]*(N-lenAt)
+        A = sc.array(denominatorAt)
+        arState = sc.array( [0.]*N )
+        dataN= len(input)
+        #12.12.13 vctY = sc.zeros(dataN)
+        vctY = sf.kzrs(dataN)
+
+        for k in range(dataN):
+            vctY[k] = sc.dot(arState, C)+ D*input[k]
+            valAt = sc.dot(A, arState)+ input[k]
+            arState = sc.roll(arState, -1)
+            arState[-1] = valAt
+
+        return vctY
+
+
+Comments_3  : action scripts
+
+z=`s; F=1/(1-0.5z^-1); G=(F F); G.getDgRspns([1]+[0]*9) ~== G.getDgImpls()[:10]
+===============================
+True
+
+
+Comments_4  : open ”»‚Ö‚ÌC³
+        for k in range(dataN):
+            vctY[k] = sc.dot(arState, C)+ D*input[k]
+            arState = sc.roll(arState, -1)
+            arState[-1] = sc.dot(A, arState)+ input[k]
+«
+        for k in range(dataN):
+            vctY[k] = sc.dot(arState, C)+ D*input[k]
+            valAt = sc.dot(A, arState)+ input[k]
+            arState = sc.roll(arState, -1)
+            arState[-1] = valAt
+
+z=`s; F=1/(1-0.5*z^-1); G=(F*F); norm(G.getDgRspns([1]+[0]*9)- G.getDgImpls()[:10])<1e-7
+===============================
+True

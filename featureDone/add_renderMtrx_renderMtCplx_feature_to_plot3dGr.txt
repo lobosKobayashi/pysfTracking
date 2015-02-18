@@ -1,0 +1,68 @@
+Title       :add renderMtrx/renderMtCplx feature to plot3dGr 
+            : renderMtrx/renderMtCplx ‹@”\‚ğ plot3dGr ‚É‚à“ü‚ê‚é matrix ˆø”‚à“n‚¹‚é‚æ‚¤‚É‚·‚é
+
+Serial Num  : 00059,    State: closed: date:2014/10/04
+First issued: date: date:2014/10/04 (“y) time:23:05
+
+Tags        : plot3dGr
+
+Comments_1  : an error example
+Comments_2  : counter mesure
+    if rangeY==None:
+        rangeY = rangeX
+
+    if len(rangeX)==2:
+        rangeX = sf.klsp(*rangeX)
+    if len(rangeY)==2:
+        rangeY = sf.klsp(*rangeY)
+
+    dctAt={}
+    if sf.sc.iscomplexobj(rangeX) or sf.sc.iscomplexobj(rangeY):
+        for j,x in sf.enmitr(rangeX):
+            for k,y in sf.enmitr(rangeY):
+                dctAt[j,k]=f(x+y)
+    else:
+        for j,x in sf.enmitr(rangeX):
+            for k,y in sf.enmitr(rangeY):
+                dctAt[j,k]=f(x,y)
+«
+    if isinstance(f,dict)):
+        mtAt = sf.krry(dctAt)
+    if isinstance(f, np.ndarray):
+        mtAt = f
+    else:
+        assert hasattr(f,'__call__')
+
+        if rangeY==None:
+            rangeY = rangeX
+
+        if len(rangeX)==2:
+            rangeX = sf.klsp(*rangeX)
+        if len(rangeY)==2:
+            rangeY = sf.klsp(*rangeY)
+
+        dctAt={}
+        if sf.sc.iscomplexobj(rangeX) or sf.sc.iscomplexobj(rangeY):
+            for j,x in sf.enmitr(rangeX):
+                for k,y in sf.enmitr(rangeY):
+                    dctAt[j,k]=f(x+y)
+        else:
+            for j,x in sf.enmitr(rangeX):
+                for k,y in sf.enmitr(rangeY):
+                    dctAt[j,k]=f(x,y)
+
+        mtAt = sf.krry(dctAt)
+
+    mtAt = sf.krry(dctAt)
+
+Comments_3  : action scripts
+‚È‚µ
+Comments_4  : open ”»‚Ö‚ÌC³
+pysfOp\vsGraphOp.py
+ª ‚Ü‚¾ plot3dGr(..) ©‘Ì‚ğˆÚA‚µ‚Ä‚¢‚È‚¢
+
+dct={}; ls=range(30); for idx,(x,y) in enmitr(ls,ls):dct[idx]=x+y; plot3dGr(dct)
+name 'plot3dGr' is not defined
+
+
+

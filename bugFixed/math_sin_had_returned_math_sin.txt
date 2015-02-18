@@ -1,0 +1,64 @@
+Title       : math.sin([1,2,3]) had returned math.sin, but not [ 0.84147098  0.90929743  0.14112001]
+            : math.sin([1,2,3]) が [ 0.84147098  0.90929743  0.14112001] ではなく math.sin を返していた
+
+
+Serial Num  : 00058,    State: closed: date:2014/09/30
+First issued: date:2014/09/30
+
+Tags        : ClAF, math
+
+Comments_1  : an error example
+import math; ClAF(math.sin)([1,2,3])
+===============================
+<built-in function sin>
+Comments_2  : counter mesure
+class ClAF(object):
+    def __init__(self, ag):
+        import types
+        if ( isinstance(ag, (sc.ufunc, types.FunctionType))
+↓
+    def __init__(self, ag):
+        import types, math
+        if ( isinstance(ag, (sc.ufunc, types.FunctionType, type(math.sin)))
+
+
+↑ built-in function は types.FunctionType ではない
+↑ built-in function type を表す型は types.py にはない
+
+import math; fn=ClAF(λ x:2x); fn([1,2,3]) 
+===============================
+[ 2.  4.  6.]
+---- ClTensor ----
+
+# 普通の関数と built in 関数で ndarray 引数に対する動作が異なる
+↑ たぶん pyd にある関数でも math.sin のように only length-1 arrays can be converted to Python scalars になると思う
+(λ x:2x)(~[1,2,3])
+===============================
+[ 2.  4.  6.]
+---- ClTensor ----
+(λ x:2x)(np.array([1,2,3]))
+===============================
+[2 4 6]
+↓↑cf.
+import math; math.sin(~[1,2,3])
+only length-1 arrays can be converted to Python scalars
+import math; (λ x:math.sin(x))(~[1,2,3])
+only length-1 arrays can be converted to Python scalars
+
+Comments_3  : action scripts
+import math; ClAF(math.sin)(pi/2)  == 1
+↑ Open 判では修正しなくても上が通る
+↑↓ 上は対策したが、下の式がエラーになる問題は  SNf57:ClAF 大改造の一環として対策する
+import math; ClAF(math.sin)([1,2,3]) ~== sin([1,2,3])
+
+
+Comments_4  : open 判への修正
+修正しなくても、,j で下が True になる
+import math; ClAF(math.sin)(pi/2)  == 1
+===============================
+True
+
+下は ,j でも同じエラーになる
+import math; ClAF(math.sin)([1,2,3])
+only length-1 arrays can be converted to Python scalars
+

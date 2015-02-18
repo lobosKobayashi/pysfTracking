@@ -1,0 +1,66 @@
+Title       : enable to use complex in poly1d and ClRtnl
+            : poly1d, ClRtnl ‚Å•¡‘fŒW”‚àˆµ‚¦‚é‚æ‚¤‚É‚·‚é
+
+Serial Num  : 00049,    State: resolving: date:2013/10/10
+First issued: date:2014/08/25 (Œ) time:15:16
+
+Tags        : ClOctonion __lt__
+
+Comments_1  : an error example
+poly1d([1+2j,3])
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 8, in <module>
+  File "pysf\rational.py", line 100, in __init__
+    assert not sc.iscomplexobj(sqAg)
+AssertionError
+
+`s+1+2j
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 3033, in start
+  File "D:\my\vc7\mtCm\bkup\20130630\pysf\sfPPrcssr.py", line 2476, in __execLine
+  File "<string>", line 8, in <module>
+  File "pysf\rational.py", line 465, in __add__
+    other = ClRtnl(other)
+  File "pysf\rational.py", line 198, in __init__
+    self.m_plNumer = poly1d(numerAg, variable=variable)
+  File "pysf\rational.py", line 100, in __init__
+    assert not sc.iscomplexobj(sqAg)
+AssertionError
+
+Comments_2  : counter mesure
+        assert not sc.iscomplexobj(sqAg)
+«
+        #assert not sc.iscomplexobj(sqAg)
+
+z_=1/`s; H=1+(2+3j)z_+4z_^2; H.getDgImpls()[:5]
+C:\Python27\lib\site-packages\numpy\lib\polynomial.py:864: ComplexWarning: Casting complex values to real discards the imaginary part
+  r[k:k+n+1] -= d*v
+pysf\sfFnctns.py:854: ComplexWarning: Casting complex values to real discards the imaginary part
+===============================
+[ 1.  2.  4.  0.  0.]
+---- ClTensor ----
+
+z_=1/`s; H=1+(2+3j)z_+4z_^2; H.plotBode(0.1Hz`,100Hz`)
+C:\Python27\lib\site-packages\numpy\lib\polynomial.py:864: ComplexWarning: Casting complex values to real discards the imaginary part
+  r[k:k+n+1] -= d*v
+===============================
+None
+ª –{“–‚É•¡‘fŒW”‘½€®‚Å‚ÌƒCƒ“ƒpƒ‹ƒX‰“š‚ª•K—v‚©H
+    ª ŒW”‚É‹–—eŒë·ˆÈã‚Ì•¡‘f¬•ª‚ª“ü‚è‚ñ‚¾‚ç assert False ‚É‚·‚éH
+Comments_3  : action scripts
+Comments_4  : open ”»‚Ö‚ÌC³
+

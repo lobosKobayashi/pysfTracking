@@ -1,0 +1,192 @@
+Title       : PythonSf featue bug mixed up memo
+            : PythonSf featue bug ごった煮メモ
+
+Serial Num  : 00024,    State: closed: 2014/06/06 (金) time:15:54
+First issued: 2014/06/06 (金) time:15:54
+
+Tags        : ClOctonion __lt__
+
+Comments(1) : 
+下を sfCrrntIni.py から customize.py へ移した。 bf=ClBuffer はなくした
+class ClBefore(object):
+    """' This class saves before resulst(s) of a function that has default
+    prameter "before" (and "bbf"). And ClBefore(function) instance
+    calls "the function" with "before" (and "bbf"). The function is called
+    with "before" (and "bbf") parameters.
+
+        You can use "bf" instead of "before" too.
+
+    usages
+    Fib = ClBf(λ _,bf=1,bbf=1:bf+bbf); tn.imap(Fib, tn.count())[:10]
+    ===============================
+    [2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+
+    '"""
+    def __init__(self, fnAg):
+        import inspect as md
+        argSpecAt=md.getargspec(fnAg)
+
+        assert (argSpecAt[0][1] == 'before') or (argSpecAt[0][1] == 'bf') 
+        self.m_before = argSpecAt[3][0]
+        if len(argSpecAt[0]) == 3:
+            assert (argSpecAt[0][2] == 'bbf')
+            self.m_blBbf = True
+            self.m_bbf = argSpecAt[3][1]
+        else:
+            self.m_blBbf = False
+            
+        self.m_fn = fnAg
+
+    def __call__(self, ag):
+        if self.m_blBbf:
+            self.m_bbf, self.m_before = self.m_before, self.m_fn(ag, self.m_before, self.m_bbf)
+            return self.m_before
+        else:
+            self.m_before = self.m_fn(ag, self.m_before)
+            return self.m_before
+
+ClBf = ClBefore
+
+class ClBuffer(object):
+    """' date:2013/08/16 test implementation of variable value declarations
+        If you need one time only assignments then you should implement another class.
+    '"""
+    def __init__(self, **dctAg):
+        if dctAg == {}:
+            #self.m_dctReadOnly = {}
+            self.__dict__["m_dctReadOnly"] = {}
+        else:
+            # m_dctReadOnly is set at just only __init__()
+            #self.m_dctReadOnly = dctAg
+            self.__dict__["m_dctReadOnly"] = dctAg
+
+        #self.m_dctBuffer={}
+        self.__dict__["m_dctBuffer"] = {}
+
+    def __call__(self, **dctAg):
+        """'
+        Return None:
+        '"""
+        for k in dctAg:
+            if k!='_' and self.m_dctReadOnly != {}:
+                assert False, ("You assigned a keyward argument:"+str({k:dctAg[k]})
+                              +" for a read only ClBuffer instance") 
+
+            else:
+                for k in dctAg:
+                    self.m_dctBuffer[k] = dctAg[k]
+
+            #return True; # to set sentinel
+            # It is not lucid functional programming to use a sentinel
+
+            # return value to use in comprehension operations
+            # an example;;[ bf.x for v in mitr(*[range(3)]*4) if bf(x=O3(v)) bf.x.conj() == 0]
+            #return self.m_dctBuffer[sorted(self.m_dctBuffer)[-1]]
+            return self.m_dctBuffer[sorted(dctAg)[-1]]
+
+    def __getattr__(self, name):
+        #print "debug--name:" + str(name)
+        if name in self.m_dctReadOnly:
+            return self.m_dctReadOnly[name]
+        # yet implemented for _._. .. read only hierarchy
+        elif name in self.m_dctBuffer:
+            return self.m_dctBuffer[name]
+        else:
+            assert False, "In ClBuffer, there is no variable:" + name
+        return self.__dict__[name]
+
+    def __setattr__(self, name, value):
+
+        assert False , ("Don't assign for ClBuffer members. " + name
+                      + " = " + str(value) )
+    """'
+    '"""
+
+bf = ClBuffer()
+Bf = ClBuffer() 
+
+下を sfCrrntIniOp.py から customizeOp.py へ移した。 bf=ClBuffer はなくした
+class ClBuffer(object):
+    """' date:2013/08/16 test implementation of variable value declarations
+        If you need one time only assignments then you should implement another class.
+    '"""
+    def __init__(self, **dctAg):
+        if dctAg == {}:
+            #self.m_dctReadOnly = {}
+            self.__dict__["m_dctReadOnly"] = {}
+        else:
+            # m_dctReadOnly is set at just only __init__()
+            #self.m_dctReadOnly = dctAg
+            self.__dict__["m_dctReadOnly"] = dctAg
+
+        #self.m_dctBuffer={}
+        self.__dict__["m_dctBuffer"] = {}
+
+    def __call__(self, **dctAg):
+        """'
+        Return None:
+        '"""
+        for k in dctAg:
+            if k!='_' and self.m_dctReadOnly != {}:
+                assert False, ("You assigned a keyward argument:"+str({k:dctAg[k]})
+                              +" for a read only ClBuffer instance") 
+
+            else:
+                for k in dctAg:
+                    self.m_dctBuffer[k] = dctAg[k]
+
+            #return True; # to set sentinel
+            # It is not lucid functional programming to use a sentinel
+
+            # return value to use in comprehension operations
+            # an example;;[ bf.x for v in mitr(*[range(3)]*4) if bf(x=O3(v)) bf.x.conj() == 0]
+            #return self.m_dctBuffer[sorted(self.m_dctBuffer)[-1]]
+            return self.m_dctBuffer[sorted(dctAg)[-1]]
+
+    def __getattr__(self, name):
+        #print "debug--name:" + str(name)
+        if name in self.m_dctReadOnly:
+            return self.m_dctReadOnly[name]
+        # yet implemented for _._. .. read only hierarchy
+        elif name in self.m_dctBuffer:
+            return self.m_dctBuffer[name]
+        else:
+            assert False, "In ClBuffer, there is no variable:" + name
+        return self.__dict__[name]
+
+    def __setattr__(self, name, value):
+
+        assert False , ("Don't assign for ClBuffer members. " + name
+                      + " = " + str(value) )
+    """'
+    '"""
+
+bf = ClBuffer()
+Bf = ClBuffer() 
+
+Comments(2) : 
+こっちは序でに行った
+
+customize.py で下を追加した
+    import kre
+
+customizeOp.py で下を追加した
+    from kreOp import krgl
+    import kreOp as kre
+
+    import sys
+
+    下を修正した
+    from pprint import pprint as k_bq_print             # `print
+
+Comments(2) : an error example
+
+;k の後の　_tmC.py が下でエラーになっていた
+//@@
+print kre
+//@@@
+
+,k の後の　_tmC.py が下でエラーになっていた
+//@@
+print sys
+//@@@

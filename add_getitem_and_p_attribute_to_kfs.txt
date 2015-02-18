@@ -1,0 +1,46 @@
+Title       : add __getitem__ and p attribute to kfs
+            : kfs に __getitem__ と p 属性を追加する
+
+S9rial Num  : 00070,    State: resolving: date:2013/11/19
+First issued: date:2014/10/10
+
+Tags        : kfs
+
+Comments_1  : feature example
+kfs([2,3,2,0])[2] == 3
+
+kFrozenset 属性として sorted list より tuple:p 属性の方が適している
+↑ sl 属性は変更可能なリストを返すが、変更するような使い方は殆んどないはず
+
+Comments_2  : counter mesure
+        elif name == "sl" or name == "sortedList":
+            # sorted(..) must return list instance
+            return sorted(tuple(self))
+
+↓
+        elif name == "p":
+            if "p" in self.__dict__:
+                return self.p
+            else:
+                tplAt = tuple(sorted(tuple(self)))
+                self.__dict__.update({"p":tplAt})
+                return tplAt
+
+        elif name == "sl" or name == "sortedList":
+            # sorted(..) must return list instance
+            return list(self.p)
+
+新規に追加
+    def __getitem__(self, ag):
+        return self.p.__getitem__(ag)
+
+Comments_3  : action scripts
+kfs([2,3,2,0])[2] == 3
+ksf(shuffle(range(5))).p[0] == 0
+ksf(shuffle(range(5))).p[-1] == 5
+ksf(shuffle(range(5))).p[3:] == (3,4,5)
+ksf(shuffle(range(5))).p[:2] == (0,1)
+ksf(shuffle(range(5))).p[1:4] == (1,2,3)
+
+Comments_4  : open 判への修正
+

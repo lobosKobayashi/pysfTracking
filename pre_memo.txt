@@ -18,7 +18,7 @@ State     : opened or closed, invalid, resolving, reopend
 
 Action Scripts: 
 
-Last Sirial Number:00075 Å® Next Sirial Number:00076
+Last Sirial Number:00076 Å® Next Sirial Number:00077
 
 ***** SNf:00069 resolving: never ending kitchen sink memo 2014/11/14
 D:\my\vc7\pysfTracking\neverEndingKitchenSinkMemo.txt
@@ -214,6 +214,8 @@ D:\my\vc7\pysfTracking\featureRgstrd\add_hash_to_Sb.txt
 ***** SNf:00070 resolving: 0.97B?: add __getitem__ and p attribute to kfs:2014/11/19
 D:\my\vc7\pysfTracking\\add_getitem_and_p_attribute_to_kfs.txt
 
+***** SNb:00076 closed: 0.97B?: modifications for python_xy_279 after HDD crush:2015/02/20
+D:\my\vc7\pysfTracking\\modification_for_python_xy_279_after_HDD_crush.txt
 
 * finished
 ***** SNb:00001: invalid:0.97AA: "3`i" Ç…ëŒÇµÇƒ ,j ëÄçÏÇ≈â∫ÇÃÉGÉâÅ[Ç…Ç»ÇÈ;date:2013/07/08

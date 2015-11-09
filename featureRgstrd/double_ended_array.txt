@@ -1,0 +1,41 @@
+Title       : double eneded array 
+            : 
+
+Serial Num  : 00085,    State: opend: date:2015/09/21
+First issued: date:2015/09/21
+
+Tags        : drry
+
+* Comments_1  : envisioned features
+1 minus index 
+    drry
+    if there is no index setting, then drry automatically sets minus index as -length/2
+2 double ended convolution
+    dvlv
+    automatically select convolve, convolve2d by data argments
+
+** 足し算・掛け算ではインデックスが揃っていることを前提とする
+*** 足し算のインデックス合わせ
+assert(self.m_tplInLeft == ag.m_tplInLeft and self.m_tplInRight == ag.m_tplInRight)
+*** 掛け算のインデックス合わせ
+assert(self.m_tplInRightt == ag.m_tplInLeft)
+
+*** マイナスべき乗算でも正べき乗算と同様にインデックスは元の値を保つ
+
+* tests:
+** True
+# index を指定しないときは、シーケンスの中心が 0 index になるように定める
+# [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# -6 -5 -4 -3 -2 -1 
+drry(range(11)).m_tplInLeft == (-5,)
+drry(range(10)).m_tplInLeft == (-5,)
+drry(range(10)).m_tplInRight == (5,)
+drry(range(10),(-3,)).m_tplInLeft == (-3,)
+drry(range(10),-3).m_tplInRight == (7,)
+drry(range(10),-3).m_tplInLeft == (-3,)
+drry(range(10),(3,)).m_tplInLeft == (3,)
+drry(range(10),3).m_tplInRight == (13,)
+
+
+
+

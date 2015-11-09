@@ -1,0 +1,46 @@
+Title       : sfCrrntIniOpRelativity bug by cycrical refrences
+            : èzä¬éQè∆Ç…ÇÊÇÈ sfCrrntIniOpRelativity.py ÇÃÉoÉO
+
+Serial Num  : 00083,    State: opend: date:2015/00/06
+First issued: date:2015/05/06
+
+Tags        : cycrical_references
+
+Comments_1  : an error example
+//@@
+import sfCrrntIniRelativity as md
+md.tt()
+//@@@
+Å™ Ç±Ç¡ÇøÇÕ OK
+//@@
+import sfCrrntIniOpRelativity as md
+md.tt()
+//@@@
+Traceback (most recent call last):
+  File "__tmp.py", line 2, in <module>
+    md.tt()
+  File "D:\my\vc7\mtcm\sfCrrntIniOpRelativity.py", line 101, in tt
+    ) * __dctGlb['Jk_bq_'] / __dctGlb['sk_bq_'] / __dctGlb['Wk_bq_']
+AttributeError: 'module' object has no attribute 'pi'
+Å™ ,k ëÄçÏÇ≈Ç»ÇÁÇŒí ÇÈ
+
+//@@
+import sfCrrntIniOpRelativity as md
+print md.sf.pi
+//@@@
+Traceback (most recent call last):
+  File "__tmp.py", line 2, in <module>
+    print md.sf.pi
+AttributeError: 'module' object has no attribute 'pi'
+Å´Å™c.f.
+//@@
+import pysfOp.sfFnctnsOp as x
+import sfCrrntIniOpRelativity as md
+print md.sf.pi
+//@@@
+3.14159265359
+
+Comments_2  : counter mesure
+Comments_3  : action scripts
+Comments_4  : open î≈Ç÷ÇÃèCê≥
+

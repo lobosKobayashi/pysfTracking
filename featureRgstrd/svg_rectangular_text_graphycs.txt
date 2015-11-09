@@ -1,0 +1,84 @@
+Title       : svg rectangular text graphycs
+
+Serial Num  : 00086,    State: opend: date:2015/11/03
+First issued: date:2015/11/03
+
+Tags        : svg
+
+* Comments_1  : envisioned features
+pysf\kSvgTxt.py
+** writing
+*** utility
+管理するファイルを少なくできるだけでも嬉しい
+
+** "first rectangular text" -- "a big symbol font" -- "second rectangular text"
+
+*** complex rectangular text -- recursive nested rectangular text
+
+//@@
+    +----------------------------+ 
+    |     transcendental  Real   | 
+    | +-----------------------+  |     +---------------------------+ 
+    | |     algebraic         |  |     |     Octonion              |
+    | | +-----------------+   |  |     | +---------------------+   |
+    | | |   ratioanal     |   |  |     | |   Quaternion        |   |
+    | | |  +----------+   |   |  |     | |  +--------------+   |   |
+    | | |  |  Integer |   |   |  |     | |  |Complex number|   |   |
+    | | |  |  +-----+ |   |   |  |     | |  |  +------+    |   |   |
+    | | |  |  |Zp(n)| |   |   |  |  X  | |  |  |number|    |   |   |
+    | | |  |  +-----+ |   |   |  |     | |  |  +------+    |   |   |
+    | | |  |  number  |   |   |  |     | |  |              |   |   |
+    | | |  +----------+   |   |  |     | |  +--------------+   |   |
+    | | |    number       |   |  |     | |    number           |   |
+    | | +-----------------+   |  |     | +---------------------+   |
+    | |     number            |  |     |     number                |
+    | +-----------------------+  |     +---------------------------+
+    +----------------------------+ 
+//@@@
+//java -jar \utl\ditaa0_9.jar __tmp __tmp.png
+
+** determination of full/half size characters
+# 全角・半角判定
+ Javaにおいては文字列は全てUNICODEで表現されるため、全角半角の判定も各文字のUNICODEで判断する他ありません。以下のサンプルように判定します。
+
+public class Hankaku {
+    public static void main() {
+        String s = "全角han漢字\\~～ｶﾅ";
+        System.out.print( s+": " );
+        for( int i=0; i<s.length(); i++ ) {
+            char c = s.charAt( i );
+            if( ( c<='\u007e' )|| // 英数字
+                ( c=='\u00a5' )|| // \記号
+                ( c=='\u203e' )|| // ~記号
+                ( c>='\uff61' && c<='\uff9f' ) // 半角カナ
+            )
+                System.out.print( "半" );
+            else
+                System.out.print( "全" );
+        }
+        System.out.print( "\n" );
+    }
+}
+
+Stringから一文字づつ取り出し、個々の文字のUNICODEを比較します。Javaでは文字を表す時は、'\u007e'のように'（シングルクォート）で囲みます。
+
+実行結果は以下のようになります。
+
+全角han漢字\~～ｶﾅ: 全全半半半全全半半全半半 	
+
+** plotGr(..), plotDbl(..) を修正してやることで、visual graph の代わりに svg 文字列を吐き出す python 関数を実装できそう
+visual での jpg ファイルを作成し <imag> .. </imag> link を書くより手間が省けそう。
+
+*** 関数式文字列を引数として渡すならば、凡例に書き込める
+↑ 普通に説明テキストで済ませても良い場合も多い
+eval('(k__bq_X___**2+3)(4)')
+===============================
+19
+
+** convert a ditaa like ASCII art   to  a svg graphics
+
+
+
+* tests: check generated test svg strings
+kVerifier の宣伝でもある
+**

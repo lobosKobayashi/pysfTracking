@@ -1,0 +1,94 @@
+# test は bool 値テストに限定することで、既存の kVerifier 実装をそのまま利用する
+
+# SvgUnit:SUt shorthanded
+## とりあえず mm, cm, px
+## 文字列または SvgText との左側掛け算による SvgText を生成する
+### 足し算・掛け算は左側優先
+### int/float の左右掛け算も許す。このときはサイズが増える。
+↑ svg の scale の働きを SvgText でも可能にする
+#### 0SvgUnit * str or SvgText は 0SvgText とする。c:center 属性しか持たない m_mtfourCorner は None 
+
+# SvgText
+## SvgText については入れ子構造を認めない
+### SvgText(svgText) は、やはり SvgText instance にする。
+↓↑ この二種類にしとかないと仕様を詰めきれない。← SvgText(svgTextGroup) は assert error にしておく
+    ↑ 5mm [sTt,sTt, sTg] で、何を返すか決め切れん。
+### 別に SvgTextGroup を設けて、こちらで SvgText の入れ子構造を扱えるようにする
+↑ 引数が 
+
+# SvgText の配置は numpy array container によって行う
+↑ numpy array に拘るのは、配置修正機能が実装済みだから。← transpose, 上下左右逆転など
+    ↑Sb(..), Cy(..) による入れ替え操作も可能
+    ↑ 足し算･掛け算 行列操作まで可能だが、それのテストまでは行わない。
+## sequence 構造 -- 縦と横 基準線:path
+## matrix   構造 --- 面:null 要素の海の中に配置する
+## tree 構造
+## 入れ子構造
+### 文字を置く位置の上下左右を下の四種類で定める
+    ~[svgTxt instance, nested container] 
+    ~[svgTxt instance, nested container].t 
+    ~[nested container, svgTxt instance] 
+    ~[nested container, svgTxt instance].t 
+
+
+
+# Enclosing class;;SvRect, SvCircle, SvOval .... は svgTxt 及び そのコンテナを引数として生成される。
+↑Enclosure クラスと EnclosueGroup(np.ndarra) クラスの二種類を設ける。
+↑ 四隅の寸法が決まっていれば enclose できる
+    ↑ SvArrow の四隅の寸法は lazy evalation とする
+        ↑ left, right position, stroke_width が決められてから定められる。
+## primitive class として EnClosure class を設けて、SvRect などは これを継承させる
+m_mtFourSide, C,N,E,S,W, NE,SE,SW,NW 属性を持つ。
+
+## Enclosing class は SvgText グループ:tuple,list, arry, krry も引数とできる。
+
+
+# default 値
+## left,right, upper, lower margin
+## left,right, upper, lower spacing
+↑ どこに持たせる。Enclosre に basic な default 値を持たせる
+    ↑ SvgRect にも同じ default 値を持たせ、 Enclosure の値を override する
+
+
+# string 行列に SvSize を掛ける扱いが consistent に可能
+x=np.array(['abc', 'de']); x, x.dtype
+===============================
+(array(['abc', 'de'], 
+
+x=np.array([2,3]); ts(); y=1m` x; y, y.dtype
+===============================
+(array([2*m`, 3*m`], dtype=object), dtype('O'))
+
+
+* 実装メモ
+*** 全角文字の処理
+**** determination of full/half size characters
+# 全角・半角判定
+ Javaにおいては文字列は全てUNICODEで表現されるため、全角半角の判定も各文字のUNICODEで判断する他ありません。以下のサンプルように判定します。
+
+public class Hankaku {
+    public static void main() {
+        String s = "全角han漢字\\~～ｶﾅ";
+        System.out.print( s+": " );
+        for( int i=0; i<s.length(); i++ ) {
+            char c = s.charAt( i );
+            if( ( c<='\u007e' )|| // 英数字
+                ( c=='\u00a5' )|| // \記号
+                ( c=='\u203e' )|| // ~記号
+                ( c>='\uff61' && c<='\uff9f' ) // 半角カナ
+            )
+                System.out.print( "半" );
+            else
+                System.out.print( "全" );
+        }
+        System.out.print( "\n" );
+    }
+}
+
+Stringから一文字づつ取り出し、個々の文字のUNICODEを比較します。Javaでは文字を表す時は、'\u007e'のように'（シングルクォート）で囲みます。
+
+実行結果は以下のようになります。
+
+全角han漢字\~～ｶﾅ: 全全半半半全全半半全半半 	
+
+

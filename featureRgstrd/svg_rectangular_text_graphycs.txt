@@ -7,7 +7,10 @@ Tags        : svg
 
 * Comments_1  : envisioned features
 pysf\kSvgTxt.py
+詳細仕様;;D:\my\vc7\pysfTracking\featureRgstrd\pysf\SvgText.txt
 ** writing
+最小の手間で可読性を保ちながら説明図を描く
+
 *** utility
 管理するファイルを少なくできるだけでも嬉しい
 
@@ -37,35 +40,6 @@ pysf\kSvgTxt.py
 //@@@
 //java -jar \utl\ditaa0_9.jar __tmp __tmp.png
 
-** determination of full/half size characters
-# 全角・半角判定
- Javaにおいては文字列は全てUNICODEで表現されるため、全角半角の判定も各文字のUNICODEで判断する他ありません。以下のサンプルように判定します。
-
-public class Hankaku {
-    public static void main() {
-        String s = "全角han漢字\\~～ｶﾅ";
-        System.out.print( s+": " );
-        for( int i=0; i<s.length(); i++ ) {
-            char c = s.charAt( i );
-            if( ( c<='\u007e' )|| // 英数字
-                ( c=='\u00a5' )|| // \記号
-                ( c=='\u203e' )|| // ~記号
-                ( c>='\uff61' && c<='\uff9f' ) // 半角カナ
-            )
-                System.out.print( "半" );
-            else
-                System.out.print( "全" );
-        }
-        System.out.print( "\n" );
-    }
-}
-
-Stringから一文字づつ取り出し、個々の文字のUNICODEを比較します。Javaでは文字を表す時は、'\u007e'のように'（シングルクォート）で囲みます。
-
-実行結果は以下のようになります。
-
-全角han漢字\~～ｶﾅ: 全全半半半全全半半全半半 	
-
 ** plotGr(..), plotDbl(..) を修正してやることで、visual graph の代わりに svg 文字列を吐き出す python 関数を実装できそう
 visual での jpg ファイルを作成し <imag> .. </imag> link を書くより手間が省けそう。
 
@@ -81,4 +55,4 @@ eval('(k__bq_X___**2+3)(4)')
 
 * tests: check generated test svg strings
 kVerifier の宣伝でもある
-**
+** bool 値テストに限定することで、既存の kVerifier 実装をそのまま利用する

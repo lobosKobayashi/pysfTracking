@@ -7,10 +7,17 @@ Tags        : svg
 
 * Comments_1  : envisioned features
 pysf\kSvgTxt.py
-詳細仕様;;D:\my\vc7\pysfTracking\featureRgstrd\pysf\SvgText.txt
+詳細仕様;;D:\my\vc7\pysfTracking\featureRgstrd\pysf\SvgTextSpec.txt
 ** writing
 最小の手間で可読性を保ちながら説明図を描く
 
+そのために svg の世界を kobayashi が見ている、text を中心として もう少し単純な世界で modeling する。
+その意味の kSvgTxt と k を付けている。
+*** k world
+**** SvTxt has size vector and doesn't have initial position vector
+array of SvTxt instance represents slightly abstract lay out
+↑ row, column
+**** SvText has initial postion vector
 *** utility
 管理するファイルを少なくできるだけでも嬉しい
 
@@ -51,6 +58,9 @@ eval('(k__bq_X___**2+3)(4)')
 
 ** convert a ditaa like ASCII art   to  a svg graphics
 
+* できたらいいな:I wish I could
+**** vector graphics の特性を活用して、潰れてしまうような表示領域を拡大していくことで、詳しく見えるようにする。
+↑ 27inch 全画面で表示する方法もあり
 
 
 * tests: check generated test svg strings

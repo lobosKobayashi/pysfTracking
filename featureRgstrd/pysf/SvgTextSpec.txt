@@ -91,4 +91,36 @@ String‚©‚çˆê•¶š‚Ã‚Âæ‚èo‚µAŒÂX‚Ì•¶š‚ÌUNICODE‚ğ”äŠr‚µ‚Ü‚·BJava‚Å‚Í•¶š‚ğ•\‚
 
 ‘SŠphanŠ¿š\~`¶Å: ‘S‘S”¼”¼”¼‘S‘S”¼”¼‘S”¼”¼ 	
 
+** invalid implementation
+**** SvSizef
+mm, px ‚È‚Ç‚Ì svg unit size ‚ğˆµ‚¤ƒNƒ‰ƒX SvSize ‚Í float ‚ğŒp³‚µ‚½‚©‚Á‚½B__new__(cls,...) ‚Å‚È‚ñ‚Æ‚©‚Å‚«‚é‚Æv‚Á‚Ä‚¢‚½B
+ª ‚Å‚à def __mul__(self,..) ŠÖ”‚ğÀ‘•‚Å‚«‚È‚©‚Á‚½B‘g‚İ‚İŠÖ”‚à•ÏX‚Å‚«‚È‚¢‚æ‚¤B
+
+class Svg_pxSize(float):
+    def __new__(cls, strAg, flAg):
+        float.__new__(cls,flAg) 
+        cls.m_strUnit = 'px'
+        cls.m_flUnit = 1
+
+        cls.__rmul__ = Svg_pxSize.__rmul__
+        cls.__mul__ = Svg_pxSize.__mul__
+
+        return cls
+
+    def __rmul__(self, flAg):
+        assert( isinstance(flAg,(int, float)) ), (
+            "In Svg_pxSize.__rmul__, you set unexpected value:"+ str(flAg))
+        return Svg_pxSize(flAg)
+
+    def __flaot__(self):
+        return self.m_fl
+
+    def __mul__(self,ag):
+        #pass      # detect right multiplyer
+        return float(self)*ag
+
+    def __str__(self):
+        return str(self)+'px'
+
+px=Svg_pxSize('px', 1)
 

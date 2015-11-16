@@ -1,3 +1,55 @@
+EnclosureGrp を設けるのではなく、np.array(...,) を直接に扱う
+↑ そうしないで EnclosreGrp(np.ndarray) とする方法もある
+    ↑zeros などは独自に実装しなければならない。
+        ↑ 実装していない ndarray 操作はできなくなる。
+            np.r_[..] など
+    ↑ SvTxt クラスと fnSvTxt、 SvRect クラスと fnSvRect の両方が必要になる
+    ↑Layout class を設ければ
+    Layout([5mm*'yes', 10mm*'→', 5mm*'NO']).__str__()
+    Layout(SvRect,[5mm*'yes', 10mm*'→', 5mm*'NO']).__str__()
+    ↑SvRect.arrDefaultMergin = mm ~[5,10,5,10]
+    Layout([5mm*'YES', 10mm*'→', 5mm*'NO']).svg()
+    Layout(SvRect,[5mm*'yes', 10mm*'→', 5mm*'NO']).svg()
+
+    Layout([5mm'yes', 10mm'→', 5mm'NO'])
+    Layout(SvRect, [5mm'yes', 10mm'→', 5mm'NO'])
+
+    vc=5mm'YES → NO'; vc[1]*=2; Layout(vc)
+    ↑ Layout ではなく
+    AllignedGroup(arAg, dx=(10mm, 15mm, ...))
+    or
+    AllignedGroup(arAg, dx=[10mm]*3)
+
+
+date:2015/11/11 (水) time:21:42
+抽象的な allocate は 配列、array 要素にテキストを設定した段階で終わっている
+
+Enclosure
+    self.m_arInsert=None    # determined after lay
+    self.m_arSize=
+
+NestedEnclosure:
+×Allocation
+SvAlignment(array or matrix, x=..., y=)
+↑Sv を付けるのを止める。運用するときに付ける
+    ↑ np と同じ
+    ↑ ShortHand をソースに定義しておく
+ks module 名にする
+
+ksv(); ksv
+
+svm:suport vector machine は sfCrrntIni.py 中で import sklearn.svm as svm をやった
+
+class SvTxt(svg.text.Text) は class Text(svg.text.Text) に変更する。
+↑kSvTxt.py ファイルの中のクラスであり Sv 接頭語を付ける意味を見出せない
+
+svg.text.Text は下の属性を持つ。ksv.Text は、これを継承し size ベクトルと C, N,E,S,W,.. 属性を持つ
+    def __init__(self, text, insert=None, x=None, y=None, dx=None, dy=None, rotate=None,**ag)
+↑svg.text.Text には size 属性はない。insert で文字列の左下位置を指定するだけだ。
+    ↑厳密には renderer が描いてみないと、表示領域は定まらない
+        ↑ IE,FireFox で文字列のサイズが 同じ font-family でも 数% のオーダーでは変わっている。
+
+
 # test は bool 値テストに限定することで、既存の kVerifier 実装をそのまま利用する
 
 # SvgUnit:SUt shorthanded
@@ -123,4 +175,8 @@ class Svg_pxSize(float):
         return str(self)+'px'
 
 px=Svg_pxSize('px', 1)
+
+* invalid specifications
+** EnclosureGroup は止める。
+ユーザーが明示的に np.array 要素として Enclosure Element を配置する
 

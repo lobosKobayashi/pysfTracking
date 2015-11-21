@@ -70,6 +70,10 @@ eval('(k__bq_X___**2+3)(4)')
 **** vector graphics の特性を活用して、潰れてしまうような表示領域を拡大していくことで、詳しく見えるようにする。
 ↑ 27inch 全画面で表示する方法もあり
 
+** 行列配置だけでは記述できないときは kSvgTxt が吐き出す svg text を使って inkscape, jointjs, GoJS などを使って書き足す。
+
+** 外部の svg instance を行列配置する
+            Enclosure can contain external SVG instance
 ** simple ciruit diagram
 PNP Tr, ..  以下 22 個の部品を使って one-liners で回路図を描く
 . Hight を調整数値に使い width を共通にしたテキスト or svg 図形を連続して縦に重ねたグループ図形で回路部品を表現する。

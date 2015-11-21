@@ -1,3 +1,87 @@
+-----------------------------------
+* date:2015/11/20 (金) time:09:01
+-----------------------------------
+# 縦に svg 部品を配置することは、その左右に別の svg 部品が配置されることが多いはず。
+↑ndarray vector は横一列の配置専用に対応させても問題は少ないと推測する
+
+# Text の段階でマージンを導入しておく必要がある。
+↑category theory での矢印を書くとき、文字に引っ付けられない
+text 自体の位置とサイズは別に欲しい。
+↑　Enclosure 段階で margin まで入れておく。circle
+↑ 縦文字をどうするか
+    ↑ bool vertical 引数を追加する
+
+rect, circle などでテキストを囲んだものは、それ自体で一まとまりのグループ部品として扱うことが想定される
+
+U D L R → T:top B:bottom L R
+
+クラス内クラス Line は Edge の名前にする
+↑ Oval は 直線エッジではないが曲線エッジと拡大解釈する 
+↑菱形のエッジは L/R, T/B percent edge の位置をどうするか？
+    ↑ 右上を top にする
+    
+align 関数と AlinedArray class constructor は Enclosure instance を要素とする nd.array:alinedArray を返す。
+配置結果は要素個々の Enclosure instance が持つ
+↑ AlinedArray は getXmlStr(.), getSvg(.), getGroup(.), getSymbol(.) property を持つ。
+
+
+
+-----------------------------------
+date:2015/11/14 (土) time:10:34
+-----------------------------------
+もう Category Theory における図程度は描ける。書いてみよ。
+
+Enclosure に m_inner を設けて、inner 側に保持している svg object を保持させる。
+↑ m_inner に None 以外の値を設定するのは継承した側です。
+↑ 初期値は m_inner=None であり、そのインスタンスは empty point を意味させる。
+    ↑ empty point は connect 中継点の意味を持たせる
+
+Group(Enclosure, np.ndarray, swg.container.Group) クラスを設ける。
+↑ m_arRow, m_arColumnAlignment に dx, dy sequence 情報を入れておく
+    ↑align を実行されるまでは zero vector のまま← きっちり詰まった状態
+    ↑ dx,dy はマイナス値も許す
+        ↑ 円周上に配置したいときがあるから
+        ↑ 重ね合わせを許す？
+            ↑ 優先順位情報を追加する？← 面倒すぎる。
+            ↑ デフォルト優先順位情報がないとき row[0]<row[-1]< column[0]<colmn[-1] で配置する 
+↑ m_arWidth は column 要素の最大幅値を入れる。 m_arHeight は row 要素の最大幅値を入れる。
+    ↑ lazy evaluation ?
+        ↑ 要素の入れ替えを認めたい。
+        ↑ File 変数にできる？
+    ↑ lazy evaluation は arrow だけにとどめる。テキストの配置はテキストのサイズを前提とする
+↑ align は kSvgTxt.Group instance を返す。
+↑ Group.connect(..) method を設け、行列要素間を接続する。
+    ↑ この接続は Group.draw(..) 時まで遅らせて　lazy evaluation 可能なように closure 関数として？実装する。
+    ↑m_arRowAlignment, m_arColwAlignment は connect 後も変更可能な実装とする
+    ↑何時でも G の clolmn, row の追加、消去できる実装とする
+        ↑後で中継点を追加したくなることは珍しくない。
+
+Group に似た Symbol も同様に定義できるようにしておくべきだろう。
+↑×BaseContainer ○BaseAlignment を作っておき Group, Symbol を継承させるべき？
+    ↑ ユーザーが自由にできる。
+    ↑ draw(self) method は evaluation のループ操作だけのはず。
+    ↑ 入れ子構造を考慮すると、aligned == group とできない。再帰構造の内部との connect もある
+
+単純な UML は Group.connect で描かせたい。
+↑ marker は start, end 両方向けのペアが必要になる
+↑ グループ内部の Text を使っての arrow を引っ張ることを可能にしなければならない。
+    ↑ arrow を引っ張るのは、個々の UML 長方形クラスを作ってからになる。
+
+ksv.Arrow(svg.shapes.Line) を設ける
+↑m_arPath を持たせる。多くの場合は len(m_arPath)==2 となるだろう。
+
+Enclosure に Up,Down,Left,Right:UDLR 属性を設け、enclosre.R 25p_c_, enclosure.R 1/4 で enclosure.E と enclosure.NE の中間の位置 ndarray を返す。
+↑ Enclosure にクラス内クラス Line：仮名 を設ける
+
+Ovalは周囲八点を Bezier curve で繋いだもの
+↑二重 Oval はどうする？
+↑二重 Rect だって使いたい
+
+ラフ配置の終わった svg 画像を jointjs, dia or inkscape に取り込んで、マウスでのお化粧 drawings
+
+-----------------------------------
+date:2015/11/10 (火) time:07:36
+-----------------------------------
 EnclosureGrp を設けるのではなく、np.array(...,) を直接に扱う
 ↑ そうしないで EnclosreGrp(np.ndarray) とする方法もある
     ↑zeros などは独自に実装しなければならない。
@@ -96,10 +180,13 @@ m_mtFourSide, C,N,E,S,W, NE,SE,SW,NW 属性を持つ。
 
 
 # default 値
-## left,right, upper, lower margin
+## L:left,R:right, U:upper, D:lower margin
 ## left,right, upper, lower spacing
 ↑ どこに持たせる。Enclosre に basic な default 値を持たせる
-    ↑ SvgRect にも同じ default 値を持たせ、 Enclosure の値を override する
+    ↑ SvgRect にも同じ default 値を持たせ、 Enclosure の値を 書き直す。不明確:override する
+↑inner 側のサイズに対しての % で margin を定めるのを default とする。
+    ↑ mm で定めるのもあり。→ 後で pt,px なども追加する
+    ↑ margin と m_inner object の m_arSize を足し合わせて、継承した側の m_arSize を定めます。
 
 
 # string 行列に SvSize を掛ける扱いが consistent に可能

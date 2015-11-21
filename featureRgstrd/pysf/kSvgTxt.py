@@ -1,4 +1,6 @@
 # -*- coding:cp932 -*-
+"""' Text and Arrow SVG generator.
+'"""
 import svgwrite as svg
 import numpy as np
 
@@ -13,10 +15,10 @@ class SvSize(object):
             self.m_flValue=flAg
         elif strAg == 'mm':
             self.m_flUnit = 1/0.282222229121    # px pixel == 0.282222229121mm
-            self.m_flValse = flAg * self.m_flUnit
+            self.m_flValue = flAg * self.m_flUnit
         elif strAg == 'cm':
             self.m_flUnit = 10/2.82222229121
-            self.m_flValse = flAg * self.m_flUnit
+            self.m_flValue = flAg * self.m_flUnit
         else:
             assert False, "In SvSize.__init__(..) we don't yet implement unit:"+strAg
 
@@ -25,17 +27,27 @@ class SvSize(object):
         assert( isinstance(flAg,(int, float)) ), (
             "In SvSize.__rmul__, you set unexpected value:"+ str(flAg))
         return SvSize(self.m_strUnit, flAg)
-    #def __mul__(self,ag): #pass      # detect right multiplyer
+
+    def __mul__(self,ag): #pass      # detect right multiplyer
+        if isinstance(ag, str):
+            return Text(ag)
+            #pass
+        elif isinstance(ag, Text):
+            # not figure out usages yet
+            assert False
+        else:
+            assert(False)
 
     def __float__(self):
-        return self.m_flPxValue
+        return self.m_flValue
 
     def __int__(self):
-        return int(self.m_flPxValue)
+        return int(self.m_flValue)
 
 
     def __str__(self):
-        return str(self)+'px'
+        return str(self.m_flValue)+'px'
+        #return str(int(self.m_flValue))
 
 class P_C_(object):
     """' percent unit class
@@ -67,18 +79,81 @@ p_c_ = 0.01 # %:p_c_ は単なる数値の方が分かりやすそう。
 class Enclosure(object):
     """' Primitive null shape type 
     '"""
-    def __init__(sel, size=0, insert=np.array([0,0])):
-        """' size=0 means there is no element
+    def __init__(self, enclosure=None, insert=None, margin=None):
+        """' enclosure==None means there is no element
+        enclosre may be lenght 2 nemerical tuple,list, ndarray that define size ndarray
+        enclosre may be a pare of size and enclosure object:([1,2], scalable svg instance)
+        enclosre may be a enclosured instance which has the data member:m_arSize
+
+        margin may be [left margin, top margin, right margin, bottom margin]
+        margin may be [left margin, top margin] # [right margin, bottom margin] is same
+        margin may be [value                    # [value,value,value] 
+
+        # できたらいいな:I wish I could
+            Enclosure can contain external SVG instance
         '""" 
-        assert np.all(insert==np.array([0,0])) if size==0 else True
-        self.m_arSize = size
+        def __getNW_SE():
+            if margin==None:
+                arNW = np.array([0,0])
+                arSE = np.array([0,0])
+            elif hasattr(__len__, margin) and len(margin)==2:
+                x,y=float(margin[0]), float(margin[1])
+                
+                arNW = np.array([x,y])
+                arSE = np.array([x,y])
+            else:
+                assert len(margin) == 4
+
+                x,y=float(margin[0]), float(margin[1])
+                arNW = np.array([x,y])
+
+                x,y=float(margin[1]), float(margin[2])
+                arSE = np.array([x,y])
+
+            return (arNW,arSE)
+        #if  insert != None:
+        #    assert np.all(insert==np.array([0,0])) if size==0 else True
+        # self.m_arInsert == None means that this has not been deployed yet.
         self.m_arInsert = insert
+        self.m_lstMargin=margin
+        assert margin==None, 'not implemented m_margin yet'
+        if isinstance(enclosure,(tuple,list,np.ndarray)) and len(enclosure)==2:
+            if isinstance(enclosure[0],(tuple,list,np.ndarray)) and len(enclosure[0])==2:
+                assert isinstance(enclosure[1], (Enclosure, svg.text.Text))
+                if margin==None:
+                    arNW = np.array([0,0])
+                    arSE = np.array([0,0])
+                elif hasattr(__len__, margin) and len(margin)==2:
+                    x,y=float(margin[0]), float(margin[1])
+                    
+                    arNW = np.array([x,y])
+                    arSE = np.array([x,y])
+
+                self.m_arSize = np.array(enclosure[0])
+                self.m_obj = enclosure[1]
+                self.m_obj.m_arSize=np.array(enclosure[0])
+            else:
+                # there is no enclosured object. just reserve an arear
+                # example: Enclosure([15mm,20mm]), Enclosure(100,200) -- pixel
+                arSize=np.array([float(enclosure[0]), float(enclosure[1])])
+                arNW,arSE=__getNW_SE()
+                self.m_arSize = arNW+arSize+arSE
+                self.m_obj = None
+        elif isinstance(enclosure, Enclosure): 
+            #examples: Text(17mm'abc')
+            #
+            #assert False, "Recursive Enclosure is not implemented yet."
+            arNW,arSE=__getNW_SE()
+            self.m_arSize = arNW+self.m_arSize+arSE
+            self.m_obj = self
+
+        else:
+            # Empty enclosure which keeps just only an arear.
+            assert False
 
     def __getattr__(self, name):
-        mt = self.m_arFourCorners
-
         # North  East South West, North West, North East, South East, South West
-        if self.m_arSize==0:
+        if np.all(self.m_arSize==[0,0]):
             if name in ('N',"E","S","W","NW","NE","SE","SW","C"):
                 return array([0,0]) + self.m_arInsert
             elif name == "mt":
@@ -122,44 +197,25 @@ class Enclosure(object):
             raise AttributeError
 
 
-    class Line(object):
+    class Edge(object):
+        """'UDLR:Up,Down,Left,Right line is Enclosure inner class instance
+        which  return np.ndarray posiion on T B L R lines
+        example L:start ~[1,1], L:end ~[3,1] then 25p_c_ self.L == ~[1.5,1]
+        '""" 
         def __init__(self, ch='U', pos=1/3*p_c_):
                 self.m_tplCh_p_c_=(ch,pos)
-
-class NestedEnclosure(Enclosure):
-    """' Yet implemented
-    '"""
-    def __init__(self):pass
-
-dwg=None
-
-class Group(svg.container.Group):
-    """' A group of shape and text or a group of text, shape and theother text.
-    '"""
-    def __init__(self, shapeAg, svTxtAg): 
-        """' Yet implemented
-        '"""
-        svg.container.Group.__init__(self)
-        self.add(shapeAg)
-        self.add(svTxtAg)
-
-    def __add__(self, ag):
-        """' You can manage to lay out nested shaped-texts.
-        '"""
-        pass
-
-    def __radd__(self, strAg):
-        pass
-
-    def __getattr__(self, chAg):
-        pass
 
 
 class Text(svg.text.Text, Enclosure):
     """' text type which has 4 point positions:up,right,down,left.
     '"""
-    def __init__(self, strAg,
-                 insert=np.array([0,0]), font_size=5*mm, 
+    @staticmethod
+    def __getSize(strAg, fs, font_family):
+        n=len(strAg)
+        return np.array((fs, fs*n/2 if n%2==0 else fs*(0.5+n%2)))
+
+    def __init__(self, strAg, font_size=5*mm, 
+                 insert=np.array([0,0]),
                  font_family='MSgothic', **kwd):
         """' font_size is interpreted by the mm size
         '"""
@@ -171,47 +227,53 @@ class Text(svg.text.Text, Enclosure):
         fs=float(font_size)
         #mt[0,0] = (0, 0.1*fs); mt[0,1] = (fs*(2+len(strAg)/2.0) , 0.1*fs)
         #mt[1,0] = (0, 1.2*fs); mt[1,1] = (fs*(2+len(strAg)/2.0) , 1.2*fs)
-        arSize = __getSize(strAg,fs, font_family)
-        En.closure.__init__(self, size=arSize)
-    
+        arSize = Text.__getSize(strAg, fs, font_family)
         # just only 1 sentence for the time being
-        svg.text.Text.__init__(self, strAg, insert=np.arry([np.insert[0],
-                                                   insert[1]+self.m_arSize[1]]),
-                               font_size=fs, font_family=font_family,**kwd)
+        svg.text.Text.__init__(self, strAg, font_size=fs, insert=np.array([insert[0],
+                                                   insert[1]+arSize[1]]),
+                               font_family=font_family,**kwd)
+        self.m_arSize=arSize
+        Enclosure.__init__(self, self)
+    
 
-    def __getSize(strAg, fs, font_family):
-        """' text sizes shoud be determined for eahch font_family.
-        But we don't know how to get them
-        '"""
-        return np.array(fs, fs*len(strAg)/2)
+class AlndEclsAr(Enclosure):
+    """'Aligned Enclosure Array
 
-    def rect(self, *sqAg, **kwdAg):
-        if len(sqAg) == 0:
-            if not('size' in kwdAg):
-                kwdAg['size'] = self.SE
-        elif len(sqAg) == 1:
-            assert not('size' in kwdAg)
-            assert len(sqAg[0]) == 2
-            kwdAg['size'] = self.SE
+examples
+    AlndEclsAr(10mm'ABC', 20mm'→', 10mm'abc').SVG
+    '"""
+    def __init__(self, mtEcls, lsRow_dx=0, lsCol_dy=0):
+        if isinstance(mtEcls, np.ndarray):
+            pass
         else:
-            assert False, "In Text.rect, you set unexpected parameters:"+str(sqAg)
+            assert False, "At AlndEclsAr.__init__, we presume mtEcls is numpy array for time being."
 
-        if not('fill' in kwdAg):
-            kwdAg['fill'] = 'none'
+        tplShape = mtEcls.shape
+        assert len(tplShape)==1
+        if isinstance(lsRow_dx,(int, float)):
+            lsRow_dx=[lsRow_dx]*tplShape[0]
+        else:
+            assert len(lsRow_dx)==tplShape[0],  ('You set a inappropreate paramter'
+                                                + ' for lsRow_dx:'+str()
+                                                )
 
-        if not('stroke' in kwdAg):
-            kwdAg['stroke'] = 'black'
+        fnWidth=lambda k: mtEcls[k].NE[0]-mtEcls[k].NW[0]
+        lsMaxWidth = [fnWidth(k) for k in range(tplShape[0])]
+        hrPos = 0   # initialize horizontal position
+        for k in range(tplShape[0]):
+           mtEcls[k].insert=np.array([hrPos + lsRow_dx[k],0])
+           hrPos += lsMaxWidth[k]
 
-        return Group(svg.shapes.Rect([0,0], **kwdAg), self)
-
-    def circle(self, options=None):
-        pass
 
 class Rect(svg.shapes.Rect, Enclosure):
     def __init__(self, enclosure, margin=[5*p_c_, 10*p_c_, 5*p_c_, 10*p_c_], 
                  size=None, insert=np.array([0,0]),**kwd):
         pass
 
+class AlignedAr(Enclosure):
+    pass
+
+dwg=None
 def show():
     """'save and start'"""
     import os
@@ -219,16 +281,19 @@ def show():
     os.system("start test.svg")
 
 def ksv():
-    global dwg
+    global dwg, mm
     #dwg = svg.Drawing('test.svg', size=('170mm', '130mm'), viewBox=('0 0 170 130'))
     #dwg = svg.Drawing('test.svg', size=('170mm', '130mm'), viewBox=('0 0 170mm 130mm'))
     #dwg = svg.Drawing('test.svg', size=('170mm', '130mm'))
+    import sfFnctns as sf
+    sf.__getDctGlobals()['mm']=mm
+
+    mm=1/0.282222229121
+    # print type(170*mm), 170*mm    # to debug
     dwg = svg.Drawing('test.svg', size=(170*mm, 130*mm))
 
-    import sfFnctns as sf
     sf.__getDctGlobals()['svg']=svg
     sf.__getDctGlobals()['dwg']=dwg
-    sf.__getDctGlobals()['mm']=mm
 
     import kSvgTxt as ksv
     sf.__getDctGlobals()['ksv']=ksv

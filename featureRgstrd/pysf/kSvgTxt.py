@@ -153,41 +153,42 @@ class Enclosure(object):
 
     def __getattr__(self, name):
         # North  East South West, North West, North East, South East, South West
+        arInsert = np.array([0,0]) if self.m_arInsert==None else self.m_arInsert
         if np.all(self.m_arSize==[0,0]):
             if name in ('N',"E","S","W","NW","NE","SE","SW","C"):
-                return array([0,0]) + self.m_arInsert
+                return array([0,0]) + arInsert
             elif name == "mt":
-                return np.array([[[0,0],[0,0]],[[0,0],[0,0]]]) + self.m_arInsert
+                return np.array([[[0,0],[0,0]],[[0,0],[0,0]]]) + arInsert
 
 
         if name == "N":                         # North
-            return np.array([ self.m_arInsert[0]+self.m_arSize[0]/2,
-                              self.m_arInsert[0]                    ])
+            return np.array([ arInsert[0]+self.m_arSize[0]/2,
+                              arInsert[0]                    ])
         elif name == "E":                       # East
-            return np.array([self.m_arInsert[0]+self.m_arSize[0]  ,
-                             self.m_arInsert[1]+self.m_arSize[1]/2])
+            return np.array([arInsert[0]+self.m_arSize[0]  ,
+                             arInsert[1]+self.m_arSize[1]/2])
         elif name == "S":                       # South
-            return np.array([self.m_arInsert[0]+self.m_arSize[0]/2,
-                             self.m_arInsert[1]+self.m_arSize[1]  ])
+            return np.array([arInsert[0]+self.m_arSize[0]/2,
+                             arInsert[1]+self.m_arSize[1]  ])
         elif name == "W":                       # West
-            return np.array([self.m_arInsert[0]                   ,
-                             self.m_arInsert[1]+self.m_arSize[1]/2])
+            return np.array([arInsert[0]                   ,
+                             arInsert[1]+self.m_arSize[1]/2])
         elif name == "NW":                      # North West
-            return np.array([self.m_arInsert[0]                   ,
-                             self.m_arInsert[1]                   ])
+            return np.array([arInsert[0]                   ,
+                             arInsert[1]                   ])
         elif name == "NE":                      # North East
-            return np.array([self.m_arInsert[0]+self.m_arSize[0]  ,
-                             self.m_arInsert[1]                   ])
+            return np.array([arInsert[0]+self.m_arSize[0]  ,
+                             arInsert[1]                   ])
         elif name == "SE":                      # South East
             return mt[1,1]
-            return np.array([self.m_arInsert[0]+self.m_arSize[0]  ,
-                             self.m_arInsert[1]+self.m_arSize[1]  ])
+            return np.array([arInsert[0]+self.m_arSize[0]  ,
+                             arInsert[1]+self.m_arSize[1]  ])
         elif name == "SW":                      # South West
-            return np.array([self.m_arInsert[0]                   ,
-                             self.m_arInsert[1]+self.m_arSize[1]  ])
+            return np.array([arInsert[0]                   ,
+                             arInsert[1]+self.m_arSize[1]  ])
         elif name == "C":                       # Center
-            return np.array([self.m_arInsert[0]+self.m_arSize[0]/2,
-                             self.m_arInsert[1]+self.m_arSize[1]/2])
+            return np.array([arInsert[0]+self.m_arSize[0]/2,
+                             arInsert[1]+self.m_arSize[1]/2])
 
         elif name == "mt":
             return np.array([[self.NW, self.NE],
@@ -257,21 +258,28 @@ examples
                                                 + ' for lsRow_dx:'+str()
                                                 )
 
-        fnWidth=lambda k: mtEcls[k].NE[0]-mtEcls[k].NW[0]
+        self.m_mtElements = mtEcls
+
+        # for just only 1 row sequence
+        fnWidth=lambda k: mtEcls[k].E[0]-mtEcls[k].W[0]
         lsMaxWidth = [fnWidth(k) for k in range(tplShape[0])]
         hrPos = 0   # initialize horizontal position
         for k in range(tplShape[0]):
-           mtEcls[k].insert=np.array([hrPos + lsRow_dx[k],0])
+           mtEcls[k].m_arInsert=np.array([hrPos + lsRow_dx[k],0])
            hrPos += lsMaxWidth[k]
 
+        vtPos = max(mtEcls[k].S[1]-mtEcls[k].N[1] for k in range(tplShape[0]))
+        self.m_arSize=np.array([hrPos, vtPos])
+        Enclosure.__init__(self, self)
+
+    def __getitem__(self,*ag):
+        return self.m_mtElements.__getitem__(*ag)
+        
 
 class Rect(svg.shapes.Rect, Enclosure):
     def __init__(self, enclosure, margin=[5*p_c_, 10*p_c_, 5*p_c_, 10*p_c_], 
                  size=None, insert=np.array([0,0]),**kwd):
         pass
-
-class AlignedAr(Enclosure):
-    pass
 
 dwg=None
 def show():

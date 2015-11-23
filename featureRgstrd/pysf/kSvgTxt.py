@@ -1,6 +1,7 @@
 # -*- coding:cp932 -*-
 """' Text and Arrow SVG generator.
 '"""
+import sfFnctns as sf
 import svgwrite as svg
 import numpy as np
 
@@ -29,13 +30,14 @@ class SvSize(object):
         return SvSize(self.m_strUnit, flAg)
 
     def __mul__(self,ag): #pass      # detect right multiplyer
-        if isinstance(ag, str):
+        if isinstance(ag, (str,unicode)):
             return Text(ag)
             #pass
         elif isinstance(ag, Text):
             # not figure out usages yet
             assert False
         else:
+            import pdb; pdb.set_trace()
             assert(False)
 
     def __float__(self):
@@ -117,7 +119,13 @@ class Enclosure(object):
         self.m_arInsert = insert
         self.m_lstMargin=margin
         assert margin==None, 'not implemented m_margin yet'
-        if isinstance(enclosure,(tuple,list,np.ndarray)) and len(enclosure)==2:
+
+        if isinstance(enclosure,Enclosure) and hasattr(enclosure,'m_svwObj'):
+            # example 17mm"abc" : Text.__init__ has set self.m_arSize, m_svwObje
+            arNW,arSE=__getNW_SE()
+            self.m_arSize = arNW+enclosure.m_arSize+arSE
+            return
+        elif isinstance(enclosure,(tuple,list,np.ndarray)) and len(enclosure)==2:
             if isinstance(enclosure[0],(tuple,list,np.ndarray)) and len(enclosure[0])==2:
                 assert isinstance(enclosure[1], (Enclosure, svg.text.Text))
                 if margin==None:
@@ -130,22 +138,22 @@ class Enclosure(object):
                     arSE = np.array([x,y])
 
                 self.m_arSize = np.array(enclosure[0])
-                self.m_obj = enclosure[1]
-                self.m_obj.m_arSize=np.array(enclosure[0])
+                self.m_svwObj = enclosure[1]
+                self.m_svwObj.m_arSize=np.array(enclosure[0])
             else:
                 # there is no enclosured object. just reserve an arear
                 # example: Enclosure([15mm,20mm]), Enclosure(100,200) -- pixel
                 arSize=np.array([float(enclosure[0]), float(enclosure[1])])
                 arNW,arSE=__getNW_SE()
                 self.m_arSize = arNW+arSize+arSE
-                self.m_obj = None
+                self.m_svwObj = None
         elif isinstance(enclosure, Enclosure): 
             #examples: Text(17mm'abc')
             #
             #assert False, "Recursive Enclosure is not implemented yet."
             arNW,arSE=__getNW_SE()
             self.m_arSize = arNW+self.m_arSize+arSE
-            self.m_obj = self
+            self.m_svwObj = self
 
         else:
             # Empty enclosure which keeps just only an arear.
@@ -207,7 +215,7 @@ class Enclosure(object):
                 self.m_tplCh_p_c_=(ch,pos)
 
 
-class Text(svg.text.Text, Enclosure):
+class Text(Enclosure):
     """' text type which has 4 point positions:up,right,down,left.
     '"""
     @staticmethod
@@ -230,12 +238,17 @@ class Text(svg.text.Text, Enclosure):
         #mt[1,0] = (0, 1.2*fs); mt[1,1] = (fs*(2+len(strAg)/2.0) , 1.2*fs)
         arSize = Text.__getSize(strAg, fs, font_family)
         # just only 1 sentence for the time being
-        svg.text.Text.__init__(self, strAg, font_size=fs, insert=np.array([insert[0],
-                                                   insert[1]+arSize[1]]),
-                               font_family=font_family,**kwd)
+        self.m_svwObj=svg.text.Text(strAg, font_size=fs,
+                            insert=np.array([insert[0], insert[1]+arSize[1]]),
+                            font_family=font_family,**kwd)
+        self.m_flFontSize=fs
         self.m_arSize=arSize
         Enclosure.__init__(self, self)
+        self.m_debug=1
     
+    def tostring(self):
+        #import pdb; pdb.set_trace()
+        return self.m_svwObj.tostring()
 
 class AlndEclsAr(Enclosure):
     """'Aligned Enclosure Array
@@ -275,6 +288,24 @@ examples
     def __getitem__(self,*ag):
         return self.m_mtElements.__getitem__(*ag)
         
+
+    def tostring(self):
+        mt = self.m_mtElements
+        shape=mt.shape
+
+        strAt=''
+        import itertools as it
+        for idx in it.product(range(shape[0]), range(shape[1])
+                            ) if len(shape)==2 else range(shape[0]):
+            if mt[idx] == 0:
+                continue
+
+            assert hasattr(mt[idx], 'tostring')
+
+            strAt += mt[idx].tostring()+'\n'
+        
+        return strAt
+
 
 class Rect(svg.shapes.Rect, Enclosure):
     def __init__(self, enclosure, margin=[5*p_c_, 10*p_c_, 5*p_c_, 10*p_c_], 

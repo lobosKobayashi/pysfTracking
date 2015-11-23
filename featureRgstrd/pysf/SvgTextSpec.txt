@@ -1,3 +1,23 @@
+ksv(); ar=ksv.AlndEclsAr(~[10mm*"ABC", 20mm*'→', 10mm*'abc', object]); [x.m_arInsert for x in ar]
+===============================
+[array([0, 0]), array([ 17.716535,   0.      ]), array([ 35.43307,   0.     ])]
+
+
+connect(mt, ([index,index],....)
+↑ index を一つの数値で済ますことも可能：connect(mt.r, ([index,index],....)
+↑ mt.r は closure 関数として実装し、 mt.r[index number ] == index pair を返すと同時に arrow を保存する。
+↑ arrow は lazy evaluatioin とし関数列を mt.m_lstArrow に保存する
+    ↑ inkscape の extention として rubber binding を実装したい
+
+Text に left, center, right alignment option が必要
+
+Empty enclosure が 0 のときは empty enclosure とみなす
+-----------------------------------
+* date:2015/11/22 (日) time:07:58
+-----------------------------------
+Enclosure.__init__(self, enclosure, ..) で enclosure が Text instance のときは self.m_svwObject、self.m_arSize が設定済みであるとし特別扱いする
+↑ m_svw??? は svgwrite インスタンスまたは tostring method が備わっているインスタンスとする
+
 -----------------------------------
 * date:2015/11/20 (金) time:09:01
 -----------------------------------

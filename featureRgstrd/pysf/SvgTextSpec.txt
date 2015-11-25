@@ -1,17 +1,99 @@
+-----------------------------------
+* date:2015/11/24 (火) time:09:53
+-----------------------------------
+AlndEclsAr に showUp() を追加する
+下のような文字列も一つの Text instance として扱えるようにする
+                                      ┌────┐
+                                      │kYThrd  │
+                                      └────┘
+                                          ▽┌────┐
+  ┌────┐  ┌─────┐  ┌─────┴┐      │
+  │Verifier│←┤ClTestVct │←┤Application │      ↓登録
+  └────┘  └─────┘  │Task        │ ┌─────┐
+      ▽            登録        └──────┘ │kYThrdDll │
+ ┌──────┐                                │.cpp/h    │
+ │ kYThrdVrf  ├───────────────→└─────┘
+ └──────┘                         接続
+
+
+┌──────────┐      ┌──────────┐
+│ClCntxtIntfSgBase   │      │ClCntxtBase         │
+├──────────┤      ├──────────┤
+│ClVrfyIntfBase      │←─○│m_pClCntxtIntfSgBase│
+│ * m_pClVrfyIntfBase│  *   ├──────────┤
+│m_pClPollingQueue   │◇─→│                    │
+│m_pClDelayQueue     │◇─→│                    │
+│m_pClReadyQueue     │◇─→│                    │
+│m_pClLoopingQueue   │◇─→│                    │
+├──────────┤      └──────────┘
+│virtual tickCntxt() │            △
+│   executeReadyQue()│            │
+│executeLoopingQue() │            │
+│terminatedAtEnd()   │         ClVrfyThrd
+└─┬────────┘         ClVrfyCThrd 同期回路t
+
+
+
+
+# arrow の接続を closure を使った lazy evaluation で行うのは、ピックルス化できない問題が発生する
+↑ 接続パラメータ文字列ならばピックルス可能
+↑arrow 引数文字列を残してやれば良いだけ。
+
+# UML 専用の UText クラスを設ける
+↑ 四角で囲んだテキストと兼用する
+↑ SvSize | str で UText を返す
+↑ UText + str or Text で UText の縦済み一体テキストを意味するものとする。
+    ↑+ は * 演算子より優先順位が低いので 10mm|"abc" + 17mm 'ABCD' といった記述が可能になる
+    int.__or__ 有り
+    | と + の優先順位は？
+    Python 演算子 優先順位
+lambda 	ラムダ式
+or 	ブール演算 OR
+and 	ブール演算 AND
+not x 	ブール演算 NOT
+in, not in 	メンバシップテスト
+is, is not 	アイデンティティテスト
+<, <=, >, >=, <>, !=, == 	比較
+| 	ビット単位 OR
+^ 	ビット単位 XOR
+& 	ビット単位 AND
+≪, ≫ 	シフト演算
++, - 	加算および減算
+*, /, % 	乗算、除算、剰余
++x, -x 	正符号、負符号
+~x 	ビット単位 NOT
+** 	べき乗
+x.attribute 	属性参照
+x[index] 	添字指定
+x[index:index] 	スライス操作
+f(arguments...) 	関数呼び出し
+(expressions...) 	式結合またはタプル表現
+[expressions...] 	リスト表現
+{key:datum...} 	辞書表現
+`expressions...` 	文字列への型変換
+
 ksv(); ar=ksv.AlndEclsAr(~[10mm*"ABC", 20mm*'→', 10mm*'abc', object]); [x.m_arInsert for x in ar]
 ===============================
 [array([0, 0]), array([ 17.716535,   0.      ]), array([ 35.43307,   0.     ])]
 
 
 connect(mt, ([index,index],....)
-↑ index を一つの数値で済ますことも可能：connect(mt.r, ([index,index],....)
+↑ index 要素を一つの数値で済ますことも可能：connect(mt.r, ([index,index],....)
 ↑ mt.r は closure 関数として実装し、 mt.r[index number ] == index pair を返すと同時に arrow を保存する。
 ↑ arrow は lazy evaluatioin とし関数列を mt.m_lstArrow に保存する
     ↑ inkscape の extention として rubber binding を実装したい
 
-Text に left, center, right alignment option が必要
+# Text に left, center, right alignment option が必要
 
-Empty enclosure が 0 のときは empty enclosure とみなす
+# Empty enclosure が 0 のときは empty enclosure とみなす
+
+# UText.N などの属性は UText[0].N にする。 0 以外の属性は index を指定してアクセスする
+                     ---------- UText.0N, 1N と 0--9 までのナンバーを付けて指定する。
+                     ↑10個以上の縦積みは扱わない。
+↑ 継承で実装すべき？ has Text instances で実装すべき？
+    ↑ 一つの四角で囲んだテキストを兼用しようとするのがまずい？
+↑ 二個目以降を has instances として実装する
+
 -----------------------------------
 * date:2015/11/22 (日) time:07:58
 -----------------------------------

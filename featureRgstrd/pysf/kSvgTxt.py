@@ -29,9 +29,9 @@ class SvSize(object):
             "In SvSize.__rmul__, you set unexpected value:"+ str(flAg))
         return SvSize(self.m_strUnit, flAg)
 
-    def __mul__(self,ag): #pass      # detect right multiplyer
+    def __mul__(self,ag): #pass      # detect right multiplyer e.g. 17mm*'abc'
         if isinstance(ag, (str,unicode)):
-            return Text(ag)
+            return Text(ag, float(self))
             #pass
         elif isinstance(ag, Text):
             # not figure out usages yet
@@ -238,8 +238,9 @@ class Text(Enclosure):
         #mt[1,0] = (0, 1.2*fs); mt[1,1] = (fs*(2+len(strAg)/2.0) , 1.2*fs)
         arSize = Text.__getSize(strAg, fs, font_family)
         # just only 1 sentence for the time being
+        self.m_arInsert=np.array([insert[0], insert[1]+arSize[1]])
         self.m_svwObj=svg.text.Text(strAg, font_size=fs,
-                            insert=np.array([insert[0], insert[1]+arSize[1]]),
+                            insert=self.m_arInsert,
                             font_family=font_family,**kwd)
         self.m_flFontSize=fs
         self.m_arSize=arSize
@@ -248,6 +249,8 @@ class Text(Enclosure):
     
     def tostring(self):
         #import pdb; pdb.set_trace()
+        self.m_svwObj['x'],self.m_svwObj['y'] = (self.m_arInsert[0],
+                                                 self.m_arInsert[1]+self.m_arSize[1])
         return self.m_svwObj.tostring()
 
 class AlndEclsAr(Enclosure):
@@ -257,6 +260,13 @@ examples
     AlndEclsAr(10mm'ABC', 20mm'Å®', 10mm'abc').SVG
     '"""
     def __init__(self, mtEcls, lsRow_dx=0, lsCol_dy=0):
+        """' mtEcls contains instances of Enclosre
+        mtEncls may be np.array(...)
+
+        yet implementted
+                may be list or tuple
+                may be dictionary with integer index
+        '"""
         if isinstance(mtEcls, np.ndarray):
             pass
         else:

@@ -225,7 +225,7 @@ class Text(Enclosure):
 
     def __init__(self, strAg, font_size=5*mm, 
                  insert=np.array([0,0]),
-                 font_family='MSgothic', **kwd):
+                 font_family='monospace, MSgothic', **kwd):
         """' font_size is interpreted by the mm size
         '"""
         #Enclosure.__init__(self
@@ -249,8 +249,8 @@ class Text(Enclosure):
     
     def tostring(self):
         #import pdb; pdb.set_trace()
-        self.m_svwObj['x'],self.m_svwObj['y'] = (self.m_arInsert[0],
-                                                 self.m_arInsert[1]+self.m_arSize[1])
+        self.m_svwObj['x'],self.m_svwObj['y'] = (self.m_arInsert[0] + self.m_arSize[0],
+                                                 self.m_arInsert[1]+self.m_flFontSize)
         return self.m_svwObj.tostring()
 
 class AlndEclsAr(Enclosure):

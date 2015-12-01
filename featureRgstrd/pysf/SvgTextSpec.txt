@@ -1,7 +1,14 @@
 -----------------------------------
 * date:2015/11/25 (水) time:08:36
 -----------------------------------
-MS gothic 指定:ユニコード等幅フォントで決め打ちする
+# UML UText.N などの属性は UText[0].N にする。 0 以外の属性は index を指定してアクセスする
+                     ---------- UText.0N, 1N と 0--9 までのナンバーを付けて指定する。
+                     ↑10個以上の縦積みは扱わない。
+↑ 継承で実装すべき？ has Text instances で実装すべき？
+    ↑ 一つの四角で囲んだテキストを兼用しようとするのがまずい？
+↑ 二個目以降を has instances として実装する
+
+# MS gothic 指定:ユニコード等幅フォントで決め打ちする
 ↑javascript による遅延評価を使って実行時に配置する方法もあり
     ↑jQuery と組み合わせれば何とかできる？
 SvSize に getFontPxSize() を追加し、この font pixel size と半角全角文字数から TextInstance.m_arSize を決定する
@@ -374,6 +381,17 @@ class Svg_pxSize(float):
         return str(self)+'px'
 
 px=Svg_pxSize('px', 1)
+
+* 未決定事項
+**** 8bit 半角文字の扱いをどうするか
+strAt=r'abcｸｰﾛﾝ';                       [hex(ord(ch)) for ch in strAt]
+===============================
+['0x61', '0x62', '0x63', '0xb8', '0xb0', '0xdb', '0xdd']
+↑ 8bit 半角の扱いをどうするか？
+    ↑ 当面は ur'...' とユーザーが注意する
+strAt=ur'abcｸｰﾛﾝ';                      [hex(ord(ch)) for ch in strAt]
+===============================
+['0x61', '0x62', '0x63', '0xff78', '0xff70', '0xff9b', '0xff9d']
 
 * invalid specifications
 ** EnclosureGroup は止める。

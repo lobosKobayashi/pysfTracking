@@ -1,11 +1,33 @@
 # -*- coding:cp932 -*-
 """' Text and Arrow SVG generator.
 '"""
-import sfFnctns as sf
+#import sfFnctns as sf
 import svgwrite as svg
 import numpy as np
 
 class SvSize(object):
+    @staticmethod
+    def __ConvertToUnicode(strAg):
+        if isinstance(strAg, unicode):
+            return strAg
+        # try convert shift-jis to unicode
+        try:
+            rtnStr = strAg.decode('shift-jis')
+            return rtnStr
+        except:
+            pass
+
+        # try convert utf-8 to unicode
+        try:
+            rtnStr = strAg.decode('utf-8')
+            return rtnStr
+        except:
+            pass
+
+        assert False, ("In SvSize::__ConverToUnicodeStr(strAg), we come across "
+                     + "unexpected parameter:" + strAg
+                      )
+
     def __init__(self, strAg, flAg=1.0):
         """' data member:m_strUnit, m_flUnit, m_flValue
         '"""
@@ -30,12 +52,15 @@ class SvSize(object):
         return SvSize(self.m_strUnit, flAg)
 
     def __mul__(self,ag): #pass      # detect right multiplyer e.g. 17mm*'abc'
-        if isinstance(ag, (str,unicode)):
-            return Text(ag, float(self))
+        if isinstance(ag, unicode):
+            return Text(ag, self)
             #pass
         elif isinstance(ag, Text):
             # not figure out usages yet
             assert False
+        elif isinstance(ag, str):
+            strAt = SvSize.__ConvertToUnicode(ag)
+            return Text(strAt, self)
         else:
             import pdb; pdb.set_trace()
             assert(False)
@@ -50,6 +75,11 @@ class SvSize(object):
     def __str__(self):
         return str(self.m_flValue)+'px'
         #return str(int(self.m_flValue))
+
+    def getFontPxSize(self):
+        inAt = int(self)
+        flSize= 2.0*(inAt/2 if inAt%2==0 else (inAt+1)/2)
+        return flSize
 
 class P_C_(object):
     """' percent unit class
@@ -219,39 +249,68 @@ class Text(Enclosure):
     """' text type which has 4 point positions:up,right,down,left.
     '"""
     @staticmethod
-    def __getSize(strAg, fs, font_family):
-        n=len(strAg)
-        return np.array((fs, fs*n/2 if n%2==0 else fs*(0.5+n%2)))
+    def getSize(ustrAg, fs, font_family):
+        r"""' strAg は ascii text or unicode text 
+        We deal with only MS gothic font only because of equal width fonts"
 
-    def __init__(self, strAg, font_size=5*mm, 
-                 insert=np.array([0,0]),
-                 font_family='monospace, MSgothic', **kwd):
-        """' font_size is interpreted by the mm size
+        Cation! Yet not implemented multi lines by \n 
+            Also, we should implement, left, middle, right aslignement oprtions
         '"""
-        #Enclosure.__init__(self
+        assert fs%2==0
+        def __checkHalfSize(ch):
+            c=ord(ch)
+            if( ( c<=0x7e ) or     # 英数字
+                ( c==0xa5 ) or     # \記号
+                ( c==0x203e) or    # ~記号
+                ( c>=0xff61 and c<=0xff9f)   # 半角カナ
+            ):
+                return True
+            else:
+                return False
 
-        # four corners:[[(1.2*fs, 0.1*fs), ((2+len(strAG))*fs, 0.1*fs)],
-        #               [(1.2*fs, 1.2*fs), ((2+len(strAG))*fs,1.2*fs)]]
-        
-        fs=float(font_size)
-        #mt[0,0] = (0, 0.1*fs); mt[0,1] = (fs*(2+len(strAg)/2.0) , 0.1*fs)
-        #mt[1,0] = (0, 1.2*fs); mt[1,1] = (fs*(2+len(strAg)/2.0) , 1.2*fs)
-        arSize = Text.__getSize(strAg, fs, font_family)
+        n=sum(1 if __checkHalfSize(c) else 2 for c in ustrAg)
+        return np.array((fs/2*n, fs))
+
+    def __init__(self, ustrAg, font_size=5*mm, 
+                 insert=np.array([0,0]),
+                 font_family='MS gothic', **kwd):
+        """' font_size is interpreted by the mm size
+        kwd are parameters for svgwrite.text.Text.
+        '"""
+        if isinstance(font_size, int):
+            inAt = font_size
+            fs= 2.0*(inAt/2 if inAt%2==0 else (inAt+1)/2)
+        elif isinstance(font_size, float):
+            inAt = int(font_size)
+            fs= 2.0*(inAt/2 if inAt%2==0 else (inAt+1)/2)
+        elif isinstance(font_size, SvSize):
+            fs = font_size.getFontPxSize()
+        else:
+            assert False, ( 'In Text.__init__, you set a unexpected parameter '
+                          + 'for font_size:'+str(font_size)
+                          )
+        arSize = Text.getSize(ustrAg, fs, font_family)
         # just only 1 sentence for the time being
         self.m_arInsert=np.array([insert[0], insert[1]+arSize[1]])
-        self.m_svwObj=svg.text.Text(strAg, font_size=fs,
+        self.m_svwObj=svg.text.Text(ustrAg.encode('utf-8'), font_size=int(fs),
                             insert=self.m_arInsert,
                             font_family=font_family,**kwd)
         self.m_flFontSize=fs
         self.m_arSize=arSize
-        Enclosure.__init__(self, self)
+
+        Enclosure.__init__(self, self, self.m_arInsert)
         self.m_debug=1
     
-    def tostring(self):
+    def tostring(self, bl_utf_jis=False):
         #import pdb; pdb.set_trace()
-        self.m_svwObj['x'],self.m_svwObj['y'] = (self.m_arInsert[0] + self.m_arSize[0],
-                                                 self.m_arInsert[1]+self.m_flFontSize)
-        return self.m_svwObj.tostring()
+        self.m_svwObj['x'],self.m_svwObj['y'] = (
+                    int(self.m_arInsert[0]),
+                    int(self.m_arInsert[1]+self.m_flFontSize)
+                    )
+        if bl_utf_jis == True:
+            return self.m_svwObj.tostring().encode('utf-8')
+        else:
+            return self.m_svwObj.tostring().encode('shift-jis')
 
 class AlndEclsAr(Enclosure):
     """'Aligned Enclosure Array

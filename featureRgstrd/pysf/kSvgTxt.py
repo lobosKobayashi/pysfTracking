@@ -157,6 +157,7 @@ class Enclosure(object):
             return
         elif isinstance(enclosure,(tuple,list,np.ndarray)) and len(enclosure)==2:
             if isinstance(enclosure[0],(tuple,list,np.ndarray)) and len(enclosure[0])==2:
+                # example Enclosure([arSize, 17mm'abc'])
                 assert isinstance(enclosure[1], (Enclosure, svg.text.Text))
                 if margin==None:
                     arNW = np.array([0,0])
@@ -289,15 +290,52 @@ class Text(Enclosure):
             assert False, ( 'In Text.__init__, you set a unexpected parameter '
                           + 'for font_size:'+str(font_size)
                           )
-        arSize = Text.getSize(ustrAg, fs, font_family)
-        # just only 1 sentence for the time being
-        self.m_arInsert=np.array([insert[0], insert[1]+arSize[1]])
-        self.m_svwObj=svg.text.Text(ustrAg.encode('utf-8'), font_size=int(fs),
-                            insert=self.m_arInsert,
-                            font_family=font_family,**kwd)
-        self.m_flFontSize=fs
-        self.m_arSize=arSize
 
+        lsUstr=ustrAg.split('\n')
+        if len(lsUstr) >= 2:
+            class InnerMultiLine(Text):
+                def __init__(self, lsUstrAg):
+                    widthMax =  0
+                    self.m_lsSvwObj=[]
+                    for j, ustrAt in enumerate(lsUstrAg):
+                        # just only left alignment sentences for the time being
+                        width = Text.getSize(ustrAt, fs, font_family)[0]
+                        if width > widthMax:
+                            widthMax = width
+
+                        self.m_lsSvwObj.append( Text(ustrAt, font_size,
+                                                    [insert[0], insert[1]+j*fs ],
+                                                    font_family, **kwd)
+                                              )
+
+                    arSize = np.array([widthMax, len(lsUstrAg) * fs])
+                    self.m_arInsert = np.array([insert[0], insert[1] + arSize[1]])
+                    self.m_svwObj = self
+                    self.m_flFontSize = fs
+                    self.m_arSize = arSize
+
+                def tostring(self):
+                    strAt=''
+                    for svwAt in self.m_lsSvwObj:
+                        strAt += svwAt.tostring()
+
+                    return strAt
+
+            cl = InnerMultiLine(lsUstr)
+            self.m_arInsert = cl.m_arInsert
+            self.m_arSize = cl.m_arSize
+            self.m_flFontSize = fs
+            self.m_svwObj = cl
+        else:
+            arSize = Text.getSize(ustrAg, fs, font_family)
+            # just only 1 sentence for the time being
+            self.m_arInsert=np.array([insert[0], insert[1]+arSize[1]])
+            self.m_svwObj=svg.text.Text(ustrAg.encode('utf-8'), font_size=int(fs),
+                                insert=self.m_arInsert,
+                                font_family=font_family,**kwd)
+            self.m_flFontSize=fs
+            self.m_arSize=arSize
+        
         Enclosure.__init__(self, self, self.m_arInsert)
         self.m_debug=1
     

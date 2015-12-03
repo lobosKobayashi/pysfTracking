@@ -1,3 +1,53 @@
+m_svwObj は Enclosure も所有する
+↑ m_lsSwvObj にすると Enclosure と矛盾することを InnureMultiLine(svw.text.Text) class を設けて対策する
+
+class InnerMultiLine(Text):
+    def __init__(self, lsUstr, ...):
+        self.m_lsSwgText = ... を設ける
+
+ditaa 流のとき {..} を許したい
+        |           |               |           |
+
+--      +-
+
+        roundedRect:
+                 {rr}
+--                --+
+-----------------------------------
+* date:2015/12/02 (水) time:07:38
+-----------------------------------
+//@@
+<?xml version="1.0" encoding="shift-jis" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+<svg height="100%" width="100%" viewBox="0,0,1000,1000" font-family="MS gothic"/>
+<defs/>
+<text font-family="MS gothic" font-size="35" x="10" y="30">abc
+ABCD</text>
+</svg>
+//@@@
+//copy __tmp test.svg
+//test.svg
+↑一個のspace が開いて表示されるだけ
+    ↑ m_svwObj → m_lsSvwObj にしなければならない？
+    ↑ できるならば一つの svg object だけで済ませておきたい
+        ↑ 一塊のテキスト以上に分解して扱うことはないのだから
+    ↑ style="white-space:pre" を指定すればいけそう
+        ↑ IE11 であかん 白画面になる。
+↑ m_lsSvwObj を使って一行ごとに配置しなおす
+    ↑ nine-point circle wikipedia でも一行ごとに配置している
+//@@
+<?xml version="1.0" encoding="shift-jis" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+<svg height="100%" width="100%" viewBox="0,0,1000,1000" font-family="MS gothic"/>
+<defs/>
+<text font-family="MS gothic" font-size="35" style="white-space:pre" x="10" y="30">abc
+ABCD</text>
+</svg>
+//@@@
+//copy __tmp test.svg
+//test.svg
+↑ IE11 はあかん。白画面になる。 FireFox35 は OK
+
 -----------------------------------
 * date:2015/11/25 (水) time:08:36
 -----------------------------------

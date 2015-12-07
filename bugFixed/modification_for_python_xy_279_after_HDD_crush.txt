@@ -1,0 +1,124 @@
+Title       : modifications for python_xy_279 after HDD crush 
+            : HDD crush 後の Python(x,y) 2.7.9 version up に伴う修正
+
+Serial Num  : 00076,    State: closed: date:2015/02/28
+First issued: date:2015/02/20
+
+Tags        : PythonXY_279
+
+* SyntaxError: Non-ASCII character '\x8d' in file D:\my\vc7\mtCm\pysf\sfPPrcssr.py
+date:2015/02/16
+** Comments_2  : counter mesure
+line 1-2 を下のように修正した
+from __future__ import division
+# -*- encoding: cp932 -*-
+↓
+# -*- encoding: cp932 -*-
+from __future__ import division
+↑ 他のソースは下側になっていた
+
+* kcommon.py で assert(...) の記述の仕方をしていた。
+(...) が tuple の意味になって always true になってしまう
+↑ (...) を .... だけにする
+kcommoy.py だけの話
+
+* scypy.derivative がなくなった
+f=λ r:(~[`X,`Y,`Z] - r)/norm(~[`X,`Y,`Z] - r)^3; `div(f([1,0,0])-f([-1,0,0]) )(0,0,0)
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3031, in start
+    __execLine( lstLineAt[0].strip() )
+  File "pysf\sfPPrcssr.py", line 2474, in __execLine
+    exec(strAt, globals())
+  File "<string>", line 9, in <module>
+  File "pysf\customize.py", line 201, in <lambda>
+    return lambda *posAg:sf.Jc_(fnAg)(*posAg).trace()
+  File "pysf\kNumeric.py", line 506, in __call__
+    dctAt[idx] = self.m_mtP_[idx](*sqAg)
+  File "pysf\kNumeric.py", line 324, in __call__
+    return sci.derivative(innerF, x
+AttributeError: 'module' object has no attribute 'derivative'
+
+** Comments_2  : counter mesure
+# msi scipy derivative
+import scipy.misc as md; import scipy as md2; id(md.derivative), id(md2.derivative)
+===============================
+(34087984, 34087984)
+scipy.derivative
+↓
+scipy.misc.derivative に修正する
+
+        import scipy as sci
+        return sci.derivative(innerF, x
+        ↓
+        import scipy.misc as md
+        return md.derivative(innerF, x
+
+f=λ r:(~[`X,`Y,`Z] - r)/norm(~[`X,`Y,`Z] - r)^3; `div(f([1,0,0])-f([-1,0,0]) )(0,0,0)
+===============================
+0.0
+
+class D_(object):
+    def __call__(self, x, dx=0.000001):
+        return sc.derivative(self.m_fn, x, dx=dx)
+    ↓
+    def __call__(self, x, dx=0.000001):
+        import scipy.misc as md
+        return md.derivative(self.m_fn, x, dx=dx)
+
+class Pt_(object):
+        import scipy as sci
+        return sci.derivative(innerF, x
+        ↓
+        import scipy.misc as md
+        return md.derivative(innerF, x
+
+sy(); sy.misc.factorial はあるけれど import scipy as sc; sc.misc.factorial は
+ない。追求しない
+
+* scypy.factorial がなくなって scipy.misc だけになった
+sy();(`σx/sy.factorial(2))[0,1] == 0.5
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPP.py", line 30, in <module>
+    pysf.sfPPrcssr.start()
+  File "pysf\sfPPrcssr.py", line 3031, in start
+    __execLine( lstLineAt[0].strip() )
+  File "pysf\sfPPrcssr.py", line 2474, in __execLine
+    exec(strAt, globals())
+  File "<string>", line 9, in <module>
+AttributeError: 'module' object has no attribute 'factorial'
+
+** Comments_2  : counter mesure
+testSf.vrf:1170:+1 calculateLineString __set "sy();(`σx/sy.factorial(2))[0,1] == 0.5"
+↓
++1 calculateLineString __set "sy();(`σx/sy.misc.factorial(2))[0,1] == 0.5"
+
+* repr([~[`σx, oc.BF]]) が [[BF(0),BF(1)],[BF(1),BF(0)]] を返すように変わった
+Python(x,y)-2.7.9.0 での numpy version は下になっている
+np.__version__
+===============================
+1.8.2
+
+以前:Python(x,y)-2.7.2.0 は [[0,1],[1,0]] を返していた
+
+** Comments_2  : counter mesure
+action script の側を変更する
+
+*** Comments_3  : action scripts
+Count:      822:  testSf.vrf  2450: calculateLineString __set "repr([~[`σx, oc.BF]]).split('\n')[1]"  :: Time:           0.822
++1 calculateLineString __set "repr([~[`σx, oc.BF]]).split('\n')[1]"
++0 strStt              __compare "           [1, 0]], pysf.octn.BF)]"
+↓
+
+* Comments_4  : open 判への修正
+以上の問題全てが open 判には関係しない問題だった
+

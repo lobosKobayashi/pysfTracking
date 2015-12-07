@@ -1,0 +1,129 @@
+Title       : ClTenson/ClFldTns can construct reference copied instances
+            : ClTenson/ClFldTns の __init__ は参照コピーでインスタンスを生成することがある
+
+Serial Num  : 00070,    State: closed: date:2015/04/19
+First issued: date:2015/03/00
+
+Tags        : ClTensor_or_ClFldTns copy reference
+
+Comments_1  : an error example
+ls=~[1,2,3]; vc=ClTensor(ls,dtype=object); ls[0]=5; vc
+===============================
+[1.0 2.0 3.0]
+
+ls=[1,2,3]; vc=ClTensor(ls); ls[0]=5; vc
+===============================
+[ 1.  2.  3.]
+---- ClTensor ----
+↓↑ 上は正しいが、下が NG
+ls=~[1,2,3]; vc=ClTensor(ls); ls[0]=5; vc
+===============================
+[ 5.  2.  3.]
+---- ClTensor ----
+
+# object 型要素のリストから ClTensor instance を生成したときは、参照コピーになっている。
+ls=ClTensor([1,2,3],dtype=object); vc=ClFldTns(ls,object); ls[0]=5; vc
+===============================
+[5 2 3]
+---- ClFldTns:< type 'object'> ----
+ls=ClTensor([1,2,3],dtype=object); vc=ClFldTns(ls,object); vc[0]=5; ls
+===============================
+[5 2 3]
+
+# object 型要素のリストから ClTensor instance を生成したときは、参照コピーになっている。
+ls=ClTensor([1,2,3],dtype=object); vc=ClFldTns(ls,object); ls[0]=5; vc
+===============================
+[5 2 3]
+---- ClFldTns:< type 'object'> ----
+ls=ClTensor([1,2,3],dtype=object); vc=ClFldTns(ls,object); vc[0]=5; ls
+===============================
+[5 2 3]
+
+ls=~[1,2,3]; vc=krry(ls); ls[0]=5; vc
+===============================
+[ 5.  2.  3.]
+---- ClTensor ----
+Comments_2  : counter mesure
+ClTensor:__init__
+    def __new__(subtype, data, dtype=float, copy=False):
+↓
+    def __new__(subtype, data, dtype=float, copy=True):
+
+ClFldTns:__init__
+    def __init__(self, data, ftype, copy=False):
+        #print "__new__ received %s" % type(data)   # to debug
+        if isinstance(data,str):
+            arAt = eval('sc.array('+ data +')')
+        elif isinstance(data, dict):
+            lstAt = data.keys()
+            lstAt.sort()
+            shapeAt = lstAt[-1]
+            shapeAt = (shapeAt[0]+1, shapeAt[1]+1)
+            assert shapeAt[0]*shapeAt[1] == len(lstAt),\
+                "dictionary argment index is not alined" + str(data)
+
+            assert shapeAt[0]*shapeAt[1] == len(lstAt),\
+                "dictionary mtrxAg index is not alined" + str(objarAg)
+            arAt = sc.zeros(shapeAt, dtype=object)
+            for indexAt in mrng(*shapeAt):
+                arAt[indexAt] = data[indexAt]
+        elif isinstance(data, ClFldTns):
+            arAt = data.m_tnsr
+        else:
+            arAt = sc.array(data, dtype=object, copy=copy)
+
+        #if not isinstance(_getElm(arAt), dtype):
+        if True:
+            #import pdb; pdb.set_trace()
+            sqAt = sc.ravel(arAt)
+            for k, elmAt in enumerate(sqAt):
+                if not isinstance(elmAt, ftype):
+                    sqAt[k] = ftype(elmAt)
+
+        self.__dict__['m_type'] = ftype
+        self.__dict__['m_tnsr'] = ClTensor(arAt, dtype = object)
+
+↓
+    def __init__(self, data, ftype, copy=True):
+        #print "__new__ received %s" % type(data)   # to debug
+        if isinstance(data,str):
+            arAt = eval('sc.array('+ data +')')
+        elif isinstance(data, dict):
+            lstAt = data.keys()
+            lstAt.sort()
+            shapeAt = lstAt[-1]
+            shapeAt = (shapeAt[0]+1, shapeAt[1]+1)
+            assert shapeAt[0]*shapeAt[1] == len(lstAt),\
+                "dictionary argment index is not alined" + str(data)
+
+            assert shapeAt[0]*shapeAt[1] == len(lstAt),\
+                "dictionary mtrxAg index is not alined" + str(objarAg)
+            arAt = sc.zeros(shapeAt, dtype=object)
+            for indexAt in mrng(*shapeAt):
+                arAt[indexAt] = data[indexAt]
+        elif isinstance(data, ClFldTns):
+            arAt = data.m_tnsr
+        else:
+            arAt = sc.array(data, dtype=object, copy=copy)
+
+        #if not isinstance(_getElm(arAt), dtype):
+        if True:
+            #import pdb; pdb.set_trace()
+            sqAt = sc.ravel(arAt)
+            for k, elmAt in enumerate(sqAt):
+                if not isinstance(elmAt, ftype):
+                    sqAt[k] = ftype(elmAt)
+
+        self.__dict__['m_type'] = ftype
+        self.__dict__['m_tnsr'] = ClTensor(arAt, dtype = object, copy=copy)
+
+Comments_3  : action scripts
+ls=~[1,2,3]; vc=ClTensor(ls); ls[0]=5; vc == ~[1,2,3]
+ls=ClTensor([1,2,3],dtype=object); vc=ClFldTns(ls,object); ls[0]=5; vc.m_tnsr == ~[1,2,3]
+ls=ClTensor([1,2,3],dtype=object); vc=ClFldTns(ls,object); vc[0]=5; ls == ~[1,2,3]
+ls=~[1,2,3]; vc=krry(ls); ls[0]=5; vc == ~[1,2,3]
+
+Comments_4  : open 版への修正
+Open 版は無関係
+
+

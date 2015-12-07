@@ -1,0 +1,74 @@
+Title       : change shebang line to first line for Python2.7.9
+            : マジック・コメントの位置を一行目にする
+
+Serial Num  : 00079,    State: closed: date:2015/04/19
+First issued: date:2015/04/00
+
+Tags        : shebang
+
+Comments_1  : an error example
+ustr=u"あ"; [hex(ord(ch)) for ch in ustr.encode('utf-8')]
+===============================
+['0xc2', '0x82', '0xc2', '0xa0']
+↑ 下のようにならねばならない
+    ↑ 古い MSI でならば、上の one-liner でも ['0xe3', '0x81', '0x82'] になる
+//@@
+# -*- encoding: cp932 -*-
+ustr=u"あ"
+print [hex(ord(ch)) for ch in ustr.encode('utf-8')]
+//@@@
+['0xe3', '0x81', '0x82']
+
+from __future__ import division
+# -*- encoding: cp932 -*-
+↑↓ encoding: cp932 の位置がまずい
+    ↑ Python2.7.9 で変わった
+# -*- encoding: cp932 -*-
+from __future__ import division
+
+Comments_2  : counter mesure
+pysf\sfPPrcssr.py
+
+def __execLine(___k_strAg, ___k_strOptAg = '-c' ):
+        usConvertedAt += "from __future__ import division\n"
+        usConvertedAt += "# -*- encoding: "+strFileEncodeGlb+" -*-\n"
+↓
+        usConvertedAt += "# -*- encoding: "+strFileEncodeGlb+" -*-\n"
+        usConvertedAt += "from __future__ import division\n"
+
+def converFileAndExecute( fileNameAg, strOptAg = '-f'):
+    wFileAt.write("from __future__ import division\n")
+    wFileAt.write("# -*- encoding: "+strFileEncodeGlb+" -*-\n")
+↓
+    wFileAt.write("# -*- encoding: "+strFileEncodeGlb+" -*-\n")
+    wFileAt.write("from __future__ import division\n")
+
+sfPPrcssr.py の一行目も下のように変更した
+from __future__ import division
+# -*- encoding: utf-8 -*-
+↓
+# -*- encoding: utf-8 -*-
+from __future__ import division
+
+Comments_3  : action scripts
+ustr=u'あ'; [hex(ord(ch)) for ch in ustr.encode('utf-8')]==['0xe3', '0x81', '0x82']
+
+
+Comments_4  : open 判への修正
+pysfOp\sfPPrcssrOp.py
+def execLine(strAg):
+        usConvertedAt += "from __future__ import division\n"
+        usConvertedAt += "# -*- encoding: "+strFileEncodeGlb+" -*-\n"
+↓
+        usConvertedAt += "# -*- encoding: "+strFileEncodeGlb+" -*-\n"
+        usConvertedAt += "from __future__ import division\n"
+
+def convertFileAndExecute(fileNameAg):
+    usConvertedAt += "from __future__ import division\n"
+    usConvertedAt += "# -*- encoding: "+strFileEncodeGlb+" -*-\n"
+↓
+    usConvertedAt += "# -*- encoding: "+strFileEncodeGlb+" -*-\n"
+    usConvertedAt += "from __future__ import division\n"
+
+testOp.vrfyOutSum
+ustr=u'あ'; [hex(ord(ch)) for ch in ustr.encode('utf-8')]==['0xe3', '0x81', '0x82']

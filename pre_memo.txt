@@ -1,15 +1,16 @@
 Title       : PythonSf featue bug mixed up memo
-            : PythonSf featue bug Ç≤Ç¡ÇΩéœÉÅÉÇ
+            : 
 
-Serial Num  : 00010,    State: resolving: date:2013/10/10
-First issued: date:2014/10/10
+Serial Num  : 00084,    State: resolving: date:2015/05/07
+First issued: date:2015/01/01
 
-Tags        : ClOctonion __lt__
+Tags        : units
 
+Comments_1  : functions to be implemented 
 Comments_1  : an error example
 Comments_2  : counter mesure
 Comments_3  : action scripts
-Comments_4  : open îªÇ÷ÇÃèCê≥
+Comments_4  : open î≈Ç÷ÇÃèCê≥
 
 * spec
 SNf       : feature,spec or invalid reason(s)  SNw: writing,  SNb: bug
@@ -18,12 +19,16 @@ State     : opened or closed, invalid, resolving, reopend
 
 Action Scripts: 
 
-Last Sirial Number:00075 Å® Next Sirial Number:00076
+Last Sirial Number:00086 Å® Next Sirial Number:00087
 
 ***** SNf:00069 resolving: never ending kitchen sink memo 2014/11/14
 D:\my\vc7\pysfTracking\neverEndingKitchenSinkMemo.txt
 ***** SNw:00072 resolving: never ending comment modification 2014/12/03
 D:\my\vc7\pysfTracking\neverEndingCommentModification.txt
+***** SNf:00085: double ended array 2015/09/21
+D:\my\vc7\pysfTracking\featureRgstrd\double_ended_array.txt
+***** SNf:00086 svg rectangular text graphycs 2015/11/03
+D:\my\vc7\pysfTracking\featureRgstrd\svg_rectangular_text_graphycs.txt
 
 * unfinished
 ***** SNb:00003: opened: plotTrajectory ÇÃ x,y é≤ê°ñ@î‰Ç™ìØÇ∂Ç≈Ç»Ç¢Ç±Ç∆Ç™î≠ê∂ÇµÇΩ;date:2013/08/04
@@ -213,6 +218,9 @@ D:\my\vc7\pysfTracking\featureRgstrd\add_hash_to_Sb.txt
 
 ***** SNf:00070 resolving: 0.97B?: add __getitem__ and p attribute to kfs:2014/11/19
 D:\my\vc7\pysfTracking\\add_getitem_and_p_attribute_to_kfs.txt
+***** SNb:00083 opened: 0.97C?: there is a cyclical references: 2015/05/06
+D:\my\vc7\pysfTracking\bugRgstrd\there_is_a_cyclical_references.txt
+
 
 
 * finished
@@ -436,3 +444,19 @@ D:\my\vc7\pysfTracking\bugFixed\narrowed_Sb___equ___True_objects.txt
 ***** SNf:00075 closed: 0.97B?: add modified nutural unit Heviside-Lorentz and pQ elementary charge:2015/02/01
 D:\my\vc7\pysfTracking\featureDone\add_modified_nutural_unit_Heviside-Lorentz_and_pQ_elementary_charge.txt
 
+***** SNb:00076 closed: 0.97B?: modifications for python_xy_279 after HDD crush:2015/02/20
+D:\my\vc7\pysfTracking\bugFixed\modification_for_python_xy_279_after_HDD_crush.txt
+***** SNb:00077 closed: 0.97B?: No traceback for TypeError at python_xy_279 after HDD crush:2015/04/01
+D:\my\vc7\pysfTracking\bugFixed\No_traceback_for_TypeError_at_python_xy_279_after_HDD_crush.txt
+***** SNb:00078 closed: 0.97B?: Stoney unit system bug:2015/04/16
+D:\my\vc7\pysfTracking\bugFixed\Stoney_unit_system_bug.txt
+***** SNb:00079 closed: 0.97B?: change magic comment position:2015/04/19
+D:\my\vc7\pysfTracking\bugFixed\change_magic_comment_position.txt
+***** SNb:00080 closed: 0.97B?: ClTensor ClFldTns init copy:2015/04/19
+D:\my\vc7\pysfTracking\bugFixed\ClTensor_ClFldTns_init_copy.txt
+***** SNb:00081 closed: 0.97B?: sfPPrcssrOp strFileEncodeGlb:2015/04/19
+D:\my\vc7\pysfTracking\bugFixed\sfPPrcssrOp_strFileEncodeGlb.txt
+***** SNb:00082 closed: 0.97B?: sfCrrntInOp O2:2015/04/21
+D:\my\vc7\pysfTracking\bugFixed\sfCrrntInOp_O2_bug.txt
+***** SNf:00084 closed: 0.97B?: append Heaviside Lorentz units: 2015/05/29
+D:\my\vc7\pysfTracking\featureDone\append_Heaviside_Lorentz_units.txt

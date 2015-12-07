@@ -1,0 +1,449 @@
+m_svwObj は Enclosure も所有する
+↑ m_lsSwvObj にすると Enclosure と矛盾することを InnureMultiLine(svw.text.Text) class を設けて対策する
+
+class InnerMultiLine(Text):
+    def __init__(self, lsUstr, ...):
+        self.m_lsSwgText = ... を設ける
+
+ditaa 流のとき {..} を許したい
+        |           |               |           |
+
+--      +-
+
+        roundedRect:
+                 {rr}
+--                --+
+-----------------------------------
+* date:2015/12/02 (水) time:07:38
+-----------------------------------
+//@@
+<?xml version="1.0" encoding="shift-jis" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+<svg height="100%" width="100%" viewBox="0,0,1000,1000" font-family="MS gothic"/>
+<defs/>
+<text font-family="MS gothic" font-size="35" x="10" y="30">abc
+ABCD</text>
+</svg>
+//@@@
+//copy __tmp test.svg
+//test.svg
+↑一個のspace が開いて表示されるだけ
+    ↑ m_svwObj → m_lsSvwObj にしなければならない？
+    ↑ できるならば一つの svg object だけで済ませておきたい
+        ↑ 一塊のテキスト以上に分解して扱うことはないのだから
+    ↑ style="white-space:pre" を指定すればいけそう
+        ↑ IE11 であかん 白画面になる。
+↑ m_lsSvwObj を使って一行ごとに配置しなおす
+    ↑ nine-point circle wikipedia でも一行ごとに配置している
+//@@
+<?xml version="1.0" encoding="shift-jis" ?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+<svg height="100%" width="100%" viewBox="0,0,1000,1000" font-family="MS gothic"/>
+<defs/>
+<text font-family="MS gothic" font-size="35" style="white-space:pre" x="10" y="30">abc
+ABCD</text>
+</svg>
+//@@@
+//copy __tmp test.svg
+//test.svg
+↑ IE11 はあかん。白画面になる。 FireFox35 は OK
+
+-----------------------------------
+* date:2015/11/25 (水) time:08:36
+-----------------------------------
+# UML UText.N などの属性は UText[0].N にする。 0 以外の属性は index を指定してアクセスする
+                     ---------- UText.0N, 1N と 0--9 までのナンバーを付けて指定する。
+                     ↑10個以上の縦積みは扱わない。
+↑ 継承で実装すべき？ has Text instances で実装すべき？
+    ↑ 一つの四角で囲んだテキストを兼用しようとするのがまずい？
+↑ 二個目以降を has instances として実装する
+
+# MS gothic 指定:ユニコード等幅フォントで決め打ちする
+↑javascript による遅延評価を使って実行時に配置する方法もあり
+    ↑jQuery と組み合わせれば何とかできる？
+SvSize に getFontPxSize() を追加し、この font pixel size と半角全角文字数から TextInstance.m_arSize を決定する
+↑m_arSize は int に丸められた float 値とする
+    ↑getFontPxSize() が返すのも int に丸められた float 値とする
+
+-----------------------------------
+* date:2015/11/24 (火) time:09:53
+-----------------------------------
+AlndEclsAr に showUp() を追加する
+下のような文字列も一つの Text instance として扱えるようにする
+                                      ┌────┐
+                                      │kYThrd  │
+                                      └────┘
+                                          ▽┌────┐
+  ┌────┐  ┌─────┐  ┌─────┴┐      │
+  │Verifier│←┤ClTestVct │←┤Application │      ↓登録
+  └────┘  └─────┘  │Task        │ ┌─────┐
+      ▽            登録        └──────┘ │kYThrdDll │
+ ┌──────┐                                │.cpp/h    │
+ │ kYThrdVrf  ├───────────────→└─────┘
+ └──────┘                         接続
+
+
+┌──────────┐      ┌──────────┐
+│ClCntxtIntfSgBase   │      │ClCntxtBase         │
+├──────────┤      ├──────────┤
+│ClVrfyIntfBase      │←─○│m_pClCntxtIntfSgBase│
+│ * m_pClVrfyIntfBase│  *   ├──────────┤
+│m_pClPollingQueue   │◇─→│                    │
+│m_pClDelayQueue     │◇─→│                    │
+│m_pClReadyQueue     │◇─→│                    │
+│m_pClLoopingQueue   │◇─→│                    │
+├──────────┤      └──────────┘
+│virtual tickCntxt() │            △
+│   executeReadyQue()│            │
+│executeLoopingQue() │            │
+│terminatedAtEnd()   │         ClVrfyThrd
+└─┬────────┘         ClVrfyCThrd 同期回路t
+
+
+
+
+# arrow の接続を closure を使った lazy evaluation で行うのは、ピックルス化できない問題が発生する
+↑ 接続パラメータ文字列ならばピックルス可能
+↑arrow 引数文字列を残してやれば良いだけ。
+
+# UML 専用の UText クラスを設ける
+↑ 四角で囲んだテキストと兼用する
+↑ SvSize | str で UText を返す
+↑ UText + str or Text で UText の縦済み一体テキストを意味するものとする。
+    ↑+ は * 演算子より優先順位が低いので 10mm|"abc" + 17mm 'ABCD' といった記述が可能になる
+    int.__or__ 有り
+    | と + の優先順位は？
+    Python 演算子 優先順位
+lambda 	ラムダ式
+or 	ブール演算 OR
+and 	ブール演算 AND
+not x 	ブール演算 NOT
+in, not in 	メンバシップテスト
+is, is not 	アイデンティティテスト
+<, <=, >, >=, <>, !=, == 	比較
+| 	ビット単位 OR
+^ 	ビット単位 XOR
+& 	ビット単位 AND
+≪, ≫ 	シフト演算
++, - 	加算および減算
+*, /, % 	乗算、除算、剰余
++x, -x 	正符号、負符号
+~x 	ビット単位 NOT
+** 	べき乗
+x.attribute 	属性参照
+x[index] 	添字指定
+x[index:index] 	スライス操作
+f(arguments...) 	関数呼び出し
+(expressions...) 	式結合またはタプル表現
+[expressions...] 	リスト表現
+{key:datum...} 	辞書表現
+`expressions...` 	文字列への型変換
+
+ksv(); ar=ksv.AlndEclsAr(~[10mm*"ABC", 20mm*'→', 10mm*'abc', object]); [x.m_arInsert for x in ar]
+===============================
+[array([0, 0]), array([ 17.716535,   0.      ]), array([ 35.43307,   0.     ])]
+
+
+connect(mt, ([index,index],....)
+↑ index 要素を一つの数値で済ますことも可能：connect(mt.r, ([index,index],....)
+↑ mt.r は closure 関数として実装し、 mt.r[index number ] == index pair を返すと同時に arrow を保存する。
+↑ arrow は lazy evaluatioin とし関数列を mt.m_lstArrow に保存する
+    ↑ inkscape の extention として rubber binding を実装したい
+
+# Text に left, center, right alignment option が必要
+
+# Empty enclosure が 0 のときは empty enclosure とみなす
+
+# UText.N などの属性は UText[0].N にする。 0 以外の属性は index を指定してアクセスする
+                     ---------- UText.0N, 1N と 0--9 までのナンバーを付けて指定する。
+                     ↑10個以上の縦積みは扱わない。
+↑ 継承で実装すべき？ has Text instances で実装すべき？
+    ↑ 一つの四角で囲んだテキストを兼用しようとするのがまずい？
+↑ 二個目以降を has instances として実装する
+
+-----------------------------------
+* date:2015/11/22 (日) time:07:58
+-----------------------------------
+Enclosure.__init__(self, enclosure, ..) で enclosure が Text instance のときは self.m_svwObject、self.m_arSize が設定済みであるとし特別扱いする
+↑ m_svw??? は svgwrite インスタンスまたは tostring method が備わっているインスタンスとする
+
+-----------------------------------
+* date:2015/11/20 (金) time:09:01
+-----------------------------------
+# 縦に svg 部品を配置することは、その左右に別の svg 部品が配置されることが多いはず。
+↑ndarray vector は横一列の配置専用に対応させても問題は少ないと推測する
+
+# Text の段階でマージンを導入しておく必要がある。
+↑category theory での矢印を書くとき、文字に引っ付けられない
+text 自体の位置とサイズは別に欲しい。
+↑　Enclosure 段階で margin まで入れておく。circle
+↑ 縦文字をどうするか
+    ↑ bool vertical 引数を追加する
+
+rect, circle などでテキストを囲んだものは、それ自体で一まとまりのグループ部品として扱うことが想定される
+
+U D L R → T:top B:bottom L R
+
+クラス内クラス Line は Edge の名前にする
+↑ Oval は 直線エッジではないが曲線エッジと拡大解釈する 
+↑菱形のエッジは L/R, T/B percent edge の位置をどうするか？
+    ↑ 右上を top にする
+    
+align 関数と AlinedArray class constructor は Enclosure instance を要素とする nd.array:alinedArray を返す。
+配置結果は要素個々の Enclosure instance が持つ
+↑ AlinedArray は getXmlStr(.), getSvg(.), getGroup(.), getSymbol(.) property を持つ。
+
+
+
+-----------------------------------
+date:2015/11/14 (土) time:10:34
+-----------------------------------
+もう Category Theory における図程度は描ける。書いてみよ。
+
+Enclosure に m_inner を設けて、inner 側に保持している svg object を保持させる。
+↑ m_inner に None 以外の値を設定するのは継承した側です。
+↑ 初期値は m_inner=None であり、そのインスタンスは empty point を意味させる。
+    ↑ empty point は connect 中継点の意味を持たせる
+
+Group(Enclosure, np.ndarray, swg.container.Group) クラスを設ける。
+↑ m_arRow, m_arColumnAlignment に dx, dy sequence 情報を入れておく
+    ↑align を実行されるまでは zero vector のまま← きっちり詰まった状態
+    ↑ dx,dy はマイナス値も許す
+        ↑ 円周上に配置したいときがあるから
+        ↑ 重ね合わせを許す？
+            ↑ 優先順位情報を追加する？← 面倒すぎる。
+            ↑ デフォルト優先順位情報がないとき row[0]<row[-1]< column[0]<colmn[-1] で配置する 
+↑ m_arWidth は column 要素の最大幅値を入れる。 m_arHeight は row 要素の最大幅値を入れる。
+    ↑ lazy evaluation ?
+        ↑ 要素の入れ替えを認めたい。
+        ↑ File 変数にできる？
+    ↑ lazy evaluation は arrow だけにとどめる。テキストの配置はテキストのサイズを前提とする
+↑ align は kSvgTxt.Group instance を返す。
+↑ Group.connect(..) method を設け、行列要素間を接続する。
+    ↑ この接続は Group.draw(..) 時まで遅らせて　lazy evaluation 可能なように closure 関数として？実装する。
+    ↑m_arRowAlignment, m_arColwAlignment は connect 後も変更可能な実装とする
+    ↑何時でも G の clolmn, row の追加、消去できる実装とする
+        ↑後で中継点を追加したくなることは珍しくない。
+
+Group に似た Symbol も同様に定義できるようにしておくべきだろう。
+↑×BaseContainer ○BaseAlignment を作っておき Group, Symbol を継承させるべき？
+    ↑ ユーザーが自由にできる。
+    ↑ draw(self) method は evaluation のループ操作だけのはず。
+    ↑ 入れ子構造を考慮すると、aligned == group とできない。再帰構造の内部との connect もある
+
+単純な UML は Group.connect で描かせたい。
+↑ marker は start, end 両方向けのペアが必要になる
+↑ グループ内部の Text を使っての arrow を引っ張ることを可能にしなければならない。
+    ↑ arrow を引っ張るのは、個々の UML 長方形クラスを作ってからになる。
+
+ksv.Arrow(svg.shapes.Line) を設ける
+↑m_arPath を持たせる。多くの場合は len(m_arPath)==2 となるだろう。
+
+Enclosure に Up,Down,Left,Right:UDLR 属性を設け、enclosre.R 25p_c_, enclosure.R 1/4 で enclosure.E と enclosure.NE の中間の位置 ndarray を返す。
+↑ Enclosure にクラス内クラス Line：仮名 を設ける
+
+Ovalは周囲八点を Bezier curve で繋いだもの
+↑二重 Oval はどうする？
+↑二重 Rect だって使いたい
+
+ラフ配置の終わった svg 画像を jointjs, dia or inkscape に取り込んで、マウスでのお化粧 drawings
+
+-----------------------------------
+date:2015/11/10 (火) time:07:36
+-----------------------------------
+EnclosureGrp を設けるのではなく、np.array(...,) を直接に扱う
+↑ そうしないで EnclosreGrp(np.ndarray) とする方法もある
+    ↑zeros などは独自に実装しなければならない。
+        ↑ 実装していない ndarray 操作はできなくなる。
+            np.r_[..] など
+    ↑ SvTxt クラスと fnSvTxt、 SvRect クラスと fnSvRect の両方が必要になる
+    ↑Layout class を設ければ
+    Layout([5mm*'yes', 10mm*'→', 5mm*'NO']).__str__()
+    Layout(SvRect,[5mm*'yes', 10mm*'→', 5mm*'NO']).__str__()
+    ↑SvRect.arrDefaultMergin = mm ~[5,10,5,10]
+    Layout([5mm*'YES', 10mm*'→', 5mm*'NO']).svg()
+    Layout(SvRect,[5mm*'yes', 10mm*'→', 5mm*'NO']).svg()
+
+    Layout([5mm'yes', 10mm'→', 5mm'NO'])
+    Layout(SvRect, [5mm'yes', 10mm'→', 5mm'NO'])
+
+    vc=5mm'YES → NO'; vc[1]*=2; Layout(vc)
+    ↑ Layout ではなく
+    AllignedGroup(arAg, dx=(10mm, 15mm, ...))
+    or
+    AllignedGroup(arAg, dx=[10mm]*3)
+
+
+date:2015/11/11 (水) time:21:42
+抽象的な allocate は 配列、array 要素にテキストを設定した段階で終わっている
+
+Enclosure
+    self.m_arInsert=None    # determined after lay
+    self.m_arSize=
+
+NestedEnclosure:
+×Allocation
+SvAlignment(array or matrix, x=..., y=)
+↑Sv を付けるのを止める。運用するときに付ける
+    ↑ np と同じ
+    ↑ ShortHand をソースに定義しておく
+ks module 名にする
+
+ksv(); ksv
+
+svm:suport vector machine は sfCrrntIni.py 中で import sklearn.svm as svm をやった
+
+class SvTxt(svg.text.Text) は class Text(svg.text.Text) に変更する。
+↑kSvTxt.py ファイルの中のクラスであり Sv 接頭語を付ける意味を見出せない
+
+svg.text.Text は下の属性を持つ。ksv.Text は、これを継承し size ベクトルと C, N,E,S,W,.. 属性を持つ
+    def __init__(self, text, insert=None, x=None, y=None, dx=None, dy=None, rotate=None,**ag)
+↑svg.text.Text には size 属性はない。insert で文字列の左下位置を指定するだけだ。
+    ↑厳密には renderer が描いてみないと、表示領域は定まらない
+        ↑ IE,FireFox で文字列のサイズが 同じ font-family でも 数% のオーダーでは変わっている。
+
+
+# test は bool 値テストに限定することで、既存の kVerifier 実装をそのまま利用する
+
+# SvgUnit:SUt shorthanded
+## とりあえず mm, cm, px
+## 文字列または SvgText との左側掛け算による SvgText を生成する
+### 足し算・掛け算は左側優先
+### int/float の左右掛け算も許す。このときはサイズが増える。
+↑ svg の scale の働きを SvgText でも可能にする
+#### 0SvgUnit * str or SvgText は 0SvgText とする。c:center 属性しか持たない m_mtfourCorner は None 
+
+# SvgText
+## SvgText については入れ子構造を認めない
+### SvgText(svgText) は、やはり SvgText instance にする。
+↓↑ この二種類にしとかないと仕様を詰めきれない。← SvgText(svgTextGroup) は assert error にしておく
+    ↑ 5mm [sTt,sTt, sTg] で、何を返すか決め切れん。
+### 別に SvgTextGroup を設けて、こちらで SvgText の入れ子構造を扱えるようにする
+↑ 引数が 
+
+# SvgText の配置は numpy array container によって行う
+↑ numpy array に拘るのは、配置修正機能が実装済みだから。← transpose, 上下左右逆転など
+    ↑Sb(..), Cy(..) による入れ替え操作も可能
+    ↑ 足し算･掛け算 行列操作まで可能だが、それのテストまでは行わない。
+## sequence 構造 -- 縦と横 基準線:path
+## matrix   構造 --- 面:null 要素の海の中に配置する
+## tree 構造
+## 入れ子構造
+### 文字を置く位置の上下左右を下の四種類で定める
+    ~[svgTxt instance, nested container] 
+    ~[svgTxt instance, nested container].t 
+    ~[nested container, svgTxt instance] 
+    ~[nested container, svgTxt instance].t 
+
+
+
+# Enclosing class;;SvRect, SvCircle, SvOval .... は svgTxt 及び そのコンテナを引数として生成される。
+↑Enclosure クラスと EnclosueGroup(np.ndarra) クラスの二種類を設ける。
+↑ 四隅の寸法が決まっていれば enclose できる
+    ↑ SvArrow の四隅の寸法は lazy evalation とする
+        ↑ left, right position, stroke_width が決められてから定められる。
+## primitive class として EnClosure class を設けて、SvRect などは これを継承させる
+m_mtFourSide, C,N,E,S,W, NE,SE,SW,NW 属性を持つ。
+
+## Enclosing class は SvgText グループ:tuple,list, arry, krry も引数とできる。
+
+
+# default 値
+## L:left,R:right, U:upper, D:lower margin
+## left,right, upper, lower spacing
+↑ どこに持たせる。Enclosre に basic な default 値を持たせる
+    ↑ SvgRect にも同じ default 値を持たせ、 Enclosure の値を 書き直す。不明確:override する
+↑inner 側のサイズに対しての % で margin を定めるのを default とする。
+    ↑ mm で定めるのもあり。→ 後で pt,px なども追加する
+    ↑ margin と m_inner object の m_arSize を足し合わせて、継承した側の m_arSize を定めます。
+
+
+# string 行列に SvSize を掛ける扱いが consistent に可能
+x=np.array(['abc', 'de']); x, x.dtype
+===============================
+(array(['abc', 'de'], 
+
+x=np.array([2,3]); ts(); y=1m` x; y, y.dtype
+===============================
+(array([2*m`, 3*m`], dtype=object), dtype('O'))
+
+
+* 実装メモ
+*** 全角文字の処理
+**** determination of full/half size characters
+# 全角・半角判定
+ Javaにおいては文字列は全てUNICODEで表現されるため、全角半角の判定も各文字のUNICODEで判断する他ありません。以下のサンプルように判定します。
+
+public class Hankaku {
+    public static void main() {
+        String s = "全角han漢字\\~～ｶﾅ";
+        System.out.print( s+": " );
+        for( int i=0; i<s.length(); i++ ) {
+            char c = s.charAt( i );
+            if( ( c<='\u007e' )|| // 英数字
+                ( c=='\u00a5' )|| // \記号
+                ( c=='\u203e' )|| // ~記号
+                ( c>='\uff61' && c<='\uff9f' ) // 半角カナ
+            )
+                System.out.print( "半" );
+            else
+                System.out.print( "全" );
+        }
+        System.out.print( "\n" );
+    }
+}
+
+Stringから一文字づつ取り出し、個々の文字のUNICODEを比較します。Javaでは文字を表す時は、'\u007e'のように'（シングルクォート）で囲みます。
+
+実行結果は以下のようになります。
+
+全角han漢字\~～ｶﾅ: 全全半半半全全半半全半半 	
+
+** invalid implementation
+**** SvSizef
+mm, px などの svg unit size を扱うクラス SvSize は float を継承したかった。__new__(cls,...) でなんとかできると思っていた。
+↑ でも def __mul__(self,..) 関数を実装できなかった。組み込み関数も変更できないよう。
+
+class Svg_pxSize(float):
+    def __new__(cls, strAg, flAg):
+        float.__new__(cls,flAg) 
+        cls.m_strUnit = 'px'
+        cls.m_flUnit = 1
+
+        cls.__rmul__ = Svg_pxSize.__rmul__
+        cls.__mul__ = Svg_pxSize.__mul__
+
+        return cls
+
+    def __rmul__(self, flAg):
+        assert( isinstance(flAg,(int, float)) ), (
+            "In Svg_pxSize.__rmul__, you set unexpected value:"+ str(flAg))
+        return Svg_pxSize(flAg)
+
+    def __flaot__(self):
+        return self.m_fl
+
+    def __mul__(self,ag):
+        #pass      # detect right multiplyer
+        return float(self)*ag
+
+    def __str__(self):
+        return str(self)+'px'
+
+px=Svg_pxSize('px', 1)
+
+* 未決定事項
+**** 8bit 半角文字の扱いをどうするか
+strAt=r'abcｸｰﾛﾝ';                       [hex(ord(ch)) for ch in strAt]
+===============================
+['0x61', '0x62', '0x63', '0xb8', '0xb0', '0xdb', '0xdd']
+↑ 8bit 半角の扱いをどうするか？
+    ↑ 当面は ur'...' とユーザーが注意する
+strAt=ur'abcｸｰﾛﾝ';                      [hex(ord(ch)) for ch in strAt]
+===============================
+['0x61', '0x62', '0x63', '0xff78', '0xff70', '0xff9b', '0xff9d']
+
+* invalid specifications
+** EnclosureGroup は止める。
+ユーザーが明示的に np.array 要素として Enclosure Element を配置する
+

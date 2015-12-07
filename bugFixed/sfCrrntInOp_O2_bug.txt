@@ -1,0 +1,37 @@
+Title       : O2 constructor dumped assert error at the open edtion
+            : Opne ”Å‚Å O2 ‚ª assert error ‚ğ“f‚«o‚µ‚Ä‚¢‚½
+
+Serial Num  : 00082,    State: closed: date:2015/03/00
+First issued: date:2015/04/21
+
+Tags        : open_edition O2
+
+Comments_1  : an error example
+spec:implement?;;O2(3,4) #‚ª open ”Å‚Å‚ÍƒGƒ‰[‚É‚È‚é
+Traceback (most recent call last):
+  File "C:\Python27\lib\runpy.py", line 162, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "C:\Python27\lib\runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "D:\my\vc7\mtCm\sfPPOp.py", line 49, in <module>
+    md.execLine( lstLineAt[0].strip() )
+  File "pysfOp\sfPPrcssrOp.py", line 190, in execLine
+    exec(usConvertedAt, globals())
+  File "<string>", line 8, in <module>
+  File "sfCrrntIniOp.py", line 503, in __init__
+    Oc.__init__(self, sf.krry(tplAt, ftype=Z2))
+AttributeError: 'module' object has no attribute 'krry'
+
+Comments_2  : counter mesure
+sfCrrntIniOp.py
+        Oc.__init__(self, sf.kryO(tplAt, ftype=Z2))
+«
+        Oc.__init__(self, tuple(Z2(x) for x in tplAt))
+
+Comments_3  : action scripts
+
+Comments_4  : open ”Å‚Ö‚ÌC³
+the open edtion only
+O2(3,4)[1]==Z2(0)
+
+

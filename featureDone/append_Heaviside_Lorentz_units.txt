@@ -1,0 +1,148 @@
+Title       : append Heaviside_Loretn unists
+            : PythonSf featue bug ごった煮メモ
+
+Serial Num  : 00070,    State: closed: date:2015/05/29
+First issued: date:2015/05/07
+
+Tags        : ClOctonion __lt__
+
+Comments_1  : functions to be implemented 
+MKSA 単位系の Heaviside_Lorentz 化と自然単位系の Heaviside_Lorentz 化 の二つだけを実装する
+↑ Plank, 修正自然、Stoney まで Heviside_Lorentz を実装すると記号の組み合わせが増えすぎる
+
+厳密には自然単位系を Lorrentz_Heaviside 化するときは esu静電単位系を使う
+SI 単位系を Heaviside_Lorrentz 化するときは emu電磁単位系を使う
+
+Ah`,Ch`,Vh`,Th` = Cn`/sn`/sqrt(e0n`), Cn`/sqrt(e0n`),Vn` sqrt(e0n`), Tn`/sqrt(u0n`)
+pQh`,= pQ`/sqrt(e0n`)
+eQh` = -pQh
+
+Al`,Cl`,Vl`,Tl` = A`/sqrt(e0`), A` s`/sqrt(e0`),V` J`/s`/W` sqrt(e0`), T`/sqrt(u0`)
+pQl`,= pQ`/sqrt(e0n`)
+eQl` = -pQl
+
+Comments_1_2 # Heaviside-Lorentz pQhk`=Chk`, eQhk`, Vhk`, Thk` が実装済みだった
+    k_pQhk_bq____=k_Chk_bq____=k_Ck_bq____ / sf.sqrt(k_e0k_bq____)
+    k_eQhk_bq____ = -k_pQhk_bq____
+    k_Vhk_bq____=k_Vk_bq____ * sf.sqrt(k_e0k_bq____)
+    k_Thk_bq____=k_Tk_bq____ / sf.sqrt(k_u0k_bq____)
+    下を追加する
+    k_Ahk_bq____=k_Ck_bq____ / k_sk_bq____ / sf.sqrt(k_e0k_bq____)
+
+Comments_2  : implementing example
+    # *****************************************************************************
+    # define Lorent_Heviside for natural units
+    # Ah`,Ch`,Vh`,Th` = Cn`/sn`/sqrt(e0n`), Cn`/sqrt(e0n`),Vn` sqrt(e0n`), Tn`/sqrt(u0n`)
+    k_Ah_bq____ = k_Cn_bq____ / k_sn_bq____ / sf.sqrt(k_e0n_bq____)
+    k_Ch_bq____ = k_Cn_bq____ / sf.sqrt(k_e0n_bq____)
+    k_Vh_bq____ = k_Vn_bq____ * sf.sqrt(k_e0n_bq____)
+    k_Th_bq____ = k_Vn_bq____ / sf.sqrt(k_e0n_bq____)
+
+    k_pQh_bq____ = k_pQn_bq____ / sf.sqrt(k_e0n_bq____)
+    k_eQh_bq____ =-k_pQh_bq____
+
+    # *****************************************************************************
+    # define Lorent_Heviside for SI units
+    # Al`,Cl`,Vl`,Tl` = A/sqrt(e0), A s/sqrt(e0),V sqrt(e0), T/sqrt(u0`)
+    import sympy.physics.units as ut
+    #k_Al_bq____ = ut.A / sf.sqrt(ut.e0)
+    k_Al_bq____ = ut.A * sf.sqrt(ut.u0)
+    k_Cl_bq____ = ut.C / sf.sqrt(ut.e0)
+    k_Vl_bq____ = ut.V * sf.sqrt(ut.e0)
+    k_Tl_bq____ = ut.C * sf.sqrt(ut.u0)
+
+    k_pQl_bq____ = -1.6021892e-19 * ut.C / sf.sqrt(ut.e0)
+    k_eQl_bq____ =-k_pQl_bq____
+
+
+    # **********************************************
+    # Heaviside-Lorentz pQhk`=Chk`, Ahk`, eQhk`, Vhk`, Thk`
+    # date:2015/05/17 (日) time:09:01 修正
+    k_pQhk_bq____==k_Ck_bq____ / sf.sqrt(k_e0k_bq____)
+    k_eQhk_bq____ = -k_pQhk_bq____
+
+    k_Chk_bq____=k_Ck_bq____ / sf.sqrt(k_e0k_bq____)/0.302824523103951
+    # rot H = 1/c j date:2015/05/15 (金) time:09:03
+    k_Ahk_bq____=k_Ck_bq____ / k_sk_bq____ / sf.sqrt(k_e0k_bq____)/0.302824523103951
+    k_Vhk_bq____ =k_Vk_bq____ * sf.sqrt(k_e0k_bq____)/3.30224246619792
+    k_Thk_bq____ =k_Tk_bq____ / sf.sqrt(k_u0k_bq____)/3.30224246619792
+
+Comments_2  : counter mesure
+Comments_3  : action scripts
+
+# 単位付き側での Heaviside_Lorentz system of units 値の確認
+## 電荷 g^1/2 cm^3/2 s^-1
+import sfCrrntIniRelativity as md; md.tt(); Ch` == gn`^(1/2) mn`^(3/2) sn`^-1
+import sfCrrntIniRelativity as md; md.tt(); ((ut.A ut.s/sqrt(ut.e0))/Cl`) ~== 336066.81876646896
+import sfCrrntIniRelativity as md; md.tt(); ((Ck`/sqrt(e0k`))/Chk`) ~== 0.302824523103951
+
+## 電流 == g^1/2 cm^3/2 s^-2: rot H = 1/c j date:2015/05/28
+import sfCrrntIniRelativity as md; md.tt(); Ah` == gn`^(1/2) mn`^(3/2) sn`^-2
+import sfCrrntIniRelativity as md; md.tt(); ((Ck`/sk`/sqrt(e0k`))/Ahk`) ~== 0.302824523103951
+import sfCrrntIniRelativity as md; md.tt(); ((ut.A/sqrt(ut.e0))/Al`) ~== 336066.81876646896
+
+## 電圧 V == g^1/2 cm^1/2 s^-1 date:2015/05/29 (金) time:00:02
+import sfCrrntIniRelativity as md; md.tt(); Vh` == gn`^(1/2) mn`^(1/2) sn`^-1
+import sfCrrntIniRelativity as md; md.tt(); import sympy.physics.units as ut; (Vl`/(ut.V sqrt(ut.e0)))~==(1/2.9755987326285099e-6)
+import sfCrrntIniRelativity as md; md.tt(); (Vhk` / (Vk` sqrt(e0k`))) ~==(1/3.30224246619792) 
+
+## 磁束密度 T == g^1/2 cm^-1/2 s^-1 date:2015/05/29 (金) time:00:11
+import sfCrrntIniRelativity as md; md.tt(); Th` == gn`^(1/2) mn`^(-1/2) sn`^-1
+import sfCrrntIniRelativity as md; md.tt(); import sympy.physics.units as ut; (Tl`/(ut.T/sqrt(ut.u0)))~==(1/892.06205807638571)
+import sfCrrntIniRelativity as md; md.tt(); (Thk` / (Tk`/sqrt(u0k`))) ~==(1/3.30224246619792) 
+
+
+# 単位なし側での Heaviside_Lorentz system of units 値の確認
+## 1Al` だけの電流が流れている電線どうしを 1m だけ離したとき、電線どうしに働く力は 1/c^2 2/(4pi) N`== 1.77083756352e-18 N` の力である
+#↑ c`,N` を単なる数に置き換えた
+c`,N`=299792458.0,1; import sfCrrntIniRelativity as md; (1/c`^2 md.Al`^2 2/(4pi) N`) ~== (1.77083756352e-18 N`)
+
+## for the natural system of units
+import sfCrrntIniRelativity as md; (md.Ah`, md.Ch`, md.Vh`, md.Th`,md.pQh`) == (1,1,1,1,0.302824523103951)
+
+## for SI
+import sfCrrntIniRelativity as md; (md.Al`, md.Cl`, md.Vl`, md.Tl`,md.pQl`) ~== (1, 1, 1, 1, 5.38442627506e-14)
+
+## for the modified natural system of units
+import sfCrrntIniRelativity as md; (md.Chk`, md.Ahk`,md.Vhk`, md.Thk`, md.pQhk`)~==(1,1,1,1, 0.302824523103951)
+
+
+
+Comments_4  : open 版への修正
+
+
+# 単位付き側での Heaviside_Lorentz system of units 値の確認
+## 電荷 g^1/2 cm^3/2 s^-1 date:2015/05/29 (金) time:10:47
+import sfCrrntIniOpRelativity as md; md.tt(); Ch`/(gn`^(1/2)*mn`^(3/2)*sn`^-1) == 1
+import sfCrrntIniOpRelativity as md; md.tt(); np.allclose(float(ut.A*ut.s/sqrt(ut.e0)/Cl`), 336066.81876646896)
+import sfCrrntIniOpRelativity as md; md.tt(); np.allclose(float((Ck`/sqrt(e0k`))/Chk`), 0.302824523103951)
+
+## 電流 == g^1/2 cm^3/2 s^-2: rot H = 1/c j date:2015/05/29 (金) time:11:06
+import sfCrrntIniOpRelativity as md; md.tt(); Ah` /(gn`^(1/2)*mn`^(3/2)*sn`^-2) == 1
+import sfCrrntIniOpRelativity as md; md.tt(); np.allclose(float((Ck`/sk`/sqrt(e0k`))/Ahk`), 0.302824523103951)
+import sfCrrntIniOpRelativity as md; md.tt(); np.allclose(float((ut.A/sqrt(ut.e0))/Al`), 336066.81876646896)
+
+## 電圧 V == g^1/2 cm^1/2 s^-1 date:2015/05/29 (金) time:11:14
+import sfCrrntIniOpRelativity as md; md.tt(); Vh`/(gn`^(1/2)*mn`^(1/2)*sn`^-1) == 1
+import sfCrrntIniOpRelativity as md; md.tt(); import sympy.physics.units as ut; np.allclose(float(Vl`/(ut.V*sqrt(ut.e0))), (1/2.9755987326285099e-6))
+import sfCrrntIniOpRelativity as md; md.tt(); np.allclose(float(Vhk` / (Vk`*sqrt(e0k`))), 1/3.30224246619792) 
+
+## 磁束密度 T == g^1/2 cm^-1/2 s^-1 date:2015/05/29 (金) time:11:23
+import sfCrrntIniOpRelativity as md; md.tt(); Th` /(gn`^(1/2)*mn`^(-1/2)*sn`^-1) == 1
+import sfCrrntIniOpRelativity as md; md.tt(); import sympy.physics.units as ut; np.allclose(float(Tl`/(ut.T/sqrt(ut.u0))), (1/892.06205807638571))
+import sfCrrntIniOpRelativity as md; md.tt(); np.allclose(float(Thk`/(Tk`/sqrt(u0k`))), 1/3.30224246619792) 
+
+# 単位なし側での Heaviside_Lorentz system of units 値の確認
+## 1Al` だけの電流が流れている電線どうしを 1m だけ離したとき、電線どうしに働く力は 1/c^2 2/(4pi) N`== 1.77083756352e-18 N` の力であるdate:2015/05/29 (金) time:11:54
+#↑ c`,N` を単なる数に置き換えた
+c`,N`=299792458.0,1; import sfCrrntIniOpRelativity as md; np.allclose((1/c`^2*md.Al`^2*2/(4*pi)*N`) ,   (1.77083756352e-18*N`))
+
+## for the natural system of units date:2015/05/29 (金) time:13:08
+import sfCrrntIniOpRelativity as md; (md.Ah`, md.Ch`, md.Vh`, md.Th`,md.pQh`) == (1,1,1,1,0.302824523103951)
+
+## for SI
+import sfCrrntIniOpRelativity as md; np.allclose((md.Al`, md.Cl`, md.Vl`, md.Tl`,md.pQl`), (1, 1, 1, 1, 5.38442627506e-14))
+
+## for the modified natural system of units
+import sfCrrntIniOpRelativity as md; np.allclose((md.Chk`, md.Ahk`,md.Vhk`, md.Thk`, md.pQhk`), (1,1,1,1, 0.302824523103951))
+

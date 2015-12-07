@@ -1,7 +1,7 @@
 Title       : reverse the substitution by ptGrp.__call__(.)
             : ptGrp.__call__(.) Ç…ÇÊÇÈíuÇ´ä∑Ç¶Ç™ Sb(..)^-1 ÇÃì≠Ç´ÇæÇ¡ÇΩ
 
-Serial Num  : 00010,    State: closed: date:2014/08/08
+Serial Num  : 00041,    State: closed: date:2014/08/08, add 2015/04/21
 First issued: date:2014/08/05
 
 Tags        : ptGrp
@@ -96,5 +96,29 @@ pysfOp\ptGrpOp.py
         else:
             return type(ag)(lstAt)
 
+2015/04/21 add
+File "pysfOp\ptGrpOp.py        152, in __call__
+        if isinstance(ag, sf.ClFldTns):
+            return sf.krry(lstAt, ftype=ag.m_type)
+        elif isinstance(ag, sf.ClTensor):
+            return sf.krry(lstAt, dtype=ag.dtype)
+        elif type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
+Å´
+        if type(ag) == sf.np.ndarray:
+            return sf.np.array(lstAt)
 
 testOp.vrf
+##### 2014.08.07 SN:00041 reverse the substitution by Sb.__call__
++1 calculateLineString __set "Sb(3,0,1,4,5,2)('abcdef') == 'bcfade'"
++0 blStt               __compare True
++1 calculateLineString __set "Sb(3,0,1,4,5,2)('abcdefXYZ') == 'bcfadeXYZ'"
++0 blStt               __compare True
++1 calculateLineString __set "Sb(3,0,1,4,5,2)((1,2,3,4,5,6))==(2,3,6,1,4,5)"
++0 blStt               __compare True
++1 calculateLineString __set "Sb(3,0,1,4,5,2)((1,2,3,4,5,6,7))==(2,3,6,1,4,5,7)"
++0 blStt               __compare True
++1 calculateLineString __set "Sb(3,0,1,4,5,2)(range(6))==[1,2,5,0,3,4]"
++0 blStt               __compare True
++1 calculateLineString __set "Sb(3,0,1,4,5,2)(range(8))==[1,2,5,0,3,4,6,7]"
++0 blStt               __compare True

@@ -1,0 +1,156 @@
+Title       : Stoney unit systm bug
+            : Stoney 単位系でのバグ
+
+Serial Num  : 00078,    State: closed: date:2015/04/16
+First issued: date:2015/04/16
+
+Tags        : oneDay Stoney unit
+
+Comments_1  : an error example
+下のように toSI(Cs`) マイナス電荷になっていたのは、バグを見つけるきっかけになった誤りは、古い 14.05.29 の タイム･スタンプの sfCrrntIni.py を使っていたためだった。
+↑ 2015.2月の HDD crush から復活させるとき、古い sfCrrntIni.py が戻ってしまった。
+tt(); toSI(Cn`)
+===============================
+-5.29081721512368e-19*A`*s`
+
+Cs` 以外の ms`, gs`,ss` の SI 量が誤っている
+tt(); toSI(ms`)
+===============================
+1.3805124167657e-36*m`
+===============================
+1.3805124167657e-36*m`
+
+tt(); toSI(gs`), eM`
+===============================
+(1.85946189392522e-9*kg`, 9.10938188e-31*kg`)
+===============================
+(1.85946189392522e-9*kg`, 9.10938188e-31*kg`)
+
+tt(); toSI(ss`)
+===============================
+4.60489375208263e-45*s`
+===============================
+4.60489375208263e-45*s`
+
+tt(); toSI(Cs`)
+===============================
+1.6021892e-19*A`*s`
+===============================
+1.6021892e-19*A`*s`
+
+# Stoney 単位系は電荷しか合っていない;;http://en.wikipedia.org/wiki/Natural_units#Stoney_units
+Quantity 	        Metric value
+Length (L) 	 	    5.292×10^-11 m
+Mass (M) 	        9.109×10^-31 kg
+Time (T) 	        2.419×10^-17 s
+Electric charge (Q) 1.602×10^-19 C
+Temperature (Θ) 	3.158×10^5 K
+
+Comments_2  : counter mesure
+# 長さ
+    # define Stoney length: sqrt( G e^2/(c^4 4pi e0) )
+    _unitConstantGlb = sf.sqrt(
+            __dctGlb['k_gU_bq____']*__dctGlb['k_pQ_bq____']**2 
+            /(__dctGlb['k_c_bq____']**4* 4*sf.pi* __dctGlb['k_e0_bq____'])
+            * __dctGlb['k_J_bq____'] / __dctGlb['k_s_bq____'] / __dctGlb['k_W_bq____']
+            )
+    k_ms_bq____ = ClLllUnit('meter_s','ms`')
+
+↓
+
+    # Stoney length: h`^2 (4pi e0`)/(eM` eQ^2)
+    _unitConstantGlb = ( __dctGlb['k_W_bq____']*__dctGlb['k_s_bq____']/__dctGlb['k_J_bq____'] * 
+            __dctGlb['k_h_bq__bq____']**2 * (4*sf.pi* __dctGlb['k_e0_bq____'])
+            /(__dctGlb['k_eM_bq____'] * __dctGlb['k_pQ_bq____']**2)
+            )
+    k_ms_bq____ = ClLllUnit('meter_s','ms`')
+
+# 時間
+    # Stoney time: mp`/c`: sqrt(h`` c`/gU`)
+    _unitConstantGlb = k_ms_bq____.m_toSI / __dctGlb['k_c_bq____']
+    k_ss_bq____ = ClLllUnit('second_s','ss`')
+
+↓
+
+    # Stoney time: h``^3 (4pi e0`)^2/eM` eQ^4
+    _unitConstantGlb = ((__dctGlb['k_W_bq____']*__dctGlb['k_s_bq____']/__dctGlb['k_J_bq____'])**2 * 
+            __dctGlb['k_h_bq__bq____']**3 * (4*sf.pi* __dctGlb['k_e0_bq____'])**2
+            /(__dctGlb['k_eM_bq____'] * __dctGlb['k_pQ_bq____']**4)
+            )
+    k_ss_bq____ = ClLllUnit('second_s','ss`')
+
+# 質量
+    # Stoney mass: sqrt( e^2/(G 4pi e0)
+    _unitConstantGlb = sf.sqrt(
+            __dctGlb['k_pQ_bq____']**2 
+            /(__dctGlb['k_gU_bq____']* 4*sf.pi* __dctGlb['k_e0_bq____'])
+            * __dctGlb['k_J_bq____'] / __dctGlb['k_s_bq____'] / __dctGlb['k_W_bq____']
+            )
+    k_gs_bq____ = ClLllUnit('gram_s','gs`')
+
+↓
+
+    # Stoney mass: eM`
+    _unitConstantGlb = __dctGlb['k_eM_bq____']
+    k_gs_bq____ = ClLllUnit('gram_s','gs`')
+
+
+tt(); toSI(ms`)
+===============================
+5.29168825924759e-11*m`
+
+tt(); toSI(ss`)
+===============================
+2.41880762254669e-17*s`
+
+tt(); toSI(gs`), eM`
+===============================
+(9.10938188e-31*kg`, 9.10938188e-31*kg`)
+
+tt(); toSI(Cs`), eQ`
+===============================
+(1.6021892e-19*A`*s`, -1.6021892e-19*A`*s`)
+Comments_3  : action scripts
+Comments_4  : open 判への修正
+# 長さ
+    # define Stoney length: sqrt( G e^2/(c^4 4pi e0) )
+    _unitConstantGlb = sf.sqrt(
+            __dctGlb['gUk_bq_']*__dctGlb['pQk_bq_']**2 
+            /(__dctGlb['ck_bq_']**4* 4*sf.pi* __dctGlb['e0k_bq_'])
+            * __dctGlb['Jk_bq_'] / __dctGlb['sk_bq_'] / __dctGlb['Wk_bq_']
+            )
+↓
+    # Stoney length: h`^2 (4pi e0`)/(eM` eQ^2)
+    _unitConstantGlb = (__dctGlb['Wk_bq_']*__dctGlb['sk_bq_']/__dctGlb['Jk_bq_'] * 
+            __dctGlb['hk_bq_k_bq_']**2 * (4*sf.pi* __dctGlb['e0k_bq_'])
+            /(__dctGlb['eMk_bq_'] * __dctGlb['pQk_bq_']**2)
+            )
+
+# 時間
+    # Stoney time: mp`/c`: sqrt(h`` c`/gU`)
+    _unitConstantGlb = msk_bq_.m_toSI / __dctGlb['ck_bq_']
+    ssk_bq_ = ClLllUnit('second_s','ss`')
+↓
+    # Stoney time: h``^3 (4pi e0`)^2/eM` eQ^4
+    _unitConstantGlb = ((__dctGlb['Wk_bq_']*__dctGlb['sk_bq_']/__dctGlb['Jk_bq_'])**2 * 
+            __dctGlb['hk_bq_k_bq_']**3 * (4*sf.pi* __dctGlb['e0k_bq_'])**2
+            /(__dctGlb['eMk_bq_'] * __dctGlb['pQk_bq_']**4)
+            )
+
+# 質量は正常だった
+
+tt(); toSI(ms`)
+===============================
+5.29168825924759e-11*m`
+
+tt(); toSI(ss`)
+===============================
+2.41880762254669e-17*s`
+
+tt(); toSI(gs`), eM`
+===============================
+(1.85946189392522e-9*kg`, 9.10938188e-31*kg`)
+
+tt(); toSI(Cs`), eQ`
+===============================
+(1.6021892e-19*A`*s`, -1.6021892e-19*A`*s`)

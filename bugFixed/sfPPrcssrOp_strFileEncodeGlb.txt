@@ -1,0 +1,24 @@
+Title       : move strFileEncodeGlb setting sentence to the 3rd line in sfPPrcssrOp.py
+            : sfPPrcssrOp.py の strFileEncodeGlb 設定行を 3 行目に変更する
+
+Serial Num  : 00081,    State: closed: date:2015/04/19
+First issued: date:2015/04/19
+
+Tags        : 
+
+Comments_1  : an error example
+utSf の op 側で下のテストがエラーになる。
+ustr=u'あ'; [hex(ord(ch)) for ch in ustr.encode('utf-8')]==['0xe3', '0x81', '0x82']
+↑ shift-jis から utf-8 に変換するスクリプトが、下の文が 3 行目にあることを前提としているため
+    strFileEncodeGlb="cp932"
+
+Comments_2  : counter mesure
+pysfOp\sfPPrcssor.py で strFileEncodeGlb="cp932" の行を三行目に変更する
+
+Comments_3  : action scripts
+testOp.vrf の下のテストの行
+ustr=u'あ'; [hex(ord(ch)) for ch in ustr.encode('utf-8')]==['0xe3', '0x81', '0x82']
+
+Comments_4  : open 版への修正
+open 版だけの問題だった
+

@@ -1,0 +1,99 @@
+Title       : svg rectangular text graphycs
+
+Serial Num  : 00086,    State: opend: date:2015/11/03
+First issued: date:2015/11/03
+
+Tags        : svg
+
+* Comments_1  : envisioned features
+pysf\kSvgTxt.py
+詳細仕様;;D:\my\vc7\pysfTracking\featureRgstrd\pysf\SvgTextSpec.txt
+** writing
+最小の手間で可読性を保ちながら説明図を描く
+
+そのために svg の世界を kobayashi が見ている、text を中心として もう少し単純な世界で modeling する。
+その意味の kSvgTxt と k を付けている。
+*** k world
+**** SvTxt has size vector and doesn't have initial position vector
+array of SvTxt instance represents slightly abstract lay out
+↑ row, column
+**** SvText has initial postion vector
+*** utility
+管理するファイルを少なくできるだけでも嬉しい
+** Python27 と 3K の両方で動くように挑戦してみる
+
+** "first rectangular text" -- "a big symbol font" -- "second rectangular text"
+
+*** complex rectangular text -- recursive nested rectangular text
+
+//@@
+    +----------------------------+ 
+    |     transcendental  Real   | 
+    | +-----------------------+  |     +---------------------------+ 
+    | |     algebraic         |  |     |     Octonion              |
+    | | +-----------------+   |  |     | +---------------------+   |
+    | | |   ratioanal     |   |  |     | |   Quaternion        |   |
+    | | |  +----------+   |   |  |     | |  +--------------+   |   |
+    | | |  |  Integer |   |   |  |     | |  |Complex number|   |   |
+    | | |  |  +-----+ |   |   |  |     | |  |  +------+    |   |   |
+    | | |  |  |Zp(n)| |   |   |  |  X  | |  |  |number|    |   |   |
+    | | |  |  +-----+ |   |   |  |     | |  |  +------+    |   |   |
+    | | |  |  number  |   |   |  |     | |  |              |   |   |
+    | | |  +----------+   |   |  |     | |  +--------------+   |   |
+    | | |    number       |   |  |     | |    number           |   |
+    | | +-----------------+   |  |     | +---------------------+   |
+    | |     number            |  |     |     number                |
+    | +-----------------------+  |     +---------------------------+
+    +----------------------------+ 
+//@@@
+//java -jar \utl\ditaa0_9.jar __tmp __tmp.png
+
+** plotGr(..), plotDbl(..) を修正してやることで、visual graph の代わりに svg 文字列を吐き出す python 関数を実装できそう
+visual での jpg ファイルを作成し <imag> .. </imag> link を書くより手間が省けそう。
+
+*** 関数式文字列を引数として渡すならば、凡例に書き込める
+↑ 普通に説明テキストで済ませても良い場合も多い
+eval('(k__bq_X___**2+3)(4)')
+===============================
+19
+
+** convert a ditaa like ASCII art   to  a svg graphics
+
+* 注意点
+縦横だけの arrow path で作ってもよいが Bezier curve まで含めると mark 記述が必須になる。
+↑ マークの向きを曲線の向きに合わせねばならないから
+
+
+* できたらいいな:I wish I could
+未だ group, scale, viewBox, symbol, use, marker を組み合わせた使い方を分かっていない
+
+**** vector graphics の特性を活用して、潰れてしまうような表示領域を拡大していくことで、詳しく見えるようにする。
+↑ 27inch 全画面で表示する方法もあり
+
+** 行列配置だけでは記述できないときは kSvgTxt が吐き出す svg text を使って inkscape, jointjs, GoJS などを使って書き足す。
+
+** 外部の svg instance を行列配置する
+            Enclosure can contain external SVG instance
+** simple ciruit diagram
+PNP Tr, ..  以下 22 個の部品を使って one-liners で回路図を描く
+. Hight を調整数値に使い width を共通にしたテキスト or svg 図形を連続して縦に重ねたグループ図形で回路部品を表現する。
+. 行列 mesh に部品を配置する
+. 斜めになる配線は部品間の center で直角線に自動的に折り曲げる
+
+↑ cross dot を最初から用意しておきたくなる
+    ┼ に circle を重ねれば実現できる
+    line and circle で作れ
+
+↑.N,.E,.S,.E の結線部分だけが許される単純な L,C,R 部品による回路だけ
+    ↑ op amp は四個の部品をマージン 0 で接続させて実現する
+        ↑ one-liner 記述の限界だろう。
+            ↑ 行列抽象配置でイメージしきれなくなる。
+        ↑ .NE 結線部分も必要になる。
+        ↑ amp の頂点には空白文字を配置し、三角はユーザーが直線で結ぶ
+        ↑"+-" テキストを縦に配置して、三角や出力はユーザーが描くことで op amp を記述できる
+
+*** とりあえずブロック線図
+
+* tests: check generated test svg strings
+kVerifier の宣伝でもある
+** bool 値テストに限定することで、既存の kVerifier 実装をそのまま利用する

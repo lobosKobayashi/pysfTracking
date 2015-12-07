@@ -1,0 +1,126 @@
+Title       : Python 2.7.9 caused no traceback for TypeError and some other exeptions at PythonSf 
+            : PythonSf 式の TypeError と幾つかの例外に対して Traceback を表示しなくなった
+
+Serial Num  : 00077,    State: closed: date:2014/04/05
+First issued: date:2014/01/01
+
+Tags        : traceback Python_2_7_9
+
+Comments_1  : an error example
+krry([1,2,3]/0)
+unsupported operand type(s) for /: 'list' and 'int'
+↑ traceback を表示しない
+
+下のように Python code の block 実行ならば traceback で例外発生行を示す
+//@@
+import pysf.sfFnctns as sf
+
+print sf.krry([1,2,3]/0)
+//@@@
+Traceback (most recent call last):
+  File "__tmp.py", line 3, in <module>
+    print sf.krry([1,2,3]/0)
+TypeError: unsupported operand type(s) for /: 'list' and 'int'
+
+Comments_2  : counter mesure
+下の二行を except *: 行の直後に追加する
+        import traceback
+        print traceback.format_exc()
+
+pysf\sfPPrcssr.py
+↓
+    except IOError, errValAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit( "IOError:You may use nonexistent variable name:"
+                          +str(errValAt) )
+
+    except ValueError, valAt:   
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except TypeError, valAt:   
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except NameError, valAt:   
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except SyntaxError, valAt:   
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except RuntimeError, valAt:   
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except pickle.PicklingError:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit("not picklable")
+
+pysfOp\sfPPrcssrOp.py
+    except IOError, errValAt:
+        raise SystemExit( "IOError:You may use nonexistent variable name:"
+                          +str(errValAt) )
+
+    except ValueError, valAt:
+        raise SystemExit (str(valAt) )
+
+    except TypeError, valAt:
+        raise SystemExit (str(valAt) )
+
+    except NameError, valAt:
+        raise SystemExit (str(valAt) )
+
+    except SyntaxError, valAt:
+        raise SystemExit (str(valAt) )
+
+    except RuntimeError, valAt:
+        raise SystemExit (str(valAt) )
+↓
+    except IOError, errValAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit( "IOError:You may use nonexistent variable name:"
+                          +str(errValAt) )
+
+    except ValueError, valAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except TypeError, valAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except NameError, valAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except SyntaxError, valAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+    except RuntimeError, valAt:
+        import traceback
+        print traceback.format_exc()
+        raise SystemExit (str(valAt) )
+
+Comments_3  : action scripts
+trace back 文字列まで確認するようには kVerifier インターフェースを作っていない。
+↑ この修正を行うのは一日がかりだろう。
+    ↑ 現状のままとする
+
+Comments_4  : open 判への修正
+
+

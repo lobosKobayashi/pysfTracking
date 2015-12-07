@@ -389,9 +389,11 @@ USB-IO2.0(AKI)
 
 リモコン受信モジュール;;http://akizukidenshi.com/catalog/goods/search.aspx?search=x&keyword=%83%8A%83%82%83R%83%93&image=%8C%9F%8D%F5
 D:\my\sf\ArmArduino\dwnld\SPS-448_SNYOS03246-1.pdf
+@0.05 赤外線リモコン受信モジュール　ＧＰ１ＵＸＣ４１ＱＳ 38kHz;;http://akizukidenshi.com/catalog/g/gI-06487/
+@0.02 赤外線リモコン受信モジュール　ＳＰＳ－４４２－１（３８ｋＨｚ）[SPS-442-1];;http://akizukidenshi.com/catalog/g/gI-00573/
 
 http://akizukidenshi.com/catalog/g/gI-00872/
-オプトサプライ赤外線リモコン @300;;http://akizukidenshi.com/catalog/g/gM-07245/
+@0.3 オプトサプライ赤外線リモコン @300;;http://akizukidenshi.com/catalog/g/gM-07245/
 調光機
 zener 5v
 
@@ -462,18 +464,20 @@ rail to rail ２回路入り入出力フルスイングオペアンプ　ＮＪＭ２７３２Ｄ @100;;http
 
 フォトカプラ　ＦＯＤ８１７Ｂ３００ @100(四個);;http://akizukidenshi.com/catalog/g/gI-06482/
 
+@250 ハイサイド・ローサイド　ドライバ　ＩＲ２１１０ＰＢＦ;;http://akizukidenshi.com/catalog/g/gI-06193/
+
 SainSmart;;http://www.amazon.co.jp/s/ref=sr_pg_3?rh=n%3A2127209051%2Cp_4%3A%E3%82%B5%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%EF%BC%88SainSmart%EF%BC%89&page=3&ie=UTF8&qid=1419305197
 
 GAOHOU
-マイクロコントロール用 NRF24L01+2.4GHz アンテナ ワイヤレス トランシーバ モジュール;;http://www.amazon.co.jp/%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E7%94%A8-NRF24L01-2-4GHz-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9-%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B7%E3%83%BC%E3%83%90/dp/B00K05W4QI/ref=pd_rhf_dp_s_cp_2_6KJQ?ie=UTF8&refRID=1JK5Y4V87W3QCHJHC6WA
+#@0.28 マイクロコントロール用 NRF24L01+2.4GHz アンテナ ワイヤレス トランシーバ モジュール;;http://www.amazon.co.jp/%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E7%94%A8-NRF24L01-2-4GHz-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9-%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B7%E3%83%BC%E3%83%90/dp/B00K05W4QI/ref=pd_rhf_dp_s_cp_2_6KJQ?ie=UTF8&refRID=1JK5Y4V87W3QCHJHC6WA
 
-1PCS ステッピングモータ+ドライバボード ULN2003 5V 4フェーズ 5ライン;;http://www.amazon.co.jp/1PCS-%E3%82%B9%E3%83%86%E3%83%83%E3%83%94%E3%83%B3%E3%82%B0%E3%83%A2%E3%83%BC%E3%82%BF-%E3%83%89%E3%83%A9%E3%82%A4%E3%83%90%E3%83%9C%E3%83%BC%E3%83%89-ULN2003-4%E3%83%95%E3%82%A7%E3%83%BC%E3%82%BA/dp/B00K7YYEVK/ref=pd_sim_e_1?ie=UTF8&refRID=0E2TQY6ZP5RM95KRWNBN
+#@0.45 1PCS ステッピングモータ+ドライバボード ULN2003 5V 4フェーズ 5ライン;;http://www.amazon.co.jp/1PCS-%E3%82%B9%E3%83%86%E3%83%83%E3%83%94%E3%83%B3%E3%82%B0%E3%83%A2%E3%83%BC%E3%82%BF-%E3%83%89%E3%83%A9%E3%82%A4%E3%83%90%E3%83%9C%E3%83%BC%E3%83%89-ULN2003-4%E3%83%95%E3%82%A7%E3%83%BC%E3%82%BA/dp/B00K7YYEVK/ref=pd_sim_e_1?ie=UTF8&refRID=0E2TQY6ZP5RM95KRWNBN
 
 USB－デュアル 2 PS2 PS/2 マウス キーボード 変換 アダプタ スプリッタ;;http://www.amazon.co.jp/USB%EF%BC%8D%E3%83%87%E3%83%A5%E3%82%A2%E3%83%AB-PS2-%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89-%E3%82%A2%E3%83%80%E3%83%97%E3%82%BF-%E3%82%B9%E3%83%97%E3%83%AA%E3%83%83%E3%82%BF/dp/B00MYOGADG/ref=sr_1_4?s=computers&ie=UTF8&qid=1417552537&sr=1-4
 
 @250:65pcs ワイヤー ブレッドボード プラグ ワイヤ ブレッドボード・ケーブル ブレッドボード タイライン;;http://www.amazon.co.jp/65pcs-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%BC-%E3%83%96%E3%83%AC%E3%83%83%E3%83%89%E3%83%9C%E3%83%BC%E3%83%89-%E3%83%96%E3%83%AC%E3%83%83%E3%83%89%E3%83%9C%E3%83%BC%E3%83%89%C2%B7%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB-%E3%82%BF%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%B3/dp/B00JUDWILM/ref=sr_1_3?m=A33O0YS89LH5EA&s=computers&ie=UTF8&qid=1417552668&sr=1-3
 
-@563:C 220V 3800W SCR 電圧 レギュレータ 調光器 スピード コントローラ サーモスタット センサー;;http://www.amazon.co.jp/220V-3800W-%E3%83%AC%E3%82%AE%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%BF-%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9-%E3%82%B5%E3%83%BC%E3%83%A2%E3%82%B9%E3%82%BF%E3%83%83%E3%83%88/dp/B00HV560JM/ref=sr_1_49?m=A33O0YS89LH5EA&s=computers&ie=UTF8&qid=1417553473&sr=1-49
+#@563:C 220V 3800W SCR 電圧 レギュレータ 調光器 スピード コントローラ サーモスタット センサー;;http://www.amazon.co.jp/220V-3800W-%E3%83%AC%E3%82%AE%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%BF-%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%A9-%E3%82%B5%E3%83%BC%E3%83%A2%E3%82%B9%E3%82%BF%E3%83%83%E3%83%88/dp/B00HV560JM/ref=sr_1_49?m=A33O0YS89LH5EA&s=computers&ie=UTF8&qid=1417553473&sr=1-49
 http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01
 
 トランシーバ nRF24XXシリーズ

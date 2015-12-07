@@ -1,6 +1,92 @@
 # -*- coding:cp932 -*-
 """' Text and Arrow SVG generator.
 '"""
+"""'
+english:
+Designed by kVerifierLab Kenji Kobayashi;;http://www.nasuinfo.or.jp/FreeSpace/kenji/index.htm
+
+kVerifierLab Kobayashi has the all copyrights in this file. If you consider
+comertial use of code(s) in this file, you must informe to kobayashi and
+get Kobayshi's consent
+
+kVerifierLab Kobayashi disclose this codes under below QPL license.
+
+Granted Rights
+
+1. You are granted the non-exclusive rights set forth in this license provided you agree to and comply with any and all conditions in this license. Whole or partial distribution of the Software, or software items that link with the Software, in any form signifies acceptance of this license.
+
+2. You may copy and distribute the Software in unmodified form provided that the entire package, including - but not restricted to - copyright, trademark notices and disclaimers, as released by the initial developer of the Software, is distributed.
+
+3. You may make modifications to the Software and distribute your modifications, in a form that is separate from the Software, such as patches. The following restrictions apply to modifications:
+
+a. Modifications must not alter or remove any copyright notices in the Software.
+b. When modifications to the Software are released under this license, a non-exclusive royalty-free right is granted to the initial developer of the Software to distribute your modification in future versions of the Software provided such versions remain available under these terms in addition to any other license(s) of the initial developer.
+
+4. You may distribute machine-executable forms of the Software or machine-executable forms of modified versions of the Software, provided that you meet these restrictions:
+
+a. You must include this license document in the distribution.
+b. You must ensure that all recipients of the machine-executable forms are also able to receive the complete machine-readable source code to the distributed Software, including all modifications, without any charge beyond the costs of data transfer, and place prominent notices in the distribution explaining this.
+c. You must ensure that all modifications included in the machine-executable forms are available under the terms of this license.
+
+5. You may use the original or modified versions of the Software to compile, link and run application programs legally developed by you or by others.
+
+6. You may develop application programs, reusable components and other software items that link with the original or modified versions of the Software. These items, when distributed, are subject to the following requirements:
+
+a. You must ensure that all recipients of machine-executable forms of these items are also able to receive and use the complete machine-readable source code to the items without any charge beyond the costs of data transfer.
+b. You must explicitly license all recipients of your items to use and re-distribute original and modified versions of the items in both machine-executable and source code forms. The recipients must be able to do so without any charges whatsoever, and they must be able to re-distribute to anyone they choose.
+c. If the items are not available to the general public, and the initial developer of the Software requests a copy of the items, then you must supply one.
+
+Limitations of Liability
+In no event shall the initial developers or copyright holders be liable for any damages whatsoever, including - but not restricted to - lost revenue or profits or other direct, indirect, special, incidental or consequential damages, even if they have been advised of the possibility of such damages, except to the extent invariable law, if any, provides otherwise.
+
+No Warranty
+The Software and this license document are provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSEｊ.
+
+Choice of Law This license is governed by the Laws of Japan. Disputes shall be settled by Utzunomiya City Court.
+
+
+japanese:
+作成 kVerifierLab 小林;;http://www.nasuinfo.or.jp/FreeSpace/kenji/index.htm
+
+kVerifierLab 小林が、このファイル内にあるプログラム・コード全ての著作権を
+保有します。このファイル内のコードを商業利用するときは小林に連絡し、小林の
+許諾を得ねばなりません。
+
+kVerifierLab 小林は、下の QPL ライセンスの条件でこのコードを公開します。
+
+
+許可された権利
+
+1. このライセンスのすべての条件に同意し、従う場合には このライセンスによって産み出される非排他的な以下の権利を 得ることができます。 「ソフトウェア」や「ソフトウェア」をリンクしたソフトウェアを 全体もしくは一部に利用した配布物はどんな形式でも このライセンスを受諾したと見なします。
+
+2. あなたは「ソフトウェア」を、 著作権表示などで制限されていない場合に限り、 オリジナルパッケージが配布されたときのまま変更しない形で 複製、配布することができる。
+
+3. あなたは「ソフトウェア」の変更を行ない、その変更を パッチのように「ソフトウェア」とは独立の形式で配布することができます。 ただし、次のような制限があります。
+
+a. 変更は著作権通知の変更や削除を行なっては行けません。
+b. このライセンスに沿って「ソフトウェア」への変更が公開された場合、 「ソフトウェア」の開発者は、 あなたの変更を利用料なしで今後のバージョンで配布することが可能です。 ただし、「ソフトウェア」のライセンスを変更しない場合に限ります。
+
+4. 以下の制限に応じた場合には 「ソフトウェア」の実行形式や 変更された「ソフトウェア」の実行形式の配布が可能です。
+a. このライセンス文章を含めて配布しなければなりません。
+b. あなたは実行形式を受け取ったすべての人に、 すべての変更を含んだ機械読み取り可能な完全なソースコードを 実費以外のコストをかけずに入手できるように保証しなければなりません。 そして配布物の目立つ場所でこのことを説明しなければなりません。
+c. 実行形式に含まれる変更がこのライセンスに従うことを 保証しなければなりません。
+
+5. オリジナル、もしくは変更された「ソフトウェア」を あなたや他の人が開発したアプリケーションプログラムを実行するためにコンパイル・リンクすることができます。
+
+6. オリジナル、もしくは変更された「ソフトウェア」をリンクして アプリケーションプログラムや再利用可能な部品や そのほかのソフトウェアを開発できます。 それらのソフトを配布する場合には次の要求を満たしていなければいけません。
+a. それらのソフトウェアの実行形式を受け取ったすべての人に、 機械読み取り可能な完全なソースコードを 実費以外のコストをかけずに入手できるように保証しなければなりません。
+b. あなたのソフトウェアを受け取ったすべての人に、 オリジナルのソフトウェアや変更されたソフトウェアの 実行形式やソースコードの再配布や利用するためのライセンスを 明示しなければなりません。 受け取った人は他のどんな料金もなしにそれらが可能でなくてはなりません。 また、他のどんな人にでも再配布可能でなくてはなりません。
+c. もしもそのソフトウェアが公衆が利用可能でない場合でも、 「ソフトウェア」の開発者がソフトウェアの複製を要求した場合には その要求に答えなくてはいけません。
+
+責任の制限
+どのような場合でも開発者や著作権保持者が 損害に対する責任を負うことはありません。
+
+無保証
+「ソフトウェア」とこのライセンスの文章は「そのまま」で「無保証」です。
+
+このライセンスは日本の法律によって保護されています。 争議は宇都宮地裁によって解決されるでしょう。 
+
+'"""
 #import sfFnctns as sf
 import svgwrite as svg
 import numpy as np
@@ -272,6 +358,7 @@ class Text(Enclosure):
         n=sum(1 if __checkHalfSize(c) else 2 for c in ustrAg)
         return np.array((fs/2*n, fs))
 
+
     def __init__(self, ustrAg, font_size=5*mm, 
                  insert=np.array([0,0]),
                  font_family='MS gothic', **kwd):
@@ -293,35 +380,8 @@ class Text(Enclosure):
 
         lsUstr=ustrAg.split('\n')
         if len(lsUstr) >= 2:
-            class InnerMultiLine(Text):
-                def __init__(self, lsUstrAg):
-                    widthMax =  0
-                    self.m_lsSvwObj=[]
-                    for j, ustrAt in enumerate(lsUstrAg):
-                        # just only left alignment sentences for the time being
-                        width = Text.getSize(ustrAt, fs, font_family)[0]
-                        if width > widthMax:
-                            widthMax = width
 
-                        self.m_lsSvwObj.append( Text(ustrAt, font_size,
-                                                    [insert[0], insert[1]+j*fs ],
-                                                    font_family, **kwd)
-                                              )
-
-                    arSize = np.array([widthMax, len(lsUstrAg) * fs])
-                    self.m_arInsert = np.array([insert[0], insert[1] + arSize[1]])
-                    self.m_svwObj = self
-                    self.m_flFontSize = fs
-                    self.m_arSize = arSize
-
-                def tostring(self):
-                    strAt=''
-                    for svwAt in self.m_lsSvwObj:
-                        strAt += svwAt.tostring()
-
-                    return strAt
-
-            cl = InnerMultiLine(lsUstr)
+            cl = InnerMultiLine(lsUstr, fs, insert, font_family, **kwd)
             self.m_arInsert = cl.m_arInsert
             self.m_arSize = cl.m_arSize
             self.m_flFontSize = fs
@@ -341,14 +401,54 @@ class Text(Enclosure):
     
     def tostring(self, bl_utf_jis=False):
         #import pdb; pdb.set_trace()
-        self.m_svwObj['x'],self.m_svwObj['y'] = (
-                    int(self.m_arInsert[0]),
-                    int(self.m_arInsert[1]+self.m_flFontSize)
-                    )
-        if bl_utf_jis == True:
-            return self.m_svwObj.tostring().encode('utf-8')
+        if isinstance(self.m_svwObj, InnerMultiLine):
+            return self.m_svwObj.toString(bl_utf_jis, self.m_arInsert)
         else:
-            return self.m_svwObj.tostring().encode('shift-jis')
+            self.m_svwObj['x'],self.m_svwObj['y'] = (
+                        int(self.m_arInsert[0]),
+                        int(self.m_arInsert[1]+self.m_flFontSize)
+                        )
+            if bl_utf_jis == True:
+                return self.m_svwObj.tostring().encode('utf-8')
+            else:
+                return self.m_svwObj.tostring().encode('shift-jis')
+
+class InnerMultiLine(Text):
+    def __init__(self, lsUstrAg, fs, insert, font_family, **kwd):
+        widthMax =  0
+        self.m_lsSvwObj=[]
+        for j, ustrAt in enumerate(lsUstrAg):
+            # just only left alignment sentences for the time being
+            width = Text.getSize(ustrAt, fs, font_family)[0]
+            if width > widthMax:
+                widthMax = width
+
+            self.m_lsSvwObj.append( svg.text.Text(ustrAt, font_size=fs,
+                                        insert = (insert[0], insert[1]+j*fs ),
+                                        font_family = font_family, **kwd)
+                                  )
+
+        arSize = np.array([widthMax, len(lsUstrAg) * fs])
+        self.m_arInsert = np.array([insert[0], insert[1] + arSize[1]])
+        self.m_svwObj = self
+        self.m_flFontSize = fs
+        self.m_arSize = arSize
+
+    def toString(self, bl_utf_jis, insert):
+        strAt=''
+        for j,svwAt in enumerate(self.m_lsSvwObj):
+            svwAt['x'], svwAt['y'] = (
+                        int(insert[0]),
+                        int(insert[1]+j*self.m_flFontSize)
+                    )
+            if bl_utf_jis == True:
+                strAt += svwAt.tostring().encode('utf-8') + u'\n'
+            else:
+                strAt += svwAt.tostring().encode('shift-jis') + u'\n'
+
+        #strAt = strAt[:-1]      # delete last \n
+
+        return strAt
 
 class AlndEclsAr(Enclosure):
     """'Aligned Enclosure Array

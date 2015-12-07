@@ -1,0 +1,13 @@
+
+**** kSvgTxt.py による具体例
+**** 効能書き
+***** 殆どのテキスト文章で実行可能なコードです
+plain text はもちろん HTML, markdown にコピーしても動くコードです。
+文脈依存は current directory, 拡張子の関連付け
+
+*** block 実行
+**** svg block
+**** javascript block
+**** haskell block
+**** Python Block
+**** PythonSf Block
